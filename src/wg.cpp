@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <graphviz>
+
 
 using namespace std;
 
