@@ -110,23 +110,24 @@ int main(int argc, char* argv[]) {
 
     map<string, vector<edge> > label_2_edge;
     label_2_edge = g.get_label_2_edge();
-    cout << "* Print 'label_2_edge': ";
 
-    int accum_label = 1;
+    map<string, int > label_2_node_group_num;
+    label_2_node_group_num = g.get_label_2_node_group_num();
+
+    // g.print_label_2_node_group_num();
+    // root has already added.
+    int accum_label = 1; 
     for (auto& [edge_label, edges] : label_2_edge) {
-        // cout << "edge: " << edge << endl;
-        cout << edge_label << ": " << endl;
-        accum_label = accum_label + edges.size();
+        accum_label = accum_label + label_2_node_group_num[edge_label];
         for (auto& edge: edges) {
             g.relabel_by_node_address(edge.get_tail(), accum_label);
         }
-        // for (auto& edge: edges) {
-        //     cout << *edge.get_head() << ", " << *edge.get_tail()<< endl;
-        // }
-        cout << endl;
     }
     g.print_graph();
 
+    // unordered_map<int,vector<int> > node_2_innodes;
+    // node_2_innodes = g.get_node_2_innodes();
+    g.print_node_2_innodes_graph();
 
     g.bfs();
 

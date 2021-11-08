@@ -43,6 +43,8 @@ void digraph::add_edges(vector<int> node1_vec, vector<int> node2_vec, vector<str
     /***********************************************
     *** Iterate through all edges and add one by one
     ************************************************/
+    // This is a temporary variable storing node group set.
+    map<string, set<int*> > label_2_node_group_set;
     for (int i=0; i<_edges_num; i++) {
 #ifdef DEBUGPRINT
         cout << "node1_vec[i]: " << node1_vec[i] << "  node2_vec[i]: " << node2_vec[i] << endl;
@@ -77,19 +79,32 @@ void digraph::add_edges(vector<int> node1_vec, vector<int> node2_vec, vector<str
 
         edge e = edge(edge_labels[i], &_node_ptrs[_node_2_ptr_idx[node1_vec[i]]], &_node_ptrs[_node_2_ptr_idx[node2_vec[i]]]);
         
-        // Find the label to edge vector
+        // Find the label to edge vector & calculate node group set.
         if (_label_2_edge.find(e.get_label()) == _label_2_edge.end()) {
             // Not found
             vector<edge> new_sub_edge_vc{e};
             _label_2_edge[e.get_label()] = new_sub_edge_vc;
+
+            set<int*> new_sub_tail_set;
+            new_sub_tail_set.insert(e.get_tail());
+            label_2_node_group_set[e.get_label()] = new_sub_tail_set;
+            // cout << "e.get_tail(): " << e.get_tail() << endl;
+            // _label_2_node_group_num[e.get_label()] = 
         } else {
             _label_2_edge[e.get_label()].push_back(e);
+            label_2_node_group_set[e.get_label()].insert(e.get_tail());
+            // cout << "e.get_tail(): " << e.get_tail() << endl;
         }
+
         // if (find(_edge_labels.begin(), _edge_labels.end(), e.get_label()) != _edge_labels.end()) {
         //     _label_2_edge[e.get_label()].push_back(e);
         // } else {
         // }
         _edges.push_back(e);
+    }
+    // calculate number of nodes in each node group set.
+    for (auto& [label, node_group_set] : label_2_node_group_set ) {
+        _label_2_node_group_num[label] = node_group_set.size();
     }
 }
 
@@ -146,6 +161,16 @@ void digraph::print_node_2_outnodes_graph() {
     }
 }
 
+void digraph::print_label_2_node_group_num() {
+    cout << "* Print '_label_2_node_group_num': " << endl;
+    for (auto& [edge_label, grp_num] : _label_2_node_group_num) {
+        // cout << "edge: " << edge << endl;
+        cout << edge_label << ": " << endl;
+        cout << grp_num << " " << endl;
+    }
+}
+
+
 void digraph::relabel_by_node_name(int node_name, int new_val) {
 #ifdef DEBUGPRINT
     cout << "node_name : " << node_name << endl;
@@ -174,6 +199,10 @@ vector<edge> digraph::get_edges() {
 
 map<string, vector<edge> > digraph::get_label_2_edge() {
     return _label_2_edge;
+}
+
+map<string, int> digraph::get_label_2_node_group_num() {
+    return _label_2_node_group_num;
 }
 
 unordered_map<int,vector<int> > digraph::get_node_2_innodes() {

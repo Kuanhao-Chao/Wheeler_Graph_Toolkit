@@ -29,6 +29,9 @@ class digraph {
         vector<edge> _edges;
         map<string, vector<edge> > _label_2_edge;
 
+        // Still need to think about where to initialize this map. Now: @ add_edges
+        map<string, int> _label_2_node_group_num;
+
     public:
         digraph(vector<int> node_names, int nodes_num, int edges_num);
 
@@ -41,6 +44,7 @@ class digraph {
         void print_label_2_edge_graph();
         void print_node_2_innodes_graph();
         void print_node_2_outnodes_graph();
+        void print_label_2_node_group_num();
 
         void relabel_by_node_name(int node_name, int new_val);
         void relabel_by_node_address(int* node_add, int new_val);
@@ -53,6 +57,7 @@ class digraph {
         vector<edge> get_edges();
 
         map<string, vector<edge> > get_label_2_edge();
+        map<string, int> get_label_2_node_group_num();
         unordered_map<int,vector<int> > get_node_2_innodes();
         unordered_map<int,vector<int> > get_node_2_outnodes();
 
