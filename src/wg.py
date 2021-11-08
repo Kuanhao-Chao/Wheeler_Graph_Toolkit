@@ -3,37 +3,54 @@ import networkx as nx
 from networkx.drawing.nx_pydot import read_dot
 import os
 
-class node:
-    def __init__(self, id):
-        self.id = id
-        self.indeg = 0
-        self.outdeg = 0
-        # self.parents = None
-        # self.children = None
+# class node:
+#     def __init__(self, id):
+#         self.id = id
+#         self.indeg = 0
+#         self.outdeg = 0
+#         # self.parents = None
+#         # self.children = None
 
-class edge:
-    def __init__(self, label, tail=node(None), head=node(None)):
-        self.label = label
-        self.tail = tail
-        self.head = head
+# class edge:
+#     def __init__(self, label, tail=node(None), head=node(None)):
+#         self.label = label
+#         self.tail = tail
+#         self.head = head
+
+def get_edge_label(graph):
+    all_edge_labels = []
+    all_edge_dic = {}
+    for u,v,e in graph.edges(data=True):
+        if e['label'] not in all_edge_labels:
+            all_edge_labels.append(e['label'])        
+            all_edge_dic[e['label']] = [(u,v)]
+        else: 
+            all_edge_dic[e['label']].append((u,v))
+    print (all_edge_dic)
+    print (all_edge_labels)
+    return all_edge_dic, all_edge_labels
+
+def get_in_deg_0_node(graph): 
+    in_deg_0_node_ls = []
+    for n, in_deg in graph.in_degree:
+        if in_deg == 0:
+            in_deg_0_node_ls.append(n)
+    print(in_deg_0_node_ls)
+
 
 def main():
-    # base_dir = "/home/kh.chao/Documents/Projects/Wheeler_Graph/graph"
-    # g_file = sys.argv[1]
-    # g_file = os.path.join(base_dir, g_file)
-    # g = nx.read_dot(g_file)
-    # print("g: ", g)
-    
-    read_dot("/home/kh.chao/Documents/Projects/Wheeler_Graph/graph/g1.dot")
+    base_dir = "../graph/"
+    g_file = sys.argv[1]
+    g_file = os.path.join(base_dir, g_file)
+    g = nx.DiGraph(read_dot(g_file))
+    # nx.draw(g, with_labels = True, arrows=True)
+    in_deg_0_node_ls = get_in_deg_0_node(g)
 
+    if len(in_deg_0_node_ls) > 1:
+        print("Not exist")
 
+    all_edge_dic, all_edge_labels = get_edge_label(g)
 
-    G = nx.Graph()
-    G.add_edge('A', 'B', weight=4)
-    G.add_edge('B', 'D', weight=2)
-    G.add_edge('A', 'C', weight=3)
-    G.add_edge('C', 'D', weight=4)
-    print(nx.shortest_path(G, 'A', 'D', weight='weight'))
 
 
     # with open(g_file, 'r') as fr:
