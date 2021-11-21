@@ -1,0 +1,16 @@
+// Example in the 2017 paper (swap S3 & S5 | S1 & S6)
+digraph g1 {
+    S6 -> S2 [ label=a ];
+    S6 -> S5 [ label=a ];
+    S2 -> S5 [ label=a ];
+    S3 -> S4 [ label=a ];
+    S8 -> S4 [ label=a ];
+    S6 -> S3 [ label=b ];
+    S5 -> S3 [ label=b ];
+    S1 -> S1 [ label=b ];
+    S7 -> S1 [ label=b ];
+    S2 -> S7 [ label=c ];
+    S3 -> S7 [ label=c ];
+    S1 -> S8 [ label=c ];
+    S7 -> S8 [ label=c ];
+}

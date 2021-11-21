@@ -1,5 +1,6 @@
-// Example in the 2017 paper
+// Example in the 2017 paper (swap S3 & S5 | S1 & S6) & edge shuffle
 digraph g1 {
+    S1 -> S2 [ label=a ];
     S1 -> S2 [ label=a ];
     S1 -> S3 [ label=a ];
     S2 -> S3 [ label=a ];

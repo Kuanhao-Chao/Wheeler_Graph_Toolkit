@@ -14,41 +14,22 @@
 
 using namespace std;
 
-int string2ascii(string line)
-{
-    string s_join;
-    for (int i = 0; i < line.length(); i++) {
-        int x = int(line.at(i));
-        if (x >= 32 && x <= 122) {
-            // Concatenate strings
-            s_join = s_join + to_string(x);
-        } 
-    }
-    int c = stoi(s_join);
-    // cout << c << endl;
-    // cout << &c << endl;
-    return c;
-}
-
-void ascii2string(int) {
-
-}
-
-
 int main(int argc, char* argv[]) {
 
-    // std::vector<int> v{1, 2, 3};
-
-    // for (int x : v)
-    //     cout << x << " ";
+	// if (args.getOpt("all")) {
+    //     all_wg = true;
+	// } else {
+    //     all_wg = false;
+    // }
+    // cout << "all_wg: << endl;" << endl;
 
     (void)argc;
     string line;
     ifstream ifile_dot(argv[1]);
-    vector<int> node1_vec;
-    vector<int> node2_vec;
-    vector<int> node_names;
-    set<int> node_names_set;
+    vector<string> node1_vec;
+    vector<string> node2_vec;
+    vector<string> node_names;
+    set<string> node_names_set;
     vector<string> edge_labels;
     unordered_map<int,int> node_2_ptr_idx;
 
@@ -63,8 +44,8 @@ int main(int argc, char* argv[]) {
                 smatch match;
 
                 if (regex_search(line, match, rgx)) {
-                    int node_1_name = string2ascii(match[1]);
-                    int node_2_name = string2ascii(match[2]);
+                    string node_1_name = match[1];
+                    string node_2_name = match[2];
                     node1_vec.push_back(node_1_name);
                     node2_vec.push_back(node_2_name);
                     node_names_set.insert(node_1_name);
@@ -75,7 +56,10 @@ int main(int argc, char* argv[]) {
         }   
         ifile_dot.close();
     }
-    copy(node_names_set.begin(), node_names_set.end(), back_inserter(node_names));
+    // copy(node_names_set.begin(), node_names_set.end(), back_inserter(node_names));
+
+    for(unsigned i=0; i<node_names.size(); ++i) node_names_set.insert(node_names[i]);
+    node_names.assign(node_names_set.begin(), node_names_set.end());
 
     int nodes_num = node_names.size();
     int edges_num = edge_labels.size();
@@ -85,51 +69,42 @@ int main(int argc, char* argv[]) {
     digraph g = digraph(node_names, nodes_num, edges_num);
     g.add_edges(node1_vec, node2_vec, edge_labels);
 
-    g.print_graph();
-
-    // edge_label list is sorted => because I use map
-    // map<string, vector<edge> > label_2_edge;
-    // label_2_edge = g.get_label_2_edge();
-    g.print_label_2_edge_graph();
-
-    // unordered_map<int, vector<int> > node_2_innodes;
-    // node_2_innodes = g.get_node_2_innodes();
-    g.print_node_2_innodes_graph();
-
-    // unordered_map<int, vector<int> > node_2_outnodes;
-    // node_2_outnodes = g.get_node_2_outnodes();
-    g.print_node_2_outnodes_graph();
-
-    // g.relabel_by_node_name(node_names[2], 20);
-    // g.relabel_by_node_name(node_names[2], 20);
-    // g.relabel_by_node_name(node_names[3], 20);
-
-    // g.print_graph();
+    /********************************
+    *** Initialization: relabelling root
+    ********************************/
     int root = g.get_root();
     g.relabel_by_node_name(root, 1);
 
     map<string, vector<edge> > label_2_edge;
     label_2_edge = g.get_label_2_edge();
 
-    map<string, int > label_2_node_group_num;
-    label_2_node_group_num = g.get_label_2_node_group_num();
-
-    // g.print_label_2_node_group_num();
-    // root has already added.
-    int accum_label = 1; 
-    for (auto& [edge_label, edges] : label_2_edge) {
-        accum_label = accum_label + label_2_node_group_num[edge_label];
-        for (auto& edge: edges) {
-            g.relabel_by_node_address(edge.get_tail(), accum_label);
-        }
-    }
+    bool valid_WG = true;
+    g.relabel_initialization();
+    valid_WG = g.WG_checker();
     g.print_graph();
 
-    // unordered_map<int,vector<int> > node_2_innodes;
-    // node_2_innodes = g.get_node_2_innodes();
-    g.print_node_2_innodes_graph();
+    g.innodelist_sort_relabel();
+    g.print_graph();
 
-    g.bfs();
+    // valid_WG = g.WG_checker();
+    
+    // string first_edge_label = g.get_first_edge_label();
+    // int valid_WG_num = 0;    
+    // if (valid_WG) {
+    //     g.permutation_4_edge_group(first_edge_label);
+    //     valid_WG_num = g.get_valid_WG_num();
+    //     cout << "Number of valid WG: " << valid_WG_num << endl;
+    // }
+
+
+    // if (valid_WG) {
+    //     // g.permutation_4_edge_group(first_edge_label);
+
+    //     g.one_scan_through_wg_rg(first_edge_label);
+    //     // g.outnodelist_sort_relabel();
+    //     g.one_scan_through_wg_rg(g.get_next_edge_label(first_edge_label));
+    //     g.one_scan_through_wg_rg(g.get_next_edge_label(g.get_next_edge_label(first_edge_label)));
+    // }
 
     return 0;
 }

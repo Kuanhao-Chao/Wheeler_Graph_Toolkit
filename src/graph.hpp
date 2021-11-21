@@ -1,7 +1,5 @@
 #pragma once
 
-#define DEBUGPRINT
-
 #include <string>
 #include <vector>
 #include <regex>
@@ -13,57 +11,99 @@
 
 using namespace std;
 
+/********************************
+*** When number of duplicates is large, faster to convert to set and 
+*** then dump the data back into a vector.
+********************************/
+// https://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector
 class digraph {
     private:
         // original node number
         // vector<int> _node_names;
+        bool _is_wg = true;
         int _root;
         int _nodes_num;
         int _edges_num;
         int* _node_ptrs;
-        // node to memory idx dict in heap
-        unordered_map<int,int> _node_2_ptr_idx;
-        unordered_map<int,vector<int> > _node_2_innodes;
-        unordered_map<int,vector<int> > _node_2_outnodes;
+        int _valid_WG_num = 0;
+        // node to memory address dict in heap
+        unordered_map<int,int*> _node_2_ptr_address;
+        unordered_map<int,set<int> > _node_2_innodes;
+        unordered_map<int,set<int> > _node_2_outnodes;
         // all edges
         vector<edge> _edges;
         map<string, vector<edge> > _label_2_edge;
 
         // Still need to think about where to initialize this map. Now: @ add_edges
-        map<string, int> _label_2_node_group_num;
+        // map<string, vector<int*> > _label_2_node_group;
+        map<string, vector<int> > _label_2_edgegpnodes;
+        map<string, string> _edge_label_2_next_edge_label;
 
     public:
-        digraph(vector<int> node_names, int nodes_num, int edges_num);
+        digraph(vector<string> node_names, int nodes_num, int edges_num);
 
         ~digraph();
 
-        void add_edges(vector<int> node1_vec, vector<int> node2_vec, vector<string> edge_labels);
+        void add_edges(vector<string> node1_vec, vector<string> node2_vec, vector<string> edge_labels);
 
         void print_graph();
 
         void print_label_2_edge_graph();
         void print_node_2_innodes_graph();
-        void print_node_2_outnodes_graph();
-        void print_label_2_node_group_num();
+        void print_node_2_outnodes_graph(int node_name);
+        void print_label_2_edgegpnodes();
+        void print_node_names_2_node_labels();
+        void print_edge_label_2_next_edge_label();
+
+
+        void relabel_initialization();
+        void innodelist_sort_relabel();
+        void outnodelist_sort_relabel(vector<edge> &edges);
+
+
+        void relabel_forward(vector<int> &repeat_vec, vector<int> &original_labels, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, vector<int> &prev_num_vec, int &index);
+
+        void relabel_reverse(vector<int> &repeat_vec, vector<int> &original_labels, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, vector<int> &prev_num_vec, int &index);
 
         void relabel_by_node_name(int node_name, int new_val);
         void relabel_by_node_address(int* node_add, int new_val);
 
         int get_node_label(int node_name);
-
-        unordered_map<int,int> get_node_2_ptr_idx();
+        int* get_node_address(int node_name);
+        unordered_map<int,int*> get_node_2_ptr_address();
         
         // map<edge, string> get_edge_2_label();
         vector<edge> get_edges();
 
         map<string, vector<edge> > get_label_2_edge();
-        map<string, int> get_label_2_node_group_num();
-        unordered_map<int,vector<int> > get_node_2_innodes();
-        unordered_map<int,vector<int> > get_node_2_outnodes();
+        map<string, vector<int> > get_label_2_edgegpnodes();
+        unordered_map<int,set<int> > get_node_2_innodes();
+        unordered_map<int,set<int> > get_node_2_outnodes();
+        vector<int> get_outnodes_labels(int node_name);
+        vector<int> get_innodes_labels(string edge_label, int node_name);
+        int get_valid_WG_num();
 
+        void one_scan_through_wg_rg(string label);
+
+        void permutation_4_edge_group(string label);
+        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index);
+
+        // void in_edge_group_sort(vector<vector<int> > &edgegp_nodes_innodes, vector<int> &index);
+        void in_edge_group_sort(vector<int> edgegp_nodes, vector<vector<int> > edgegp_node_2_innodes_vec, vector<int> index);
+        void in_edge_group_pre_label(string label, unordered_map<int, vector<int> > &edgegp_node_2_innodes, int &accum_edgegp_size);
+
+        void sort_label_2_edge(string &label);
+
+        string get_first_edge_label();
+        string get_next_edge_label(string label);
+
+        bool WG_checker_in_edge_group(string &label);
+        bool WG_checker();
         // Find the in degree == 0;
         void find_root_node();
         int get_root();
 
         void bfs();
+        int string2ascii(string line);
+        string ascii2string(int node_name);
 };
