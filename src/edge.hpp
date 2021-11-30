@@ -15,6 +15,7 @@ class edge {
 
     public:
         edge(string label, int node_1_name, int* node_1, int node_2_name, int* node_2);
+        edge();
         ~edge();
         void print_edge();
         void set_node(int a, int b);
@@ -28,4 +29,5 @@ class edge {
         int string2ascii(string line);
         string ascii2string(int node_name);
         bool operator <(edge& e);
+        bool operator ==(edge& e);
 };

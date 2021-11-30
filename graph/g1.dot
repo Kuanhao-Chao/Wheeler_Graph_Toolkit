@@ -1,5 +1,5 @@
 // Example in the 2017 paper
-digraph g1 {
+strict digraph  {
     S1 -> S2 [ label=a ];
     S1 -> S3 [ label=a ];
     S2 -> S3 [ label=a ];

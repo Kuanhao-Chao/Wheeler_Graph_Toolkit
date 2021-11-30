@@ -26,6 +26,8 @@ int main(int argc, char* argv[]) {
     (void)argc;
     string line;
     ifstream ifile_dot(argv[1]);
+
+    string method = argv[2];
     vector<string> node1_vec;
     vector<string> node2_vec;
     vector<string> node_names;
@@ -36,13 +38,14 @@ int main(int argc, char* argv[]) {
     if (ifile_dot.is_open()) {
         while(getline(ifile_dot, line)) {
             // Example from: https://www.codegrepper.com/code-examples/cpp/remove+all+spaces+from+string+c%2B%2B
+            // cout << line << endl;
         	line.erase(remove(line.begin(), line.end(), ' '), line.end());
 
             if (regex_match(line, regex("(.*)(->)(.*)(\\[label=)(.*)(\\];)"))) {
                 regex rgx("(\\w+)->(\\w+)\\[label=(\\w+)\\];");
                 // regex rgx("(\\w+)->*;");
                 smatch match;
-
+                cout << line << endl;
                 if (regex_search(line, match, rgx)) {
                     string node_1_name = match[1];
                     string node_2_name = match[2];
@@ -68,43 +71,89 @@ int main(int argc, char* argv[]) {
     ********************************/
     digraph g = digraph(node_names, nodes_num, edges_num);
     g.add_edges(node1_vec, node2_vec, edge_labels);
+    cout << "Initialize the graph: " << endl;
 
     /********************************
     *** Initialization: relabelling root
     ********************************/
-    int root = g.get_root();
-    g.relabel_by_node_name(root, 1);
+    vector<int> root = g.get_root();
+    int accum_root_label = 1;
+    for (auto& root_node : root) {
+        cout << "root_node: " << root_node << endl;
+        g.relabel_by_node_name(root_node, accum_root_label);
+        accum_root_label += 1;
+    }
+    cout << "Initialize: relabelling root: " << endl;
 
     map<string, vector<edge> > label_2_edge;
     label_2_edge = g.get_label_2_edge();
+    cout << "get_label_2_edge: " << endl;
 
     bool valid_WG = true;
-    g.relabel_initialization();
-    valid_WG = g.WG_checker();
-    g.print_graph();
+    int valid_WG_num = 0;    
+    string first_edge_label = g.get_first_edge_label();
+    cout << "get_first_edge_label: " << first_edge_label << endl;
 
-    g.innodelist_sort_relabel();
-    g.print_graph();
+    if (method == "m1") {
+        /****************************************
+        **** Method 1: do all possible permutation!!!
+        *****************************************/
+        g.relabel_initialization();
+        valid_WG = g.WG_checker();
+        g.print_graph();
+        // If after initialization, it is not a WG => it is not a WG.
+        if (!valid_WG) {
+            // g.invalid_wheeler_graph_exit("'relabel_initialization' !!!", "graph");
+        }
+        g.innodelist_sort_relabel();
+        valid_WG = g.WG_checker();
+        // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
+        if (!valid_WG) {
+            // g.invalid_wheeler_graph_exit("'innodelist_sort_relabel' !!!", "graph");
+        }
+        g.print_graph();
+        g.permutation_4_edge_group(first_edge_label);
+        valid_WG_num = g.get_valid_WG_num();
+        g.output_wg_gagie();
+    } else if (method == "m2") {
+        /****************************************
+        **** Method 2: sorting by in-node & out-node list!!!
+        *****************************************/
+        g.relabel_initialization();
+        valid_WG = g.WG_checker();
+        if (!valid_WG) {
+            g.invalid_wheeler_graph_exit("'relabel_initialization' !!!", "graph");
+        }
+        g.print_graph();
+        g.innodelist_sort_relabel();
+        valid_WG = g.WG_checker();
+        // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
+        if (!valid_WG) {
+            g.invalid_wheeler_graph_exit("'innodelist_sort_relabel' !!!", "graph");
+        }
+        // g.print_graph();
 
-    // valid_WG = g.WG_checker();
-    
-    // string first_edge_label = g.get_first_edge_label();
-    // int valid_WG_num = 0;    
-    // if (valid_WG) {
-    //     g.permutation_4_edge_group(first_edge_label);
-    //     valid_WG_num = g.get_valid_WG_num();
-    //     cout << "Number of valid WG: " << valid_WG_num << endl;
-    // }
+        int counter = 0;
+        while (valid_WG) {
+            g.innodelist_sort_relabel();
+            valid_WG = g.WG_checker();
+            // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
+            if (!valid_WG) {
+                g.invalid_wheeler_graph_exit("'innodelist_sort_relabel' !!!", "graph");
+            }
+            g.print_graph();
 
-
-    // if (valid_WG) {
-    //     // g.permutation_4_edge_group(first_edge_label);
-
-    //     g.one_scan_through_wg_rg(first_edge_label);
-    //     // g.outnodelist_sort_relabel();
-    //     g.one_scan_through_wg_rg(g.get_next_edge_label(first_edge_label));
-    //     g.one_scan_through_wg_rg(g.get_next_edge_label(g.get_next_edge_label(first_edge_label)));
-    // }
-
+            g.in_out_nodelist_sort_relabel();
+            valid_WG = g.WG_checker();
+            if (!valid_WG) {
+                g.invalid_wheeler_graph_exit("'in_out_nodelist_sort_relabel' !!!", "graph");
+            }
+            counter ++;
+            if (counter == 50) break;
+        }
+        g.print_graph();
+        valid_WG_num = g.get_valid_WG_num_2();    
+    }
+    cout << "Number of valid WG: " << valid_WG_num << endl;
     return 0;
 }

@@ -11,6 +11,5 @@ digraph g1 {
 
     S3 -> S9 [ label=c ];
     S3 -> S10 [ label=c ];
-
-    S4 -> S11 [ label=d ];
+    S4 -> S11 [ label=c ];
 }

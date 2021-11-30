@@ -21,6 +21,14 @@ edge::edge(string label, int node_1_name, int* node_1, int node_2_name, int* nod
 #endif
 }
 
+edge::edge() {
+    _label = "";
+    _head_name = 0;
+    _head = &_head_name;
+    _tail_name = 0;
+    _tail = &_tail_name;    
+}
+
 edge::~edge(){}
 
 void edge::print_edge() {
@@ -71,6 +79,21 @@ bool edge::operator <(edge& e) {
         } else {
             return false;
         }
+    } else {
+        return false;
+    }
+}
+
+bool edge::operator ==(edge& e) {
+    if (
+        *_head == e.get_head_label() &&
+        *_tail == e.get_tail_label() &&
+        _head == e.get_head() &&
+        _tail == e.get_tail() &&
+        _head_name == e.get_head_name() &&
+        _tail_name == e.get_tail_name()
+    ) {
+        return true;
     } else {
         return false;
     }
