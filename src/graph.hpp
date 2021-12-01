@@ -1,3 +1,9 @@
+/**
+ * @file graph.hpp
+ * @author Kuan-Hao Chao
+ * Contact: kuanhao.chao@gmail.com
+ */
+
 #pragma once
 
 #include <string>
@@ -18,14 +24,14 @@ using namespace std;
 // https://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector
 class digraph {
     private:
-        // original node number
-        // vector<int> _node_names;
+        string _path_name;
         bool _is_wg = true;
         vector<int> _root;
         int _nodes_num;
         int _edges_num;
         int* _node_ptrs;
         int _valid_WG_num = 0;
+        int _invalid_stop_num = 0;
         // node to memory address dict in heap
         unordered_map<int,int*> _node_2_ptr_address;
         unordered_map<int,set<int> > _node_2_innodes;
@@ -37,14 +43,11 @@ class digraph {
         vector<edge> _edges;
         map<string, vector<edge> > _label_2_edge;
 
-        // Still need to think about where to initialize this map. Now: @ add_edges
-
         // This is only for printing & 
-        map<string, vector<int> > _label_2_edgegpnodes;
         map<string, string> _edge_label_2_next_edge_label;
 
     public:
-        digraph(vector<string> node_names, int nodes_num, int edges_num);
+        digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name);
 
         ~digraph();
 
@@ -57,9 +60,9 @@ class digraph {
         void print_node_2_innodes_graph();
         void print_node_2_outnodes_graph(int node_name);
         void print_node_2_edgelabel_2_outnodes();
-        void print_label_2_edgegpnodes();
         void print_node_names_2_node_labels();
         void print_edge_label_2_next_edge_label();
+        void print_wg_result_number();
 
 
         void relabel_initialization();
@@ -82,7 +85,6 @@ class digraph {
         vector<edge> get_edges();
 
         map<string, vector<edge> > get_label_2_edge();
-        map<string, vector<int> > get_label_2_edgegpnodes();
         unordered_map<int,set<int> > get_node_2_innodes();
         unordered_map<int,set<int> > get_node_2_outnodes();
         unordered_map<int, map<string, set<int> > > get_node_2_edgelabel_2_outnodes();
@@ -91,12 +93,13 @@ class digraph {
         map<string, vector<int> > get_outnodes_labels(int node_name);
         vector<int> get_innodes_labels(string edge_label, int node_name);
         int get_valid_WG_num();
+        int get_invalid_stop_num();
         int get_valid_WG_num_2();
 
         void one_scan_through_wg_rg(string label);
 
-        void permutation_4_edge_group(string label);
-        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index);
+        void permutation_4_edge_group(string label, bool early_stop);
+        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop);
 
         // void in_edge_group_sort(vector<vector<int> > &edgegp_nodes_innodes, vector<int> &index);
         void in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index);
@@ -108,10 +111,11 @@ class digraph {
         void sort_label_2_edge(string &label);
 
         string get_first_edge_label();
+        string get_last_edge_label();
         string get_next_edge_label(string label);
 
-        bool WG_checker_in_edge_group(string &label);
-        bool WG_checker();
+        bool WG_checker_in_edge_group(string label, vector<edge> &edges, string level);
+        bool WG_checker(string level);
         // Find the in degree == 0;
         void find_root_node();
         vector<int> get_root();
@@ -122,9 +126,8 @@ class digraph {
         string ascii2string(int node_name);
 
 
-        void valid_wheeler_graph();
-        void invalid_wheeler_graph();
-        void invalid_wheeler_graph_exit(string msg, string print_level);
+        void valid_wheeler_graph(bool early_stop);
+        void invalid_wheeler_graph(string msg, string print_level, bool stop);
         void output_wg_gagie();
         void output_wg_dot();
 };

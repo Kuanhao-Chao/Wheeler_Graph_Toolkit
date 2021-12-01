@@ -10,5 +10,8 @@ graph.o: graph.cpp
 edge.o: edge.cpp
 	g++ -std=c++17 -c edge.cpp
 
+remove:
+	rm -R -- */ 
+
 clean:
-	rm *.o wg
+	rm -R -- */ *.o wg
