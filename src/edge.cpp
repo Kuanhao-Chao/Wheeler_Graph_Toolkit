@@ -31,9 +31,9 @@ edge::edge() {
 
 edge::~edge(){}
 
-void edge::print_edge() {
-    cout << "\t       " << "label val: " << _label << "\thead: " << *_head << " (" << this->ascii2string(_head_name)  << ")\t\ttail val: " << *_tail << " (" << this->ascii2string(_tail_name)  << ")" << endl;
-    cout << "\t       " << "label ads: " << _label << "\thead: " << _head << "\ttail ads: " << _tail << endl;
+void edge::print_edge(string offset) {
+    cout << offset << "\t       " << "label val: " << _label << "\thead: " << *_head << " (" << this->ascii2string(_head_name)  << ")\t\ttail val: " << *_tail << " (" << this->ascii2string(_tail_name)  << ")" << endl;
+    cout << offset << "\t       " << "label ads: " << _label << "\thead: " << _head << "\ttail ads: " << _tail << endl;
 }
 
 void edge::set_node(int a, int b) {

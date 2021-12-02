@@ -54,24 +54,25 @@ class digraph {
         void add_edges(vector<string> node1_vec, vector<string> node2_vec, vector<string> edge_labels);
 
         void print_node(int node_name);
-        void print_graph();
+        void print_graph(string offset="");
 
         void print_label_2_edge_graph();
         void print_node_2_innodes_graph();
-        void print_node_2_outnodes_graph(int node_name);
+        void print_node_2_outnodes_graph();
         void print_node_2_edgelabel_2_outnodes();
         void print_node_names_2_node_labels();
         void print_edge_label_2_next_edge_label();
         void print_wg_result_number();
 
 
-        void relabel_initialization();
-        void innodelist_sort_relabel();
-        void in_out_nodelist_sort_relabel();
+        void relabel_initialization(bool print_invalid);
+        void innodelist_sort_relabel(bool print_invalid);
+        void in_out_nodelist_sort_relabel(bool print_invalid);
 
 
+        void relabel_forward_root(vector<int> &repeat_vec, vector<int> &original_labels);
+        void relabel_reverse_root(vector<int> &repeat_vec, vector<int> &original_labels);
         void relabel_forward(vector<int> &repeat_vec, vector<int> &original_labels, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, vector<int> &prev_num_vec, int &index);
-
         void relabel_reverse(vector<int> &repeat_vec, vector<int> &original_labels, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, vector<int> &prev_num_vec, int &index);
 
         void relabel_by_node_name(int node_name, int new_val);
@@ -98,14 +99,15 @@ class digraph {
 
         void one_scan_through_wg_rg(string label);
 
-        void permutation_4_edge_group(string label, bool early_stop);
-        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop);
+        void permutation_start(bool early_stop, bool print_invalid);
+        void permutation_4_edge_group(string label, bool early_stop, bool print_invalid);
+        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop, bool print_invalid);
 
         // void in_edge_group_sort(vector<vector<int> > &edgegp_nodes_innodes, vector<int> &index);
-        void in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index);
+        void in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, bool print_invalid);
         void in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, int &accum_edgegp_size);
 
-        void in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index);
+        void in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index, bool print_invalid);
         void in_out_nodelist_repeat_node_re_label(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index);
 
         void sort_label_2_edge(string &label);
@@ -114,8 +116,9 @@ class digraph {
         string get_last_edge_label();
         string get_next_edge_label(string label);
 
-        bool WG_checker_in_edge_group(string label, vector<edge> &edges, string level);
-        bool WG_checker(string level);
+        bool WG_checker_in_edge_group(string label, vector<edge> &edges, bool print_invalid);
+        bool WG_checker(bool print_invalid);
+        void WG_final_check();
         // Find the in degree == 0;
         void find_root_node();
         vector<int> get_root();
@@ -127,7 +130,9 @@ class digraph {
 
 
         void valid_wheeler_graph(bool early_stop);
-        void invalid_wheeler_graph(string msg, string print_level, bool stop);
+        void invalid_wheeler_graph(string msg, bool print_invalid, bool stop);
+        void exit_program();
         void output_wg_gagie();
         void output_wg_dot();
+        void output_nodes_conversion();
 };

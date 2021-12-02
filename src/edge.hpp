@@ -17,7 +17,7 @@ class edge {
         edge(string label, int node_1_name, int* node_1, int node_2_name, int* node_2);
         edge();
         ~edge();
-        void print_edge();
+        void print_edge(string offset="");
         void set_node(int a, int b);
         string get_label();
         int* get_head();

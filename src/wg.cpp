@@ -25,15 +25,15 @@ int main(int argc, char* argv[]) {
     (void)argc;
     string line;
     string usage = " usage:\n\n\
-    wg <in.dot> <wg_recognizer_method ('m1' or 'm2')> <stop_condition ('early_stop' or 'normal')> \n\n";
+    wg <in.dot> <wg_recognizer_method ('m1' or 'm2')> <stop_condition ('early_stop' or 'normal')> <print_invalid (0 or 1)> \n\n";
 
     /********************************
     *** Checking arguments
     ********************************/
     // Check number of arguments.
-    if (argc != 4) {
+    if (argc != 5) {
         cout << usage;
-        cerr << "You have to input exactly three arguments." << endl;
+        cerr << "You have to input exactly four arguments." << endl;
         exit(0);
     }
     // Check wg_recognizer_method 'm1' or 'm2'
@@ -48,11 +48,18 @@ int main(int argc, char* argv[]) {
         cerr << "stop_condition must be either 'early_stop' or 'normal'" << endl;
         exit(0);
     }
+    // Check print_invalid 0 or 1
+    if (!(strcmp(argv[4], "0")==0)  &&  !(strcmp(argv[4], "1")==0)) {
+        cout << usage;
+        cerr << "print_invalid must be either 0 or 1" << endl;
+        exit(0);
+    }
 
     ifstream ifile_dot(argv[1]);
     filesystem::path path_name(argv[1]);
     string method = argv[2];
     bool early_stop = (strcmp( argv[3], "early_stop") == 0);
+    bool print_invalid = (strcmp( argv[4], "1") == 0);
     vector<string> node1_vec;
     vector<string> node2_vec;
     vector<string> node_names;
@@ -88,72 +95,65 @@ int main(int argc, char* argv[]) {
 
     int nodes_num = node_names.size();
     int edges_num = edge_labels.size();
-    
+
     /********************************
     *** Initialize the graph. 
     ********************************/
     digraph g = digraph(node_names, nodes_num, edges_num, path_name.stem());
     g.add_edges(node1_vec, node2_vec, edge_labels);
 
-    /********************************
-    *** Initialization: relabelling root
-    ********************************/
-    vector<int> root = g.get_root();
-    int accum_root_label = 1;
-    cout << "* Initialize: relabelling root: " << endl;
-    for (auto& root_node : root) {
-        cout << "root_node: " << root_node << endl;
-        g.relabel_by_node_name(root_node, accum_root_label);
-        accum_root_label += 1;
-    }
-    bool valid_WG = true; 
+// #ifdef DEBUGPRINT
+//         string label = g.get_first_edge_label();
+//         while(label != "" ) {
+//             g.sort_label_2_edge(label);
+//             label = g.get_next_edge_label(label);
+//         }
+//         g.print_graph();
+// #endif
 
     if (method == "m1") {
         /****************************************
         **** Method 1: do all possible permutation!!!
         *****************************************/
+
         // Step 1: If after initialization, it is not a WG => it is not a WG.
-        g.relabel_initialization();
-        valid_WG = g.WG_checker("relabel_initialization");
-        if (!valid_WG) {
-            g.print_wg_result_number();
-            exit(0);
-        }
+        g.relabel_initialization(print_invalid);
+#ifdef DEBUGPRINT
         g.print_graph();
+#endif
 
         // Step 2: If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
-        g.innodelist_sort_relabel();
-        valid_WG = g.WG_checker("innodelist_sort_relabel");
-        if (!valid_WG) {
-            g.print_wg_result_number();
-            exit(0);
-        }
+        g.innodelist_sort_relabel(print_invalid);
+#ifdef DEBUGPRINT
         g.print_graph();
+#endif
 
         // Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
-        g.permutation_4_edge_group(g.get_first_edge_label(), early_stop);
-        g.print_wg_result_number();
+        g.permutation_start(early_stop, print_invalid);
+        // g.permutation_4_edge_group(g.get_first_edge_label(), early_stop, print_invalid);
+        g.WG_final_check();
     } else if (method == "m2") {
+        bool valid_WG = true; 
         /****************************************
         **** Method 2: sorting by in-node & out-node list!!!
         *****************************************/
-        g.relabel_initialization();
-        g.WG_checker("relabel_initialization");
+        g.relabel_initialization(print_invalid);
+        valid_WG = g.WG_checker(print_invalid);
         g.print_graph();
         // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
-        g.innodelist_sort_relabel();
-        g.WG_checker("innodelist_sort_relabel");
+        g.innodelist_sort_relabel(print_invalid);
+        valid_WG = g.WG_checker(print_invalid);
         g.print_graph();
 
         int counter = 0;
         while (valid_WG) {
-            g.innodelist_sort_relabel();
-            g.WG_checker("innodelist_sort_relabel");
+            g.innodelist_sort_relabel(print_invalid);
+            g.WG_checker(print_invalid);
             // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
             g.print_graph();
 
-            g.in_out_nodelist_sort_relabel();
-            g.WG_checker("in_out_nodelist_sort_relabel");
+            g.in_out_nodelist_sort_relabel(print_invalid);
+            g.WG_checker(print_invalid);
             counter ++;
             if (counter == 50) break;
         }
