@@ -9,13 +9,9 @@ Deliverables |  |  | recognizer | Pattern matcher |
 
 ## Recognizer
 
-WG recognizing problem is hard. It is proved NP-complete by Gibney and Thankachan in 2019, and the time complexity of the pseudocode algorithm is <img src="https://render.githubusercontent.com/render/math?math=2^{e \cdot log\sigma + O(n + e)}">
+WG recognizing problem is hard. It is proved NP-complete by Gibney and Thankachan in 2019, and the time complexity of the pseudocode algorithm is <img src="https://render.githubusercontent.com/render/math?math=2^{e \cdot log\sigma  %2B O(n  %2B e)}">.
+Our recognizer is implemented in C++ and is a factorial algorithm doing minimum permutations. Given a directed graph G with edge labels and random node labels in DOT format, the recognizer answers whether G is a wheeler graph or not and outputs the WG data structure proposed by Gagie (2017). 
 
-
-
-Given a directed graph G with edge labels and random node labels in DOT format, the recognizer answers whether G is a wheeler graph or not and outputs the WG data structure proposed by Gagie (2017). 
-
-Our recognizer is implemented in C++ and is a factorial algorithm doing minimum permutation. The time complexity is 
 
 ### 1. Building the latest version from `src/`
 
