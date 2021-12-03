@@ -35,13 +35,11 @@ class digraph {
         // node to memory address dict in heap
         unordered_map<int,int*> _node_2_ptr_address;
         unordered_map<int,set<int> > _node_2_innodes;
-        unordered_map<int,set<int> > _node_2_outnodes;
         // Node -> edge_label -> outnodes
         unordered_map<int, map<string, set<int> > > _node_2_edgelabel_2_outnodes;
 
         // all edges
-        vector<edge> _edges;
-        map<string, vector<edge> > _label_2_edge;
+        map<string, vector<edge> > _edge_label_2_edge;
 
         // This is only for printing & 
         map<string, string> _edge_label_2_next_edge_label;
@@ -56,9 +54,8 @@ class digraph {
         void print_node(int node_name);
         void print_graph(string offset="");
 
-        void print_label_2_edge_graph();
+        void print_edge_label_2_edge_graph();
         void print_node_2_innodes_graph();
-        void print_node_2_outnodes_graph();
         void print_node_2_edgelabel_2_outnodes();
         void print_node_names_2_node_labels();
         void print_edge_label_2_next_edge_label();
@@ -81,13 +78,9 @@ class digraph {
         int  get_node_label(int node_name);
         int* get_node_address(int node_name);
         unordered_map<int,int*> get_node_2_ptr_address();
-        
-        // map<edge, string> get_edge_2_label();
-        vector<edge> get_edges();
 
-        map<string, vector<edge> > get_label_2_edge();
+        map<string, vector<edge> > get_edge_label_2_edge();
         unordered_map<int,set<int> > get_node_2_innodes();
-        unordered_map<int,set<int> > get_node_2_outnodes();
         unordered_map<int, map<string, set<int> > > get_node_2_edgelabel_2_outnodes();
 
 
@@ -110,7 +103,7 @@ class digraph {
         void in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index, bool print_invalid);
         void in_out_nodelist_repeat_node_re_label(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index);
 
-        void sort_label_2_edge(string &label);
+        void sort_edge_label_2_edge(string &label);
 
         string get_first_edge_label();
         string get_last_edge_label();

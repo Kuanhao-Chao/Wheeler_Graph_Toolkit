@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
 // #ifdef DEBUGPRINT
 //         string label = g.get_first_edge_label();
 //         while(label != "" ) {
-//             g.sort_label_2_edge(label);
+//             g.sort_edge_label_2_edge(label);
 //             label = g.get_next_edge_label(label);
 //         }
 //         g.print_graph();
