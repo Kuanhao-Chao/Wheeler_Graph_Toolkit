@@ -1,0 +1,21 @@
+// No root example. It's not a wheeler graph. ( S8 -> S7 [ label=b ];  S7 -> S8 [ label=b ];  violation)
+digraph g1 {
+    S1 -> S1 [ label=a ];
+    S1 -> S2 [ label=a ];
+    S1 -> S3 [ label=a ];
+    S2 -> S3 [ label=a ];
+    S7 -> S4 [ label=a ];
+    S8 -> S5 [ label=a ];
+
+    S2 -> S6 [ label=b ];
+    S3 -> S6 [ label=b ];
+    S8 -> S7 [ label=b ];
+    S7 -> S8 [ label=b ];
+    S12 -> S8 [ label=b ];
+
+    S7 -> S9 [ label=c ];
+    S8 -> S10 [ label=c ];
+    S9 -> S10 [ label=c ];
+    S10 -> S11 [ label=c ];
+    S11 -> S12 [ label=c ];
+}

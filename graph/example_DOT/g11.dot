@@ -1,0 +1,29 @@
+// It's a wheeler graph. Larger example.
+digraph g1 {
+    S1 -> S2 [ label=a ];
+    S1 -> S3 [ label=a ];
+    S1 -> S4 [ label=a ];
+    S2 -> S5 [ label=a ];
+    S2 -> S6 [ label=a ];
+    S2 -> S7 [ label=a ];
+    S7 -> S8 [ label=a ];
+    S10 -> S9 [ label=a ];
+    S15 -> S10 [ label=a ];
+    S17 -> S11 [ label=a ];
+    S19 -> S12 [ label=a ];
+    S22 -> S13 [ label=a ];
+    S23 -> S14 [ label=a ];
+
+    S4 -> S15 [ label=b ];
+    S7 -> S16 [ label=b ];
+    S9 -> S17 [ label=b ];
+    S12 -> S18 [ label=b ];
+    S19 -> S19 [ label=b ];
+    S25 -> S20 [ label=b ];
+
+    S11 -> S21 [ label=c ];
+    S17 -> S22 [ label=c ];
+    S21 -> S23 [ label=c ];
+    S22 -> S24 [ label=c ];
+    S23 -> S25 [ label=c ];
+}

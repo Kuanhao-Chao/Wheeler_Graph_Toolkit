@@ -1,0 +1,24 @@
+// Repeat in each group. Violation: S4 cross back to b edge group. Not a wheeler graph.
+digraph g1 {
+    S1 -> S2 [ label=a ];
+    S1 -> S3 [ label=a ];
+    S1 -> S4 [ label=a ];
+    S1 -> S5 [ label=a ];
+    S1 -> S6 [ label=a ];
+    S1 -> S7 [ label=a ];
+    S1 -> S8 [ label=a ];
+    S1 -> S9 [ label=a ];
+    S1 -> S10 [ label=a ];
+    S2 -> S11 [ label=b ];
+    S2 -> S12 [ label=b ];
+    S2 -> S13 [ label=b ];
+    S2 -> S14 [ label=b ];
+    S2 -> S15 [ label=b ];
+    S2 -> S16 [ label=b ];
+    S3 -> S17 [ label=c ];
+    S3 -> S18 [ label=c ];
+    S3 -> S19 [ label=c ];
+    S3 -> S20 [ label=c ];
+    S3 -> S21 [ label=c ];
+    S4 -> S11 [ label=d ];
+}

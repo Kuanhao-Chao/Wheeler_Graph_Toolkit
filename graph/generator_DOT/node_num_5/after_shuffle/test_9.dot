@@ -1,0 +1,11 @@
+strict digraph  {
+S3;
+S0;
+S1;
+S2;
+S4;
+S0 -> S2  [label=b];
+S1 -> S4  [label=c];
+S2 -> S0  [label=a];
+S4 -> S0  [label=a];
+}

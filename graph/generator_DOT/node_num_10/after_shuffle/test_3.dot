@@ -1,0 +1,29 @@
+strict digraph  {
+S0;
+S7;
+S5;
+S8;
+S4;
+S2;
+S3;
+S1;
+S6;
+S0 -> S5  [label=b];
+S0 -> S4  [label=d];
+S7 -> S5  [label=b];
+S5 -> S7  [label=a];
+S5 -> S6  [label=g];
+S8 -> S5  [label=b];
+S8 -> S2  [label=e];
+S8 -> S1  [label=f];
+S4 -> S7  [label=a];
+S4 -> S2  [label=e];
+S4 -> S6  [label=g];
+S2 -> S3  [label=e];
+S3 -> S7  [label=a];
+S3 -> S4  [label=d];
+S1 -> S4  [label=d];
+S6 -> S5  [label=b];
+S6 -> S3  [label=e];
+S6 -> S1  [label=f];
+}

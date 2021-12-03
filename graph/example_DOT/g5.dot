@@ -1,0 +1,13 @@
+// Repeat in each group. Smaller example. (recognizer/src/)
+digraph g1 {
+    S1 -> S2 [ label=a ];
+    S1 -> S3 [ label=a ];
+    S1 -> S4 [ label=a ];
+    S2 -> S5 [ label=b ];
+    S2 -> S6 [ label=b ];
+    S2 -> S7 [ label=b ];
+    S3 -> S8 [ label=b ];
+    S3 -> S9 [ label=c ];
+    S3 -> S10 [ label=c ];
+    S4 -> S11 [ label=c ];
+}

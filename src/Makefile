@@ -1,5 +1,6 @@
 output: wg.o graph.o edge.o
-	g++ -std=c++17 wg.o graph.o edge.o -o wg
+	g++ -std=c++17 wg.o graph.o edge.o -o recognizer
+	rm *.o
 
 wg.o: wg.cpp
 	g++ -std=c++17 -c wg.cpp
@@ -14,4 +15,4 @@ remove:
 	rm -R -- */ 
 
 clean:
-	rm -R -- */ *.o wg
+	rm -R -- */ recognizer

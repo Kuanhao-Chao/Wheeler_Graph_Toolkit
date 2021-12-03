@@ -25,41 +25,81 @@ int main(int argc, char* argv[]) {
     (void)argc;
     string line;
     string usage = " usage:\n\n\
-    wg <in.dot> <wg_recognizer_method ('m1' or 'm2')> <stop_condition ('early_stop' or 'normal')> <print_invalid (0 or 1)> \n\n";
+    recognizer <in.dot> [wg_recognizer_method ('m1' or 'm2')] [stop_condition ('early_stop' or 'normal')] [print_invalid (0 or 1)] \n\n";
 
     /********************************
     *** Checking arguments
     ********************************/
     // Check number of arguments.
-    if (argc != 5) {
+    string method;
+    bool early_stop;
+    bool print_invalid;
+
+    if (argc == 1 || argc > 5) {
         cout << usage;
-        cerr << "You have to input exactly four arguments." << endl;
-        exit(0);
-    }
-    // Check wg_recognizer_method 'm1' or 'm2'
-    if (!(strcmp(argv[2], "m1")==0)  &&  !(strcmp(argv[2], "m2")==0)) {
-        cout << usage;
-        cerr << "wg_recognizer_method must be either 'm1' or 'm2'" << endl;
-        exit(0);
-    }
-    // Check stop_condition 'm1' or 'm2'
-    if (!(strcmp(argv[3], "early_stop")==0)  &&  !(strcmp(argv[3], "normal")==0)) {
-        cout << usage;
-        cerr << "stop_condition must be either 'early_stop' or 'normal'" << endl;
-        exit(0);
-    }
-    // Check print_invalid 0 or 1
-    if (!(strcmp(argv[4], "0")==0)  &&  !(strcmp(argv[4], "1")==0)) {
-        cout << usage;
-        cerr << "print_invalid must be either 0 or 1" << endl;
+        if (argc == 1) {
+            cerr << "You have to provide the DOT file path." << endl;
+        }
+        if (argc > 1) {
+            cerr << "You are input more than 3 options." << endl;
+        }
         exit(0);
     }
 
+    // Default options
+    // Option 3
+    if (argc <= 4) {
+        print_invalid = false;
+    }
+    // Option 2
+    if (argc <= 3) {
+        early_stop = true;
+    }
+    // Option 1
+    if (argc <= 2) {
+        method = "m1";
+    }
+
+    // Checker for options.
+    if (argc >= 3) {
+        // Check wg_recognizer_method 'm1' or 'm2'
+        if (!(strcmp(argv[2], "m1")==0)  &&  !(strcmp(argv[2], "m2")==0)) {
+            cout << usage;
+            cerr << "wg_recognizer_method must be either 'm1' or 'm2'" << endl;
+            exit(0);
+        }
+        method = argv[2];
+    }
+    if (argc >= 4) {
+        // Check stop_condition 'm1' or 'm2'
+        if (!(strcmp(argv[3], "early_stop")==0)  &&  !(strcmp(argv[3], "normal")==0)) {
+            cout << usage;
+            cerr << "stop_condition must be either 'early_stop' or 'normal'" << endl;
+            exit(0);
+        }
+        early_stop = (strcmp( argv[3], "early_stop") == 0);
+    } 
+    if (argc == 5) {
+        // Check print_invalid 0 or 1
+        if (!(strcmp(argv[4], "0")==0)  &&  !(strcmp(argv[4], "1")==0)) {
+            cout << usage;
+            cerr << "print_invalid must be either 0 or 1" << endl;
+            exit(0);
+        }
+        print_invalid = (strcmp( argv[4], "1") == 0);
+    }
+    
+
     ifstream ifile_dot(argv[1]);
     filesystem::path path_name(argv[1]);
-    string method = argv[2];
-    bool early_stop = (strcmp( argv[3], "early_stop") == 0);
-    bool print_invalid = (strcmp( argv[4], "1") == 0);
+
+    // string method;
+    // bool early_stop;
+    // bool print_invalid;
+    cout << "method: " << method << endl; 
+    cout << "early_stop: " << early_stop << endl; 
+    cout << "print_invalid: " << print_invalid << endl; 
+
     vector<string> node1_vec;
     vector<string> node2_vec;
     vector<string> node_names;

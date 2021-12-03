@@ -1,0 +1,10 @@
+// Correct. It's a wheeler graph.
+digraph g1 {
+    S1 -> S2 [ label=a ];
+    S1 -> S3 [ label=a ];
+
+    S2 -> S4 [ label=b ];
+    S2 -> S5 [ label=b ];
+    S3 -> S5 [ label=b ];
+    S4 -> S5 [ label=b ];
+}
