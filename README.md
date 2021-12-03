@@ -61,20 +61,20 @@ Take `../graph/generator_DOT/node_num_5/after_shuffle/test_1.dot` DOT file as an
 ```
 DOT file path:  ./recognizer/graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
 
-  strict digraph  {
-  S1;
-  S0;
-  S5;
-  S3;
-  S6;
-  S2;
-  S4;
-  S5 -> S0  [label=a];
-  S5 -> S6  [label=a];
-  S5 -> S4  [label=b];
-  S3 -> S4  [label=b];
-  S4 -> S6  [label=a];
-  }
+   strict digraph  {
+   S1;
+   S0;
+   S5;
+   S3;
+   S6;
+   S2;
+   S4;
+   S5 -> S0  [label=a];
+   S5 -> S6  [label=a];
+   S5 -> S4  [label=b];
+   S3 -> S4  [label=b];
+   S4 -> S6  [label=a];
+   }
  ```
   
 Run the following command:
@@ -89,31 +89,31 @@ You will get the following five output files:
 
 1. ***I.txt***:
    ```
-   1101001001
+    1101001001
    ```
 2. ***O.txt***:
    ```
-   0100011101
+    0100011101
    ```
 3. ***L.txt***:
-    ```
+   ```
     baaba
-    ```
+   ```
 4. ***node.dot***:
-    ```
+   ```
     S3	1
     S5	2
     S0	3
     S6	4
     S4	5
-    ```
+   ```
 5. ***graph.dot***:
-    ```
+   ```
     strict digraph  {
-      2 -> 3 [label=a];
-      2 -> 4 [label=a];
-      5 -> 4 [label=a];
-      1 -> 5 [label=b];
-      2 -> 5 [label=b];
+    2 -> 3 [label=a];
+    2 -> 4 [label=a];
+    5 -> 4 [label=a];
+    1 -> 5 [label=b];
+    2 -> 5 [label=b];
     }
-    ```
+   ```
