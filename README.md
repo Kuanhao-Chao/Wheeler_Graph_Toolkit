@@ -10,13 +10,14 @@ Deliverables |  |  | recognizer | Pattern matcher |
 ## Recognizer
 
 WG recognizing problem is hard. It is proved NP-complete by Gibney and Thankachan in 2019, and the time complexity of the pseudocode algorithm is <img src="https://render.githubusercontent.com/render/math?math=2^{e \cdot log\sigma  %2B O(n  %2B e)}">.
-Our recognizer is implemented in C++ and is a factorial algorithm doing minimum permutations. Given a directed graph G with edge labels and random node labels in DOT format, the recognizer answers whether G is a wheeler graph or not and outputs the WG data structure proposed by Gagie (2017). 
+We implemented a faster recognizer in C++, and it is a factorial algorithm doing minimum permutations. Given a directed graph G with edge labels and random node labels in DOT format, the recognizer answers whether G is a wheeler graph or not and outputs the WG data structure proposed by Gagie (2017). 
 
 
 ### 1. Building the latest version from `src/`
 
 ```
 cd ./recognizer/src/
+
 make
 ```
 
@@ -55,10 +56,10 @@ The recognizer takes any DOT file as the input and test whether at least one set
 
 ### 4. Reproducible example:
 
-Following is an example DOT file. 
-#### Input: 
-  ```
-  ./recognizer/graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
+Take `../graph/generator_DOT/node_num_5/after_shuffle/test_1.dot` DOT file as an example. It is a random valid WG outputted by the generator, and recognizer takes it as the input.
+
+```
+DOT file path:  ./recognizer/graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
 
   strict digraph  {
   S1;
@@ -74,22 +75,31 @@ Following is an example DOT file.
   S3 -> S4  [label=b];
   S4 -> S6  [label=a];
   }
-  ```
+ ```
   
-#### Outputs: 
-1. I.txt: it stores the I bit (indegree) array.
-      ```
-      1101001001
-      ```
-2. O.txt: it stores the O bit (outdegree) array.
-     ```
-      0100011101
-     ```
-3. L.txt: it stores the L array. It’s the concatenation of corresponding edges labels of nodes in O bit array.
+Run the following command:
+
+```
+cd ./recognizer/src/
+
+./recognizer  ../graph/generator_DOT/node_num_5/after_shuffle/test_1.dot m1 early_stop 1
+```
+
+You will get the following five output files:
+
+1. ***I.txt***:
+   ```
+   1101001001
+   ```
+2. ***O.txt***:
+   ```
+   0100011101
+   ```
+3. ***L.txt***:
     ```
     baaba
     ```
-4. node.dot: it stores the mapping from old node labels to new node labels.  
+4. ***node.dot***:
     ```
     S3	1
     S5	2
@@ -97,7 +107,7 @@ Following is an example DOT file.
     S6	4
     S4	5
     ```
-5. graph.dot: 
+5. ***graph.dot***:
     ```
     strict digraph  {
       2 -> 3 [label=a];
