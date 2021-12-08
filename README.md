@@ -1,12 +1,5 @@
 # Wheeler_Graph
 
-## Group member contribution
-|            | Eduardo Aguila | Shaunak Shah | Kuan-Hao Chao | Beril Erdogdu |
------------- | -------------- | ------------ | ------------- |-------------- |
-Coding       |  |  | recognizer | Pattern matcher |
-Deliverables |  |  | recognizer | Pattern matcher |
-
-
 ## Recognizer
 
 WG recognizing problem is hard. It is proved NP-complete by Gibney and Thankachan in 2019, and the time complexity of the pseudocode algorithm is <img src="https://render.githubusercontent.com/render/math?math=2^{e \cdot log\sigma  %2B O(n  %2B e)}">.
