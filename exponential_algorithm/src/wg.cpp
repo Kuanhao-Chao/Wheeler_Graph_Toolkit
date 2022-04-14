@@ -5,6 +5,7 @@
 #include <bitset>
 #include <vector>
 #include <cmath>
+#include "link.cpp"
 
 // #define DEBUGPRINT
 using namespace std;
@@ -99,7 +100,7 @@ int main(int argc, char* argv[]) {
     // unordered_map<char, int> sigma_count_map; 
     map<char, int> sigma_count_map; 
     map<char, string> sigma_encode_map; 
-    size_t L_bit_num;
+    size_t encoding_len;
     int encoding_idx = 0;
 
     if (ifile_L.is_open()) {
@@ -121,13 +122,12 @@ int main(int argc, char* argv[]) {
         ifile_L.close();
     }
 
-    L_bit_num = ceil(log2(sigma_len));
-    const size_t encoding_len = L_bit_num;
+    encoding_len = ceil(log2(sigma_len));
     string curr_encoding;
     for (auto& i : sigma_count_map) {
         // std::bitset<encoding_len>(encoding_idx);
-        curr_encoding = bitset<2>(encoding_idx).to_string();
-        sigma_encode_map[i.first] = curr_encoding;
+        curr_encoding = bitset<64>(encoding_idx).to_string();
+        sigma_encode_map[i.first] = curr_encoding.substr(64-encoding_len, encoding_len);
         encoding_idx += 1;
     }
 
@@ -147,28 +147,84 @@ int main(int argc, char* argv[]) {
 
     n_len = e_n_len - e_len;
 
-    cout << "E length: " << e_len << endl;
-    cout << "N length: " << n_len << endl;
-    cout << "Signma length: " << sigma_len << endl;
-    cout << "Signma encoding length: " << encoding_len << endl;
-    cout << "Encoding mapping: " << endl;
+    cout << "|E|: " << e_len << endl;
+    cout << "|N|: " << n_len << endl;
+    cout << "|σ|: " << sigma_len << endl;
+    cout << "σ encoding length: " << encoding_len << endl;
+    cout << "σ encoding mapping: " << endl;
     for (auto i : sigma_encode_map) {
         cout << "\t" << i.first << ": " << i.second << endl;
     }
 
 
+    cout << "\n|I|: " << I_array.size() << " (" << e_len << " + " << n_len << ")";
     cout << "\nI bitvector: " << endl;
     for_each(I_array.begin(), I_array.end(), [](char v) {cout << v;});
 
+    cout << "\n|O|: " << O_array.size() << " (" << e_len << " + " << n_len << ")";
     cout << "\nO bitvector: " << endl;
     for_each(O_array.begin(), O_array.end(), [](char v) {cout << v;});
 
+    cout << "\n|L_char|: " << L_array_char.size() << " (" << e_len << ")";
     cout << "\nL vector: " << endl;
     for_each(L_array_char.begin(), L_array_char.end(), [](char v) {cout << v;});
 
+    cout << "\n|L|: " << L_array.size() << " (" << e_len << " x " << encoding_len << ")";
     cout << "\nL bitvector: " << endl;
     for_each(L_array.begin(), L_array.end(), [](char v) {cout << v;});
 
 
+    int L_zero_count = count(L_array.begin(), L_array.end(), '0');
+    cout << "L_zero_count: " << L_zero_count << endl;
+
+
+    vector<char> L_array_char_sorted(L_array_char.size());
+    partial_sort_copy(begin(L_array_char), end(L_array_char), begin(L_array_char_sorted), end(L_array_char_sorted));
+
+    /**************************
+     * Sort the L_array
+     **************************/
+    cout << "Before sorting" << endl;
+    for (auto x : L_array_char)
+        cout << x << " ";
+    cout << endl;
+    
+    cout << "After sorting" << endl;
+    for (auto x : L_array_char_sorted)
+        cout << x << " ";
+    cout << endl;
+
+    /**************************
+     * Permutate the L_array
+     **************************/
+    // cout << "Start permutation" << endl;
+    // do {
+    //     for (char L_ele : L_array_char_sorted) {
+    //         cout << L_ele << ' ';
+    //     }
+    //     cout << endl;
+    //     // std::cout << L_array_char[0] << ' ' << L_array_char[1] << ' ' << L_array_char[2] << '\n';
+    // } while ( next_permutation(L_array_char_sorted.begin(),L_array_char_sorted.end()) );
+
+
     // Iterating the WG
+    cout << "\nIterating through 3 bit arrays: " << endl;
+    // Bit array I
+    bit_array_itr(I_array, O_array, L_array, L_array_char, L_array_char_sorted, e_len, n_len, sigma_len);
+    // for (int i_idx = 0; i_idx < pow(2, I_array.size()); i_idx++) {
+    //     cout << i_idx << endl;
+    //     string I_itr_encoding = bitset<100>(i_idx).to_string();
+    //     cout << I_itr_encoding.substr(100-I_array.size(), I_array.size()) << endl;
+
+    //     // // Bit array O
+    //     // for (int o_idx = 0; o_idx < O_array.size(); o_idx++) {
+    //     //     cout << o_idx << endl;
+
+    //     //     // Bit array L
+    //     //     for (int l_idx = 0; l_idx < L_array.size(); l_idx++) {
+    //     //         cout << l_idx << endl;
+    //     //     }
+    //     // }
+
+    // }
 }   

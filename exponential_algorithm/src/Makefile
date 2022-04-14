@@ -6,11 +6,14 @@
 
 output: dot_2_bitv.o graph.o edge.o wg.o
 	g++ -std=c++17 dot_2_bitv.o graph.o edge.o -o dot_2_bitv
-	g++ -std=c++17 wg.o -o wg
+	g++ -std=c++17 wg.o  -o wg
 	rm *.o
 
 wg.o: wg.cpp
 	g++ -std=c++17 -c wg.cpp
+
+# link.o: link.cpp
+# 	g++ -std=c++17 -c link.cpp
 
 dot_2_bitv.o: dot_2_bitv.cpp
 	g++ -std=c++17 -c dot_2_bitv.cpp
