@@ -18,14 +18,17 @@
 #include <new>
 #include "edge.hpp"
 #include "graph.hpp"
+#include <ctime>
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
+
+    clock_t c_start = clock();
     (void)argc;
     string line;
     string usage = " usage:\n\n\
-    recognizer <in.dot> [wg_recognizer_method ('m1' or 'm2')] [stop_condition ('early_stop' or 'normal')] [print_invalid (0 or 1)] \n\n";
+    recognizer <in.dot> [wg_recognizer_method ('m1' or 'm2')] [stop_condition ('early_stop' or 'normal')] [print_invalid (0 or 1)] [verbose_mode (0 or 1)]\n\n";
 
     /********************************
     *** Checking arguments
@@ -34,8 +37,9 @@ int main(int argc, char* argv[]) {
     string method;
     bool early_stop;
     bool print_invalid;
+    bool verbose_mode;
 
-    if (argc == 1 || argc > 5) {
+    if (argc == 1 || argc > 6) {
         cout << usage;
         if (argc == 1) {
             cerr << "You have to provide the DOT file path." << endl;
@@ -48,6 +52,9 @@ int main(int argc, char* argv[]) {
 
     // Default options
     // Option 3
+    if (argc <= 5) {
+        verbose_mode = false;
+    }
     if (argc <= 4) {
         print_invalid = false;
     }
@@ -59,6 +66,7 @@ int main(int argc, char* argv[]) {
     if (argc <= 2) {
         method = "m1";
     }
+
 
     // Checker for options.
     if (argc >= 3) {
@@ -79,7 +87,7 @@ int main(int argc, char* argv[]) {
         }
         early_stop = (strcmp( argv[3], "early_stop") == 0);
     } 
-    if (argc == 5) {
+    if (argc >= 5) {
         // Check print_invalid 0 or 1
         if (!(strcmp(argv[4], "0")==0)  &&  !(strcmp(argv[4], "1")==0)) {
             cout << usage;
@@ -88,7 +96,25 @@ int main(int argc, char* argv[]) {
         }
         print_invalid = (strcmp( argv[4], "1") == 0);
     }
-    
+
+    if (argc >= 6) {
+        // Check print_invalid 0 or 1
+        if (!(strcmp(argv[5], "0")==0)  &&  !(strcmp(argv[5], "1")==0)) {
+            cout << usage;
+            cerr << "print_invalid must be either 0 or 1" << endl;
+            exit(0);
+        }
+        verbose_mode = (strcmp( argv[5], "1") == 0);
+    }
+
+
+    string file_extension = filesystem::path(argv[1]).extension();
+    if (file_extension != ".dot") {
+        cout << usage;
+        cerr << "Your input is not a DOT file. " << endl;
+        return 0;
+    }
+
 
     ifstream ifile_dot(argv[1]);
     filesystem::path path_name(argv[1]);
@@ -151,6 +177,7 @@ int main(int argc, char* argv[]) {
 //         g.print_graph();
 // #endif
 
+
     if (method == "m1") {
         /****************************************
         **** Method 1: do all possible permutation!!!
@@ -200,5 +227,9 @@ int main(int argc, char* argv[]) {
         g.print_graph();
         // valid_WG_num = g.get_valid_WG_num_2();    
     }
+
+    clock_t c_end = clock();
+    double time_interval = (c_end - c_start)/CLOCKS_PER_SEC;
+    cout << "Runtime: " << time_interval << endl;
     return 0;
 }
