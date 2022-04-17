@@ -23,6 +23,11 @@
 
 using namespace std;
 
+extern bool debugMode;
+extern bool verbose;
+extern bool print_invalid;
+extern bool all_valid_WG;
+
 digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name) {
     _nodes_num = nodes_num;
     _edges_num = edges_num;
@@ -256,7 +261,7 @@ void digraph::print_wg_result_number() {
 }
 
 
-void digraph::relabel_initialization(bool print_invalid) {
+void digraph::relabel_initialization() {
     // root has already added.
 #ifdef DEBUGPRINT
     cout << "************************** " << endl; 
@@ -285,7 +290,7 @@ void digraph::relabel_initialization(bool print_invalid) {
     }
 
     bool WG_valid = true;
-    WG_valid = this -> WG_checker(print_invalid);
+    WG_valid = this -> WG_checker();
     if (!WG_valid) {
         // Invalid graph!!! Terminate the program.
         cout << "XX After initialization, it is not a wheeler graph." << endl;
@@ -294,7 +299,7 @@ void digraph::relabel_initialization(bool print_invalid) {
 }
 
 
-void digraph::innodelist_sort_relabel(bool print_invalid) {
+void digraph::innodelist_sort_relabel() {
 #ifdef DEBUGPRINT
     cout << "************************** " << endl; 
     cout << "** Sort & Pre-relabel nodes in same edge group: " << endl;
@@ -322,7 +327,7 @@ void digraph::innodelist_sort_relabel(bool print_invalid) {
         *** Sorting nodes by in-node list (sort `edgegp_node_2_innodes` map by values).
         ********************************/
         vector<int> index(edgegp_nodes.size(), 0);
-        this->in_edge_group_sort(edgegp_nodes, edgegp_node_2_innodes_vec, index, print_invalid);
+        this->in_edge_group_sort(edgegp_nodes, edgegp_node_2_innodes_vec, index);
 
         /********************************
         *** Get the new pre-label list
@@ -332,7 +337,7 @@ void digraph::innodelist_sort_relabel(bool print_invalid) {
         accum_edgegp_size += edgegp_nodes.size();
     }
     bool WG_valid = true;
-    WG_valid = this -> WG_checker(print_invalid);
+    WG_valid = this -> WG_checker();
     if (!WG_valid) {
         // Invalid graph !! Terminate the program.
         cout << "XX After sorting by innode-list and relabelling, it is not a wheeler graph" << endl;
@@ -342,7 +347,7 @@ void digraph::innodelist_sort_relabel(bool print_invalid) {
 }
 
 
-void digraph::in_out_nodelist_sort_relabel(bool print_invalid) {
+void digraph::in_out_nodelist_sort_relabel() {
 #ifdef DEBUGPRINT
     cout << "************************** " << endl; 
     cout << "** Sort & relabel nodes by in_out_node-list : " << endl;
@@ -379,7 +384,7 @@ void digraph::in_out_nodelist_sort_relabel(bool print_invalid) {
                         *** Sorting nodes by in- & out-node list (sort `_node_2_edgelabel_2_outnodes` unordered_map by values).
                         ********************************/
                         vector<int> index(nodes_same_label_set.size(), 0);
-                        this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index, print_invalid);
+                        this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
                         /********************************
                         *** Get the new pre-label list
                         ***      When there is a tie, label nodes with the smallest.
@@ -413,7 +418,7 @@ void digraph::in_out_nodelist_sort_relabel(bool print_invalid) {
             *** Sorting nodes by out-node list (sort `_node_2_edgelabel_2_outnodes` unordered_map by values).
             ********************************/
             vector<int> index(nodes_same_label_set.size(), 0);
-            this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index, print_invalid);
+            this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
             /********************************
             *** Get the new pre-label list
             ***      When there is a tie, label nodes with the smallest.
@@ -746,7 +751,7 @@ void digraph::one_scan_through_wg_rg(string label) {
 #endif  
 }
 
-void digraph::permutation_start(bool early_stop, bool print_invalid) {
+void digraph::permutation_start(bool early_stop) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "****  `permutation_start` " << endl;
@@ -764,13 +769,13 @@ void digraph::permutation_start(bool early_stop, bool print_invalid) {
         vector<int> original_labels;
         // Relabel & try the new permutation.
         this -> relabel_forward_root(repeat_vec, original_labels);
-        this -> permutation_4_edge_group(this -> get_first_edge_label(), early_stop, print_invalid);
+        this -> permutation_4_edge_group(this -> get_first_edge_label(), early_stop);
         // Relabel back before trying another permutation.
         this -> relabel_reverse_root(repeat_vec, original_labels);
     } while(std::next_permutation(repeat_vec.begin(), repeat_vec.end()));
 }
 
-void digraph::permutation_4_edge_group(string label, bool early_stop, bool print_invalid) {
+void digraph::permutation_4_edge_group(string label, bool early_stop) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "****  `permutation_4_edge_group` " << endl;
@@ -836,11 +841,11 @@ void digraph::permutation_4_edge_group(string label, bool early_stop, bool print
     cout << ">>>>>>> prev_num_vec.size(): " << prev_num_vec.size() << endl;
     cout << ">>>>>>> accum_same_vec.size(): " << accum_same_vec.size() << endl;
 #endif
-    this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, 0, early_stop, print_invalid);
+    this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, 0, early_stop);
 }
 
 
-void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop, bool print_invalid) {
+void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "****   Entry to  'permutation_4_sub_edge_group' !!!!!! " << endl;
@@ -863,12 +868,12 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             // Relabel & try the new permutation.
             this -> relabel_forward(repeat_vec, original_labels, nodes_2_relabelled_nodes_vec, prev_num_vec, index);
             bool WG_valid = true;
-            WG_valid = this -> WG_checker_in_edge_group(label, _edge_label_2_edge[label], print_invalid);
+            WG_valid = this -> WG_checker_in_edge_group(label, _edge_label_2_edge[label]);
 #ifdef DEBUGPRINT
             cout << "$$$$$ WG_valid : " << WG_valid << endl;
 #endif
             if (WG_valid) {
-                this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, index+1, early_stop, print_invalid);
+                this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, index+1, early_stop);
             }
             // Relabel back before trying another permutation.
             this -> relabel_reverse(repeat_vec, original_labels, nodes_2_relabelled_nodes_vec, prev_num_vec, index);
@@ -881,19 +886,19 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
 #ifdef DEBUGPRINT
             cout << "Move on to the next edge group label: " << this -> get_next_edge_label(label) << endl;
 #endif
-            this -> permutation_4_edge_group(this -> get_next_edge_label(label), early_stop, print_invalid);            
+            this -> permutation_4_edge_group(this -> get_next_edge_label(label), early_stop);            
         } else if (this -> get_next_edge_label(label)  == ""  ) {
 #ifdef DEBUGPRINT
             cout << "This is the end of all edge groups!!!! " << this -> get_next_edge_label(label) << endl;
 #endif
 
             bool WG_valid = true;
-            WG_valid = this -> WG_checker(print_invalid);
+            WG_valid = this -> WG_checker();
             if (WG_valid) {
                 this -> valid_wheeler_graph(early_stop);
             } else {
                 // Print the invalid graph!!!
-                this -> invalid_wheeler_graph("Wrong", print_invalid, false);
+                this -> invalid_wheeler_graph("Wrong", false);
             }
         }
     }
@@ -906,7 +911,7 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
 }
 
 
-void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, bool print_invalid) {
+void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index) {
     for (int i = 0 ; i != index.size() ; i++) {
         index[i] = i;
     }
@@ -914,7 +919,7 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
         [&](const int& a, const int& b) {
             if (edgegp_node_2_innodes_vec[a] < edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[b].front() < edgegp_node_2_innodes_vec[a].back()) {
-                    this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", print_invalid, true);
+                    this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
                 }
             } else if (edgegp_node_2_innodes_vec[a] > edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[a].front() < edgegp_node_2_innodes_vec[b].back()) {
@@ -933,7 +938,7 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
                 cout << bb << " ";
             }
             cout << endl;
-                    this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", print_invalid, true);
+                    this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
                 }
             }
 #ifdef DEBUGPRINT
@@ -997,7 +1002,7 @@ void digraph::in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, v
 }
 
 
-void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index, bool print_invalid) {
+void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "**** in_out_nodelist_repeat_node_sort " << endl;
@@ -1061,7 +1066,7 @@ void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec
                     cout << "\t\t\t\tnodes_2_innodes[b] is bigger" << endl;
 #endif
                     if (nodes_2_innodes[b].front() < nodes_2_innodes[a].back()) {
-                        this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", print_invalid, true);
+                        this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
                     }
                     b_bigger_entry = true;
                     final_cmp = true;
@@ -1070,7 +1075,7 @@ void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec
                     cout << "\t\t\t\tnodes_2_innodes[a] is bigger" << endl;
 #endif
                     if (nodes_2_innodes[a].front() < nodes_2_innodes[b].back()) {
-                        this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", print_invalid, true);
+                        this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
                     }
                     a_bigger_entry = true;
                     final_cmp = false;
@@ -1110,7 +1115,7 @@ void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec
                         cout << "\t\t\t\tnodes_2_outnodes[b][edgelabel] is bigger" << endl;
 #endif
                         if (nodes_2_outnodes[b][edgelabel].front() < nodes_2_outnodes[a][edgelabel].back()) {
-                            this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", print_invalid, true);
+                            this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
                         }
                         b_bigger_entry = true;
                         final_cmp = true;
@@ -1119,7 +1124,7 @@ void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec
                         cout << "\t\t\t\tnodes_2_outnodes[a][edgelabel] is bigger" << endl;
 #endif
                         if (nodes_2_outnodes[a][edgelabel].front() < nodes_2_outnodes[b][edgelabel].back()) {
-                            this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", print_invalid, true);
+                            this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
                         }
                         a_bigger_entry = true;
                         final_cmp = false;
@@ -1131,7 +1136,7 @@ void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec
                     }
                 }
                 if (a_bigger_entry && b_bigger_entry) {
-                    this -> invalid_wheeler_graph("Wrong!! The vector comparisons in different edge labels have to be in consistant order.", print_invalid, true);
+                    this -> invalid_wheeler_graph("Wrong!! The vector comparisons in different edge labels have to be in consistant order.", true);
                 }
 #ifdef DEBUGPRINT
                 cout << "Checkpoint 0-1" << endl;
@@ -1322,7 +1327,7 @@ string digraph::get_next_edge_label(string label) {
 }
 
 
-bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges, bool print_invalid) {
+bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges) {
     string msg;
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
@@ -1346,7 +1351,7 @@ bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges, bool p
                     prev(edge) -> print_edge();
                     edge -> print_edge();
                 }
-                this -> invalid_wheeler_graph(msg, print_invalid, false);
+                this -> invalid_wheeler_graph(msg, false);
                 break;
             } 
             if (edge->get_tail_label() < prev(edge)->get_tail_label()) {
@@ -1361,7 +1366,7 @@ bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges, bool p
                     prev(edge) -> print_edge();
                     edge -> print_edge();
                 }
-                this -> invalid_wheeler_graph(msg, print_invalid, false);
+                this -> invalid_wheeler_graph(msg, false);
                 break;
             } 
         }
@@ -1370,7 +1375,7 @@ bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges, bool p
 }
 
 
-bool digraph::WG_checker(bool print_invalid) {
+bool digraph::WG_checker() {
     string msg;
     
 #ifdef DEBUGPRINT
@@ -1406,12 +1411,12 @@ bool digraph::WG_checker(bool print_invalid) {
             if ((it->second.end()-1)->get_tail_label() >= next(it)->second.begin()->get_tail_label()) {
                 WG_valid = false; 
                 msg = "The tail of the last edge in edge group " + it->first + " (" + to_string((it->second.end()-1)->get_tail_label()) + ") has to be bigger than the tail of the last edge in edge group " + next(it)->first + " (" + to_string(next(it)->second.begin()->get_tail_label()) + ").";
-                this -> invalid_wheeler_graph(msg, print_invalid, false);
+                this -> invalid_wheeler_graph(msg, false);
                 break;
             }
         }
         // Check in edge group
-        WG_valid = this -> WG_checker_in_edge_group(it->first, it->second, print_invalid);
+        WG_valid = this -> WG_checker_in_edge_group(it->first, it->second);
         if (!WG_valid) break;
     }
     return WG_valid;
@@ -1433,13 +1438,17 @@ void digraph::WG_final_check() {
 void digraph::find_root_node() {
     int counter = 0;
     for (auto& [node, ptr_idx] : _node_2_ptr_address) {
+        if (verbose) {
             cout << "Trying node name: " << this->ascii2string(node) << endl;
+        }
         if (_node_2_innodes.find(node) == _node_2_innodes.end()) {
-            cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
+            if (verbose) {
+                cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
 #ifdef DEBUGPRINT
-            cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
-            this->print_node(node);
+                cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
+                this->print_node(node);
 #endif
+            }
             // Not found => The in-degree of the node is zero. => possible root.
             counter += 1;
             _is_wg = true;
@@ -1528,14 +1537,16 @@ string digraph::ascii2string(int node_name) {
 
 
 void digraph::valid_wheeler_graph(bool early_stop) {
-    cout << endl << endl << endl;
-    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-    cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
-    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-    this -> print_graph("%%");
-    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-    cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
-    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    if (verbose) {
+        cout << endl << endl << endl;
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        this -> print_graph("%%");
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    }
     _valid_WG_num += 1;
     this -> output_wg_gagie();
     if (early_stop) {
@@ -1545,18 +1556,20 @@ void digraph::valid_wheeler_graph(bool early_stop) {
 }
 
 
-void digraph::invalid_wheeler_graph(string msg, bool print_invalid, bool stop) {
+void digraph::invalid_wheeler_graph(string msg, bool stop) {
     _invalid_stop_num += 1;
-    if (print_invalid) {
-        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-        cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
-        cout << "XXXXX   " << msg << endl;
-        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-        this -> print_graph("XX");
-        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-        cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
-        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-        cout << "=================================================================" << endl;   
+    if (verbose) {
+        if (print_invalid) {
+            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+            cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
+            cout << "XXXXX   " << msg << endl;
+            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+            this -> print_graph("XX");
+            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+            cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
+            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+            cout << "=================================================================" << endl;   
+        }
     }
     if (stop) {
         this -> exit_program();

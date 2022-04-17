@@ -4,6 +4,11 @@
 
 using namespace std;
 
+extern bool debugMode;
+extern bool verbose;
+extern bool print_invalid;
+extern bool all_valid_WG;
+
 edge::edge(string label, int node_1_name, int* node_1, int node_2_name, int* node_2) {
     _label = label;
     _head_name = node_1_name;
