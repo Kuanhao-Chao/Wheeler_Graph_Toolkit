@@ -27,16 +27,19 @@
 
 using namespace std;
 
+bool valid_wg=true;
 bool debugMode=false;
 bool verbose=false;
 bool print_invalid=false;
 bool all_valid_WG = false;
+clock_t c_start;
+clock_t c_end;
 
 void processOptions(GArgs& args);
 
 int main(int argc, char* argv[]) {
 
-    clock_t c_start = clock();
+    c_start = clock();
     (void)argc;
     string line;    
 
@@ -198,12 +201,21 @@ int main(int argc, char* argv[]) {
 
     // Step 1: If after initialization, it is not a WG => it is not a WG.
     g.relabel_initialization();
+    // if (!valid_wg) {
+    //     g.exit_program();
+    //     return -1;
+    // }
 #ifdef DEBUGPRINT
     g.print_graph();
 #endif
 
     // Step 2: If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
+    // valid_wg = 
     g.innodelist_sort_relabel();
+    // if (!valid_wg) {
+    //     g.exit_program();
+    //     return -1;
+    // }
 #ifdef DEBUGPRINT
     g.print_graph();
 #endif
@@ -240,11 +252,7 @@ int main(int argc, char* argv[]) {
     //     g.print_graph();
     //     // valid_WG_num = g.get_valid_WG_num_2();    
     // }
-
-    clock_t c_end = clock();
-    double time_interval = (c_end - c_start)/CLOCKS_PER_SEC;
-    cout << "Runtime: " << time_interval << endl;
-    return 0;
+    return valid_wg;
 }
 
 

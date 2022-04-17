@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <set>
 #include <new>
+#include <ctime>
 #include "edge.hpp"
 
 using namespace std;
@@ -124,7 +125,7 @@ class digraph {
 
         void valid_wheeler_graph(bool early_stop);
         void invalid_wheeler_graph(string msg, bool stop);
-        void exit_program();
+        void exit_program(int return_val);
         void output_wg_gagie();
         void output_wg_dot();
         void output_nodes_conversion();

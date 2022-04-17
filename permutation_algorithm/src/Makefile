@@ -1,6 +1,7 @@
-output: wg.o graph.o edge.o GBase.o GArgs.o
-	g++ -std=c++17 wg.o graph.o edge.o GBase.o GArgs.o -o recognizer
+output: wg.o graph.o edge.o GBase.o GArgs.o print_func.o get_func.o
+	g++ -std=c++17 wg.o graph.o edge.o GBase.o GArgs.o print_func.o get_func.o -o recognizer
 	rm *.o
+	cp recognizer ../../bin
 	
 wg.o: wg.cpp
 	g++ -std=c++17 -c wg.cpp
@@ -13,6 +14,12 @@ GArgs.o: GArgs.cpp
 
 graph.o: graph.cpp
 	g++ -std=c++17 -c graph.cpp
+
+get_func.o: get_func.cpp
+	g++ -std=c++17 -c get_func.cpp
+
+print_func.o: print_func.cpp
+	g++ -std=c++17 -c print_func.cpp
 
 edge.o: edge.cpp
 	g++ -std=c++17 -c edge.cpp
