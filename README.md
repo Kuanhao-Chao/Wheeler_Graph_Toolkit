@@ -8,33 +8,36 @@ We implemented a faster recognizer in C++, and it is a factorial algorithm doing
 
 ### 1. Building the latest version from `src/`
 
+* Compiling permutation algorithm
 ```
-cd ./recognizer/src/
+cd ./permutation_algorithm/src/
 
 make
 ```
 
-### 2. Running recognizer
+* Compiling Gibney's and Thankachan's exponential algorithm
+```
+cd ./exponential_algorithm/src/
 
+make
+```
+
+### 2. Running recognizer_p
 
 ```
 Usage:
 
-   recognizer  <in.dot>  [wg_recognizer_method]  [stop_condition]  [print_invalid]
-```
+	recognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-i / --print_invalid] [-a / --all_valid_WG]
 
-```
 Options:
 
-   wg_recognizer_method : the recognizer algorithm. 'm1' is the exponential algorithm; 
-                          'm2' is the one scan through algorithm (still under development)
-                          'm1' or 'm2'. The default is 'm1'.
+   version        : print out the current version (0.1.0)
   
-   stop_condition       : whether to find one set of node labels and stop or all sets of correct node labels.
-                          'early_stop' or 'normal'. The default is 'early_stop'.
+   help           : print out the usage message.
                          
-   print_invalid        : whether to print out the invalid wheeler graph log during node labels permutation. 
-                          '0' or '1'. The default is '0'.
+   print_invalid  : print out the invalid wheeler graph log during node labels permutation.
+                          
+   all_valid_WG   : finding all possible WG node labels. The default mode finds 1 set of node labels and stops.
 ```
 
 ### 3. Inputs and outputs:
@@ -49,10 +52,10 @@ The recognizer takes any DOT file as the input and test whether at least one set
 
 ### 4. Reproducible example:
 
-Take `../graph/generator_DOT/node_num_5/after_shuffle/test_1.dot` DOT file as an example. It is a random valid WG outputted by the generator, and recognizer takes it as the input.
+Take `./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot` DOT file as an example. It is a random valid WG outputted by the generator, and recognizer takes it as the input.
 
 ```
-DOT file path:  ./recognizer/graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
+DOT file path:  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
 
    strict digraph  {
    S1;
@@ -73,9 +76,7 @@ DOT file path:  ./recognizer/graph/generator_DOT/node_num_5/after_shuffle/test_1
 Run the following command:
 
 ```
-cd ./recognizer/src/
-
-./recognizer  ../graph/generator_DOT/node_num_5/after_shuffle/test_1.dot m1 early_stop 1
+./bin/recognizer_p  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
 ```
 
 You will get the following five output files:
