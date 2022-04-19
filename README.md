@@ -79,40 +79,40 @@ DOT file path:  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
   
 Run the following command:
 
-	```
+```
 	./bin/recognizer_p  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
-	```
+```
 
 This is what you will see in the terminal:
-	```
+```
 	(v) It is a wheeler graph!!
 	Runtime : 1708 microseconds
-	```
+```
 
 You will get the following five output files:
 
 	1. ***I.txt***:
-	   ```
+```
 	    1101001001
-	   ```
+```
 	2. ***O.txt***:
-	   ```
+```
 	    0100011101
-	   ```
+```
 	3. ***L.txt***:
-	   ```
+```
 	    baaba
-	   ```
+```
 	4. ***node.dot***:
-	   ```
+```
 	    S3	1
 	    S5	2
 	    S0	3
 	    S6	4
 	    S4	5
-	   ```
+```
 	5. ***graph.dot***:
-	   ```
+```
 	    strict digraph  {
 	    2 -> 3 [label=a];
 	    2 -> 4 [label=a];
@@ -120,7 +120,7 @@ You will get the following five output files:
 	    1 -> 5 [label=b];
 	    2 -> 5 [label=b];
 	    }
-	   ```
+```
 ---
 
 ### 3. Running recognizer_e
@@ -173,12 +173,13 @@ DOT file path:  ./graph/generator_DOT_small/node_num_3/after_shuffle/test_1.dot
   
 Run the following command:
 
-	```
+```
 	./bin/recognizer_e  ./graph/generator_DOT_small/node_num_3/after_shuffle/test_1.dot
-	```
+```
 
 This is what you will see in the terminal:
-	```
+
+```
 	*  |E|: 4
 	*  |N|: 7
 	*  |σ|: 2
@@ -207,5 +208,5 @@ This is what you will see in the terminal:
 
 	Iterating through 3 bit arrays:
 	Runtime : 3042 microseconds
-	```
+```
 
