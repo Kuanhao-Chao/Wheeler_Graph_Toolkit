@@ -3,12 +3,18 @@
 
 using namespace std;
 
+// #define PRINTER
+
 void digraph::print_node(int node_name) {
+#ifdef DEBUGPRINT
     cout << "\tnode name: " << this->ascii2string(node_name) << "\t\tnode label val: " << this->get_node_label(node_name)  << endl;
+#endif
 }
 
 
 void digraph::print_graph(string offset) {
+
+#ifdef PRINTER
     cout << offset << "\t************************** " << endl; 
     cout << offset << "\t** Print _edge_labels: " << endl; 
     cout << offset << "\t************************** " << endl; 
@@ -53,10 +59,13 @@ void digraph::print_graph(string offset) {
         }
     }
     cout << offset << endl;
+
+#endif
 }
 
 
 void digraph::print_edge_label_2_edge_graph() {
+#ifdef PRINTER
     cout << "************************** " << endl; 
     cout << "** Print '_edge_label_2_edge': " << endl;
     cout << "************************** " << endl; 
@@ -70,10 +79,12 @@ void digraph::print_edge_label_2_edge_graph() {
         }
         cout << endl;
     }
+#endif
 }
 
 
 void digraph::print_node_2_innodes_graph() {
+#ifdef PRINTER
     cout << "************************** " << endl; 
     cout << "** Print '_node_2_innodes': " << endl;
     cout << "************************** " << endl; 
@@ -84,10 +95,12 @@ void digraph::print_node_2_innodes_graph() {
         }
         cout << endl;
     }
+#endif
 }
 
 
 void digraph::print_node_2_edgelabel_2_outnodes() {
+#ifdef PRINTER
     // unordered_map<int, map<string, set<int> > > _node_2_edgelabel_2_outnodes;
     for (auto& [node, edgelabel_2_outnodes] : _node_2_edgelabel_2_outnodes) {
         cout << "$$$$$$$ Node: " << this -> ascii2string(node) << endl;
@@ -100,10 +113,12 @@ void digraph::print_node_2_edgelabel_2_outnodes() {
             cout << endl;
         }
     }
+#endif
 }
 
 
 void digraph::print_node_names_2_node_labels() {
+#ifdef PRINTER
     cout << "************************** " << endl; 
     cout << "** Print node_names_2_node_labels: " << endl;
     cout << "************************** " << endl; 
@@ -126,10 +141,12 @@ void digraph::print_node_names_2_node_labels() {
             pre_edge = edge;
         }
     }
+#endif
 }
 
 
 void digraph::print_edge_label_2_next_edge_label() {
+#ifdef PRINTER
     cout << "************************** " << endl; 
     cout << "** Print edge_label_2_next_edge_label: " << endl;
     cout << "************************** " << endl; 
@@ -137,11 +154,14 @@ void digraph::print_edge_label_2_next_edge_label() {
         cout << "\tCurrent label: " << curr_label << endl;
         cout << "\tNext label: " << next_label << endl;   
     }
+#endif
 }
 
 
 void digraph::print_wg_result_number() {
+#ifdef PRINTER
     cout << endl;
     cout << "** Number of valid WG: " << _valid_WG_num << endl;
     cout << "** Number of invalid try: " << _invalid_stop_num << endl;
+#endif
 }

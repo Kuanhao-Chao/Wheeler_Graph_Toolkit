@@ -1,18 +1,24 @@
 // #define DEBUGPRINT
-
 #include "link.hpp"
+
+extern bool debugMode;
+extern bool verbose;
+extern chrono::high_resolution_clock::time_point c_start;
+extern chrono::high_resolution_clock::time_point c_end;
 
 void bit_array_itr(vector<char>& I_array, vector<char>& O_array, vector<char>& L_array, vector<char>& L_array_char, vector<char>& L_array_char_sorted, int e_len, int n_len, int sigma_len) {
     int I_len = I_array.size();
     int O_len = O_array.size();
     int L_len = L_array.size();
+    /***********************
+    * Iterating I array
+    ************************/
     for (int i_idx = 0; i_idx < pow(2, I_len); i_idx++) {
         // cout <<  "I: " << i_idx << endl;
         string I_itr_encoding = bitset<100>(i_idx).to_string();
         I_itr_encoding = I_itr_encoding.substr(100-I_len, I_len);
         int I_zero_count = count(I_itr_encoding.begin(), I_itr_encoding.end(), '0');
 
-#ifdef DEBUGPRINT
         /***********************
         * WG checking condition (I).
         ************************/
@@ -37,17 +43,18 @@ void bit_array_itr(vector<char>& I_array, vector<char>& O_array, vector<char>& L
         if (in_degree_invalid) {
             continue;
         }
-        cout << "I_zero_count: " << I_zero_count << endl;         
-        for (auto& I_ele : I_itr_encoding) {
-            if (I_ele == '0') {
-                cout << I_ele;
-            }
-        }
-        cout << endl << endl;
-#endif
 
+        if (verbose) {
+            cout << "I_zero_count: " << I_zero_count << endl;         
+            for (auto& I_ele : I_itr_encoding) {
+                if (I_ele == '0') {
+                    cout << I_ele;
+                }
+            }
+            cout << endl << endl;   
+        }
         /***********************
-        * WG checking condition (O).
+        * Iterating O array
         ************************/
         for (int o_idx = 0; o_idx < pow(2, O_len); o_idx++) {
             // cout << "O: " <<  o_idx << endl;
@@ -55,7 +62,9 @@ void bit_array_itr(vector<char>& I_array, vector<char>& O_array, vector<char>& L
             O_itr_encoding = O_itr_encoding.substr(100-O_len, O_len);
             int O_zero_count = count(O_itr_encoding.begin(), O_itr_encoding.end(), '0');
 
-#ifdef DEBUGPRINT
+            /***********************
+            * WG checking condition (O).
+            ************************/
             // 1. 0 count must be e_len
             if (O_zero_count != e_len) {
                 continue;
@@ -64,23 +73,32 @@ void bit_array_itr(vector<char>& I_array, vector<char>& O_array, vector<char>& L
             if (O_itr_encoding.back() == '0') {
                 continue;
             }
-            cout << "O_zero_count: " << O_zero_count << endl;         
-            for (auto& O_ele : O_itr_encoding) {
-                // if (O_ele == '0') {
-                    cout << O_ele;
-                // }
-            }
-            cout << endl;
-#endif
 
+            if (verbose) {
+
+                cout << "O_zero_count: " << O_zero_count << endl;         
+                for (auto& O_ele : O_itr_encoding) {
+                    // if (O_ele == '0') {
+                        cout << O_ele;
+                    // }
+                }
+                cout << endl;
+            }
+
+            /***********************
+            * Iterating L array
+            ************************/
             for (int l_idx = 0; l_idx < pow(2, e_len*sigma_len); l_idx++) {
                 // cout << "O: " <<  o_idx << endl;
                 string L_itr_encoding = bitset<100>(l_idx).to_string();
                 L_itr_encoding = L_itr_encoding.substr(100-L_len, L_len);
-                cout << L_itr_encoding << endl;
+                if (verbose) {
+                    cout << L_itr_encoding << endl;
+                }
                 int L_zero_count = count(L_itr_encoding.begin(), L_itr_encoding.end(), '0');
             }
             
+#ifdef PERMUTATION
             /**************************
              * Permutate the L_array
              **************************/
@@ -121,38 +139,8 @@ void bit_array_itr(vector<char>& I_array, vector<char>& O_array, vector<char>& L
             //     // cout << endl;
             //     // std::cout << L_array_char[0] << ' ' << L_array_char[1] << ' ' << L_array_char[2] << '\n';
             // } while ( next_permutation(L_array_char_sorted.begin(),L_array_char_sorted.end()) );
+#endif
         }
-
-
-    /**************************
-     * Permutate the L_array
-     **************************/
-    // cout << "Start permutation" << endl;
-    // do {
-    //     for (char L_ele : L_array_char_sorted) {
-    //         cout << L_ele << ' ';
-    //     }
-    //     cout << endl;
-    //     // std::cout << L_array_char[0] << ' ' << L_array_char[1] << ' ' << L_array_char[2] << '\n';
-    // } while ( next_permutation(L_array_char_sorted.begin(),L_array_char_sorted.end()) );
-
-
-
-        // for (int l_idx = 0; l_idx < pow(2, L_len); l_idx++) {
-        //     cout << "L: " << l_idx << endl;
-        //     string L_itr_encoding = bitset<100>(l_idx).to_string();
-        //     cout << L_itr_encoding.substr(100-L_len, L_len) << endl;
-
-
-
-        //     for (int o_idx = 0; o_idx < pow(2, O_len); o_idx++) {
-        //         cout << "O: " <<  o_idx << endl;
-        //         string O_itr_encoding = bitset<100>(o_idx).to_string();
-        //         // cout << O_itr_encoding.substr(100-O_len, O_len) << endl;
-        //     }
-
-        // }
-
     }
 }
 

@@ -125,7 +125,7 @@ class digraph {
         void valid_wheeler_graph(bool early_stop);
         void invalid_wheeler_graph(string msg, bool print_invalid, bool stop);
         void exit_program();
-        void output_wg_gagie();
+        void output_wg_gagie(string dir_name);
         void output_wg_dot();
         void output_nodes_conversion();
 };

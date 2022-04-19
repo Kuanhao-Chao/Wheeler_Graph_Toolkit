@@ -1433,9 +1433,9 @@ void digraph::WG_final_check() {
 void digraph::find_root_node() {
     int counter = 0;
     for (auto& [node, ptr_idx] : _node_2_ptr_address) {
-            cout << "Trying node name: " << this->ascii2string(node) << endl;
+            // cout << "Trying node name: " << this->ascii2string(node) << endl;
         if (_node_2_innodes.find(node) == _node_2_innodes.end()) {
-            cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
+            // cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
 #ifdef DEBUGPRINT
             cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
             this->print_node(node);
@@ -1537,11 +1537,11 @@ void digraph::valid_wheeler_graph(bool early_stop) {
     cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
     cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
     _valid_WG_num += 1;
-    this -> output_wg_gagie();
-    if (early_stop) {
-        this -> WG_final_check();
-        this -> exit_program();
-    }
+    // this -> output_wg_gagie();
+    // if (early_stop) {
+    //     this -> WG_final_check();
+    //     this -> exit_program();
+    // }
 }
 
 
@@ -1570,13 +1570,13 @@ void digraph::exit_program() {
 }
 
 
-void digraph::output_wg_gagie() {
-    filesystem::create_directory(to_string(_valid_WG_num)+"__"+_path_name);
-    string outfile_O = to_string(_valid_WG_num)+"__"+_path_name + "/O.txt";
-    string outfile_I = to_string(_valid_WG_num)+"__"+_path_name + "/I.txt";
-    string outfile_L = to_string(_valid_WG_num)+"__"+_path_name + "/L.txt";
-    string outfile_DOT = to_string(_valid_WG_num)+"__"+_path_name + "/graph.dot";
-    string outfile_NC = to_string(_valid_WG_num)+"__"+_path_name + "/nodes.txt";
+void digraph::output_wg_gagie(string dir_name) {
+    filesystem::create_directory(dir_name);
+    string outfile_O = dir_name + "/O.txt";
+    string outfile_I = dir_name + "/I.txt";
+    string outfile_L = dir_name + "/L.txt";
+    string outfile_DOT = dir_name + "/graph.dot";
+    string outfile_NC = dir_name + "/nodes.txt";
 
     ofstream ofile_O;
     ofstream ofile_I;
@@ -1584,11 +1584,11 @@ void digraph::output_wg_gagie() {
     ofstream ofile_DOT;
     ofstream ofile_NC;
 
-    ofile_I.open (outfile_I, ios_base::app);
-    ofile_O.open (outfile_O, ios_base::app);
-    ofile_L.open (outfile_L, ios_base::app);
-    ofile_DOT.open(outfile_DOT, ios_base::app); 
-    ofile_NC.open(outfile_NC, ios_base::app);
+    ofile_I.open (outfile_I);
+    ofile_O.open (outfile_O);
+    ofile_L.open (outfile_L);
+    ofile_DOT.open(outfile_DOT); 
+    ofile_NC.open(outfile_NC);
     ofile_DOT << "strict digraph  {" << endl;
     /****************************************
     **** Processing _root

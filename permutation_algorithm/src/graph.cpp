@@ -27,8 +27,8 @@ extern bool debugMode;
 extern bool verbose;
 extern bool print_invalid;
 extern bool all_valid_WG;
-extern clock_t c_start;
-extern clock_t c_end;
+extern chrono::high_resolution_clock::time_point c_start;
+extern chrono::high_resolution_clock::time_point c_end;
 
 digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name) {
     _nodes_num = nodes_num;
@@ -1402,10 +1402,10 @@ void digraph::invalid_wheeler_graph(string msg, bool stop) {
 
 void digraph::exit_program(int return_val) {
     this -> print_wg_result_number();
-    c_end = clock();
-    double time_interval = (c_end - c_start)/CLOCKS_PER_SEC;
-    cout << "Runtime: " << time_interval << endl;
-
+    c_end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(c_end - c_start);
+    cout << "Runtime : "
+         << duration.count() << " microseconds" << endl;
     exit(return_val);
 }
 
@@ -1423,12 +1423,11 @@ void digraph::output_wg_gagie() {
     ofstream ofile_L;
     ofstream ofile_DOT;
     ofstream ofile_NC;
-
-    ofile_I.open (outfile_I, ios_base::app);
-    ofile_O.open (outfile_O, ios_base::app);
-    ofile_L.open (outfile_L, ios_base::app);
-    ofile_DOT.open(outfile_DOT, ios_base::app); 
-    ofile_NC.open(outfile_NC, ios_base::app);
+    ofile_I.open (outfile_I);
+    ofile_O.open (outfile_O);
+    ofile_L.open (outfile_L);
+    ofile_DOT.open(outfile_DOT); 
+    ofile_NC.open(outfile_NC);
     ofile_DOT << "strict digraph  {" << endl;
     /****************************************
     **** Processing _root

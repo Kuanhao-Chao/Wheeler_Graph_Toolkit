@@ -16,14 +16,14 @@
 #include <unordered_map>
 #include <set>
 #include <new>
+#include <chrono>
 #include "GArgs.h"
 #include "edge.hpp"
 #include "graph.hpp"
-#include <ctime>
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer <in.dot> [--version] [-h / --help] [-v / --verbose] [-i / --print_invalid] [-a / --all_valid_WG]\n\n"
+\trecognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-i / --print_invalid] [-a / --all_valid_WG]\n\n"
 
 using namespace std;
 
@@ -32,14 +32,16 @@ bool debugMode=false;
 bool verbose=false;
 bool print_invalid=false;
 bool all_valid_WG = false;
-clock_t c_start;
-clock_t c_end;
+chrono::high_resolution_clock::time_point c_start;
+chrono::high_resolution_clock::time_point c_end;
 
 void processOptions(GArgs& args);
 
 int main(int argc, char* argv[]) {
 
-    c_start = clock();
+    // c_start = clock();
+
+    c_start = chrono::high_resolution_clock::now();
     (void)argc;
     string line;    
 
