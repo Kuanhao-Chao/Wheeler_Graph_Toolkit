@@ -163,7 +163,7 @@ def generateWG(num_nodes, edge_prob, visualize, output_file, randomize):
     cond3(Gn)
     redoCondOne(Gn)
 
-    output_file_samples = "samples" + output_file
+    output_file_samples = output_file
     nx.drawing.nx_pydot.write_dot(Gn, output_file_samples)
 
 
