@@ -14,7 +14,7 @@ void digraph::print_node(int node_name) {
 
 void digraph::print_graph(string offset) {
 
-#ifdef PRINTER
+// #ifdef PRINTER
     cout << offset << "\t************************** " << endl; 
     cout << offset << "\t** Print _edge_labels: " << endl; 
     cout << offset << "\t************************** " << endl; 
@@ -59,8 +59,7 @@ void digraph::print_graph(string offset) {
         }
     }
     cout << offset << endl;
-
-#endif
+// #endif
 }
 
 
