@@ -91,7 +91,7 @@ void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vect
 
         // Find the innode vector
         if (_node_2_innodes.find(node_2_name) == _node_2_innodes.end()) {
-            // Not found
+            // Not found => the first appearance.
             set<int> new_innodes_vc{node_1_name};
             _node_2_innodes[node_2_name] = new_innodes_vc;
         } else {
@@ -201,94 +201,6 @@ void digraph::innodelist_sort_relabel() {
         cout << "XX After sorting by innode-list and relabelling, it is not a wheeler graph" << endl;
         this -> WG_final_check();
         this -> exit_program(-1);
-    }
-}
-
-
-void digraph::in_out_nodelist_sort_relabel() {
-#ifdef DEBUGPRINT
-    cout << "************************** " << endl; 
-    cout << "** Sort & relabel nodes by in_out_node-list : " << endl;
-    cout << "************************** " << endl; 
-#endif  
-    for (auto& [label, edges] : _edge_label_2_edge) {
-        set<int> nodes_same_label_set;
-        vector<int> nodes_same_label_vec;
-        vector<vector<int> > nodes_2_innodes;
-        vector<map<string, vector<int> > > nodes_2_outnodes;
-        int prev_num = edges.begin()->get_head_label();
-
-        vector<edge>::iterator edge_itv = edges.begin();
-        do{
-            if (edge_itv != edges.end()) {
-#ifdef DEBUGPRINT
-                edge_itv->print_edge();
-                cout << "Current edge.get_head_label(): " << edge_itv->get_head_label() << endl;
-                cout << "Previous prev_num: " << prev_num << endl;
-#endif
-                if (prev_num == edge_itv->get_head_label()) {
-                    nodes_same_label_set.insert(edge_itv->get_head_name());
-                } else if (prev_num != edge_itv->get_head_label()) {
-                    if (nodes_same_label_set.size() != 1) {
-                        /********************************
-                        *** Process the repeat node vector first
-                        ********************************/
-                        for (auto& node : nodes_same_label_set) {
-                            nodes_same_label_vec.push_back(node);
-                            nodes_2_innodes.push_back(this->get_innodes_labels(label, node));
-                            nodes_2_outnodes.push_back(this->get_outnodes_labels(node));
-                        }
-                        /********************************
-                        *** Sorting nodes by in- & out-node list (sort `_node_2_edgelabel_2_outnodes` unordered_map by values).
-                        ********************************/
-                        vector<int> index(nodes_same_label_set.size(), 0);
-                        this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
-                        /********************************
-                        *** Get the new pre-label list
-                        ***      When there is a tie, label nodes with the smallest.
-                        ********************************/
-                        // this -> in_out_nodelist_repeat_node_re_label(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
-                    }
-                    /********************************
-                    *** Restart another repeat node vector finding
-                    ********************************/
-                    nodes_same_label_set.clear();
-                    nodes_same_label_vec.clear();
-                    nodes_2_outnodes.clear();
-                    /********************************
-                    *** Need to insert one in the beginning!!!!
-                    ********************************/
-                    nodes_same_label_set.insert(edge_itv->get_head_name());
-                }
-                prev_num = edge_itv->get_head_label();
-            }
-        } while (edge_itv++ != edges.end());
-        if (nodes_same_label_set.size() != 1) {
-            /********************************
-            *** Process the repeat node vector
-            ********************************/
-            for (auto& node : nodes_same_label_set) {
-                nodes_same_label_vec.push_back(node);
-                nodes_2_innodes.push_back(this->get_innodes_labels(label, node));
-                nodes_2_outnodes.push_back(this->get_outnodes_labels(node));
-            }
-            /********************************
-            *** Sorting nodes by out-node list (sort `_node_2_edgelabel_2_outnodes` unordered_map by values).
-            ********************************/
-            vector<int> index(nodes_same_label_set.size(), 0);
-            this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
-            /********************************
-            *** Get the new pre-label list
-            ***      When there is a tie, label nodes with the smallest.
-            ********************************/
-            // this -> in_out_nodelist_repeat_node_re_label(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
-        }
-        /********************************
-        *** Restart another repeat node vector finding
-        ********************************/
-        nodes_same_label_set.clear();
-        nodes_same_label_vec.clear();
-        nodes_2_outnodes.clear();
     }
 }
 
@@ -440,7 +352,8 @@ vector<int> digraph::get_innodes_labels(string edge_label, int node_name) {
     cout << "*** get_innodes_labels =>  node_name: "  << this->ascii2string(node_name) << "  "<< this -> get_node_label(node_name) << endl;
     cout << "*********************************" << endl;
 #endif
-    vector<int> innodes_label_ls;
+    // vector<int> innodes_label_ls;
+    vector<int> innodes_label_uniq_ls;
     set<int*> innodes_address_set;
     for (auto& edge : _edge_label_2_edge[edge_label]) {
         if (edge.get_head_name() == node_name) {
@@ -449,20 +362,29 @@ vector<int> digraph::get_innodes_labels(string edge_label, int node_name) {
                 cout << "edge.get_tail(): " << edge.get_tail() << endl; 
 #endif
                 innodes_address_set.insert(edge.get_tail());
-                innodes_label_ls.push_back(edge.get_tail_label());
+                // innodes_label_ls.push_back(edge.get_tail_label());
+                if (innodes_label_uniq_ls.size() == 0) {
+                    innodes_label_uniq_ls.push_back(edge.get_tail_label());
+                } else {
+                    if (edge.get_tail_label() != innodes_label_uniq_ls.back()) {
+                        innodes_label_uniq_ls.push_back(edge.get_tail_label());
+                    }
+                }
             }
         }
     }
 #ifdef DEBUGPRINT
     cout << "*********************************" << endl;
     cout << "Starting of in_node_list: " ;
-    for (auto& node_label : innodes_label_ls) {
+    // for (auto& node_label : innodes_label_ls) {
+    for (auto& node_label : innodes_label_uniq_ls) {
         cout << node_label << " ";
     }
     cout << "End of in_node_list " << endl;
     cout << "*********************************" << endl;
 #endif
-    return innodes_label_ls;
+    // return innodes_label_ls;
+    return innodes_label_uniq_ls;
 }
 
 
@@ -592,6 +514,15 @@ void digraph::permutation_start(bool early_stop) {
         vector<int> original_labels;
         // Relabel & try the new permutation.
         this -> relabel_forward_root(repeat_vec, original_labels);
+#ifdef DEBUGPRINT
+        cout << "*******************************" << endl;
+        cout << "***     Root permutation   ****" << endl;
+        cout << "*******************************" << endl;
+        for (int& root : repeat_vec) {
+            cout << root << " ";
+        }
+        cout << endl;
+#endif
         this -> permutation_4_edge_group(this -> get_first_edge_label(), early_stop);
         // Relabel back before trying another permutation.
         this -> relabel_reverse_root(repeat_vec, original_labels);
@@ -606,7 +537,8 @@ void digraph::permutation_4_edge_group(string label, bool early_stop) {
     cout << "***************************" << endl;
 #endif
     int prev_num = 0;
-    int* prev_address = &prev_num; // This is just initialization to a random address.
+    int prev_address_set_size = 0;
+    set<int*> address_set;
     int accum_same = 1;
     vector<int> prev_num_vec;
     vector<int> accum_same_vec;
@@ -614,13 +546,21 @@ void digraph::permutation_4_edge_group(string label, bool early_stop) {
 
     vector<edge>::iterator itv = _edge_label_2_edge[label].begin();
     vector<int*> relabelled_nodes_vec;
+
+    this -> sort_edge_label_2_edge_by_tail(label);
+
     do{
         if (itv != _edge_label_2_edge[label].end()) {
-            if (prev_num == itv->get_head_label() &&  prev_address == itv->get_head()) {
+#ifdef DEBUGPRINT
+            cout << "&&&&& Iterating edges!!!" << endl;
+            itv->print_edge();
+#endif
+            address_set.insert(itv->get_head());
+            if (prev_num == itv->get_head_label() && address_set.size() == prev_address_set_size) {
 #ifdef DEBUGPRINT
                 cout << "They are the same node. No accumulation." << endl;
 #endif
-            } else if (prev_num == itv->get_head_label() &&  prev_address != itv->get_head()) {
+            } else if (prev_num == itv->get_head_label() && address_set.size() == (prev_address_set_size+1) ) {
                 if (relabelled_nodes_vec.size() == 0) {
                     relabelled_nodes_vec.push_back(prev(itv)->get_head());
                 }
@@ -650,9 +590,10 @@ void digraph::permutation_4_edge_group(string label, bool early_stop) {
             cout << "itv->get_head_label(): " << itv->get_head_label() << endl;
 #endif
             prev_num = itv->get_head_label();
-            prev_address = itv->get_head();
+            prev_address_set_size = address_set.size();
         }
     } while (itv++ != _edge_label_2_edge[label].end());
+
     if (prev_num!=0 && accum_same!=1) {
         prev_num_vec.push_back(prev_num);
         accum_same_vec.push_back(accum_same);
@@ -675,8 +616,16 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
     cout << "****   label: " << label << "  index: " << index << endl;
     cout << "****  `permutation_4_sub_edge_group` " << endl;
     cout << "***************************" << endl;
+    cout << "index: " << index << endl;
     cout << "prev_num_vec.size(): " << prev_num_vec.size() << endl;
+    for (int& i : prev_num_vec) {
+        cout << i << endl;
+    }
+
     cout << "accum_same_vec.size(): " << accum_same_vec.size() << endl;
+    for (int& i : accum_same_vec) {
+        cout << i << endl;
+    }
 #endif
     if (index < prev_num_vec.size() && index < accum_same_vec.size()) {
         vector<int> repeat_vec(accum_same_vec[index]);
@@ -693,6 +642,13 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             bool WG_valid = true;
             WG_valid = this -> WG_checker_in_edge_group(label, _edge_label_2_edge[label]);
 #ifdef DEBUGPRINT
+            cout << "???????????????????????????" << endl;
+            cout << "????   permutation_4_sub_edge_group" << endl;
+            cout << "???????????????????????????" << endl;
+            for (int& ele : repeat_vec) {
+                cout << ele << " ";
+            }
+            cout << endl;
             cout << "$$$$$ WG_valid : " << WG_valid << endl;
 #endif
             if (WG_valid) {
@@ -708,20 +664,23 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
         if (this -> get_next_edge_label(label)  != "" ) {
 #ifdef DEBUGPRINT
             cout << "Move on to the next edge group label: " << this -> get_next_edge_label(label) << endl;
-#endif
-            this -> permutation_4_edge_group(this -> get_next_edge_label(label), early_stop);            
+#endif   
+            bool WG_valid = true;
+            WG_valid = this -> WG_checker_in_edge_group(label, _edge_label_2_edge[label]);
+            if (WG_valid) {
+                this -> permutation_4_edge_group(this -> get_next_edge_label(label), early_stop);            
+            }
         } else if (this -> get_next_edge_label(label)  == ""  ) {
 #ifdef DEBUGPRINT
             cout << "This is the end of all edge groups!!!! " << this -> get_next_edge_label(label) << endl;
 #endif
-
             bool WG_valid = true;
             WG_valid = this -> WG_checker();
             if (WG_valid) {
                 this -> valid_wheeler_graph(early_stop);
             } else {
                 // Print the invalid graph!!!
-                this -> invalid_wheeler_graph("Wrong", false);
+                this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
             }
         }
     }
@@ -735,6 +694,12 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
 
 
 void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index) {
+#ifdef DEBUGPRINT
+    cout << "*************************" << endl;
+    cout << "******* Inside 'in_edge_group_sort'" << endl;
+    cout << "*************************" << endl;
+    cout << "Before sorting." << endl;
+#endif
     for (int i = 0 ; i != index.size() ; i++) {
         index[i] = i;
     }
@@ -747,20 +712,22 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
             } else if (edgegp_node_2_innodes_vec[a] > edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[a].front() < edgegp_node_2_innodes_vec[b].back()) {
             
-            cout << "edgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
-            cout << "edgegp_label: " << this -> get_node_label(edgegp_nodes[a]) << endl;
-            cout << "edgegp_node_2_innodes_vec[a]: " << endl;
-            for (auto& aa : edgegp_node_2_innodes_vec[a]) {
-                cout << aa << " ";
-            }
-            cout << endl;
-            cout << "edgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
-            cout << "edgegp_label: " << this -> get_node_label(edgegp_nodes[b]) << endl;
-            cout << "edgegp_node_2_innodes_vec[b]: " << endl;
-            for (auto& bb : edgegp_node_2_innodes_vec[b]) {
-                cout << bb << " ";
-            }
-            cout << endl;
+#ifdef DEBUGPRINT
+                    cout << "edgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
+                    cout << "edgegp_label: " << this -> get_node_label(edgegp_nodes[a]) << endl;
+                    cout << "edgegp_node_2_innodes_vec[a]: " << endl;
+                    for (auto& aa : edgegp_node_2_innodes_vec[a]) {
+                        cout << aa << " ";
+                    }
+                    cout << endl;
+                    cout << "edgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
+                    cout << "edgegp_label: " << this -> get_node_label(edgegp_nodes[b]) << endl;
+                    cout << "edgegp_node_2_innodes_vec[b]: " << endl;
+                    for (auto& bb : edgegp_node_2_innodes_vec[b]) {
+                        cout << bb << " ";
+                    }
+                    cout << endl;
+#endif
                     this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
                 }
             }
@@ -774,38 +741,102 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
             cout << "edgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
             cout << "edgegp_node_2_innodes_vec[b]: " << endl;
             for (auto& bb : edgegp_node_2_innodes_vec[b]) {
-                cout << b << " ";
+                cout << bb << " ";
             }
             cout << endl;
 #endif
             return (edgegp_node_2_innodes_vec[a] < edgegp_node_2_innodes_vec[b]);
         }
     );
+#ifdef DEBUGPRINT
+    cout << "After sorting." << endl;
+    for (int i = 0 ; i != index.size() ; i++) {
+        cout << index[i] << " ";
+    }
+    cout << endl;
+#endif
 }
 
 
 void digraph::in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, int &accum_edgegp_size) {
+#ifdef DEBUGPRINT
+    cout << "*************************" << endl;
+    cout << "******* Inside 'in_edge_group_pre_label'" << endl;
+    cout << "*************************" << endl;
+#endif
     vector<int> prev {};
-    int prev_relabel_num = 0;
+    int prev_relabel_num = 0;    
     for (int i = 0; i < edgegp_nodes.size(); i++) {
         int relabel_num = 0;
-        if (prev == edgegp_node_2_innodes_vec[index[i]]) {
+
+        int prev_len = prev.size();
+        int curr_len = edgegp_node_2_innodes_vec[index[i]].size();
+        int itr_len = 0;
+        if (prev_len >= curr_len) {
+            itr_len = curr_len;
+        } else {
+            itr_len = prev_len;
+        }
+
+#ifdef DEBUGPRINT
+        cout << "prev_len: " << prev_len << endl;
+        cout << "curr_len: " << curr_len << endl;
+        cout << "itr_len: " << itr_len << endl;
+#endif
+
+        bool vector_contained = true;
+        if (itr_len == 0) {
+            vector_contained = false;
+        } else {
+            for (int idx=0; idx < itr_len; idx++) {
+#ifdef DEBUGPRINT
+                cout << "prev[idx]                               : " << prev[idx] << endl;
+                cout << "edgegp_node_2_innodes_vec[index[i]][idx]: " << edgegp_node_2_innodes_vec[index[i]][idx] << endl;
+#endif
+                if (prev[idx] != edgegp_node_2_innodes_vec[index[i]][idx]) {
+                    vector_contained = false;
+                    break;
+                }
+            }
+        }
+        if (vector_contained) {
             relabel_num = prev_relabel_num;
 #ifdef DEBUGPRINT
-            cout << "SAME!!!!" << endl;
+            cout << "Contained !!!!" << endl;
             cout << "** Repeat label!!!  " << endl;
             for (auto& x : prev) {
                 cout << x << ", ";
             }
             cout << endl;
 #endif
-        } else if (prev != edgegp_node_2_innodes_vec[index[i]]) {
+        } else {
 #ifdef DEBUGPRINT
-            cout << "DIFFERENT!!!!" << endl;
+            cout << "Not contained!!!!" << endl;
 #endif
             relabel_num = i + accum_edgegp_size + 1 + _root.size();
             prev_relabel_num = relabel_num;
         }
+
+
+//         if (prev == edgegp_node_2_innodes_vec[index[i]]) {
+//             relabel_num = prev_relabel_num;
+// // #ifdef DEBUGPRINT
+//             cout << "SAME!!!!" << endl;
+//             cout << "** Repeat label!!!  " << endl;
+//             for (auto& x : prev) {
+//                 cout << x << ", ";
+//             }
+//             cout << endl;
+// // #endif
+//         } else if (prev != edgegp_node_2_innodes_vec[index[i]]) {
+// // #ifdef DEBUGPRINT
+//             cout << "DIFFERENT!!!!" << endl;
+// // #endif
+//             relabel_num = i + accum_edgegp_size + 1 + _root.size();
+//             prev_relabel_num = relabel_num;
+//         }
+
+        // relabel_num = accum_edgegp_size + edgegp_nodes.size() + _root.size();
 #ifdef DEBUGPRINT
         cout << "index: " << index[i] << "\tnew_label: " << relabel_num << "\t edgegp_nodes: " << this -> ascii2string(edgegp_nodes[i]);
 
@@ -821,275 +852,6 @@ void digraph::in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, v
 #endif
         this -> relabel_by_node_name(edgegp_nodes[index[i]], relabel_num);
         prev = edgegp_node_2_innodes_vec[index[i]];
-    }
-}
-
-
-void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index) {
-#ifdef DEBUGPRINT
-    cout << "***************************" << endl;
-    cout << "**** in_out_nodelist_repeat_node_sort " << endl;
-    cout << "***************************" << endl;
-#endif
-    for (int i = 0 ; i != index.size() ; i++) {
-        index[i] = i;
-        cout << this -> get_node_label(nodes_same_label_vec[i]) << " (" << this -> ascii2string(nodes_same_label_vec[i]) << ")  ";
-    }
-
-#ifdef DEBUGPRINT
-    cout << endl;
-    cout << "$$$$$$$ Number of repeat nodes with different addresses: " << index.size() << "  " << nodes_same_label_vec.size() << "  " << nodes_2_outnodes.size() << endl;
-    cout << "&&&&&&&& Before sorting (nodes_2_innodes)!!!!" << endl;
-    for (int i = 0; i < index.size(); i++) {
-        cout << this -> get_node_label(nodes_same_label_vec[i]) << " (" << this -> ascii2string(nodes_same_label_vec[i]) << ")  " << endl << "\t";
-        for (auto& innode : nodes_2_innodes[i]) {
-            cout << innode << ",  ";
-        }
-    cout << endl;
-    }
-    cout << "&&&&&&&& Before sorting (nodes_2_outnodes)!!!!" << endl;
-    for (int i = 0; i < index.size(); i++) {
-        cout << this -> get_node_label(nodes_same_label_vec[i]) << " (" << this -> ascii2string(nodes_same_label_vec[i]) << ")  " << endl;
-        for (auto& [edgelabel, outnodes] : nodes_2_outnodes[i]) {
-            cout << "\t>>(($$$$$$$ edge label: " << edgelabel << endl;
-            cout << "\t\t>>(($$$$$$$ outnode : ";
-            for (auto& outnode: outnodes) {
-                cout << outnode << ",  ";
-            }
-            cout << endl;
-        }
-    }
-#endif
-
-    // Now I need to check & sort!!! _node_2_edgelabel_2_outnodes[node]; (type: map<string, set<int> >)
-    sort(index.begin(), index.end(),
-        [&](const int& a, const int& b) {
-            bool final_cmp = false; // false -> do not swap;  true -> swap
-            bool a_bigger_entry = false;
-            bool b_bigger_entry = false;
-            // for (auto& [edgelabel, outnodes] : nodes_2_outnodes[a]) {
-            for (auto& pair : _edge_label_2_edge) {
-                // Check order is consistant among all labels.
-                auto edgelabel = pair.first;
-                // convert set to vector
-#ifdef DEBUGPRINT
-                cout << "  edgelabel: " << edgelabel << endl;
-                cout << "  a: " << a << endl;
-                cout << "  b: " << b << endl;
-                cout << "nodes_2_innodes[a].size(): " << nodes_2_innodes[a].size() << endl;
-                cout << "nodes_2_innodes[b].size(): " << nodes_2_innodes[b].size() << endl;
-                cout << "nodes_2_outnodes[a][edgelabel].size(): " << nodes_2_outnodes[a][edgelabel].size() << endl;
-                cout << "nodes_2_outnodes[b][edgelabel].size(): " << nodes_2_outnodes[b][edgelabel].size() << endl;   
-#endif
-
-
-                // In-node list won't be empty because only at most 1 node can have indegree zero.
-                if (nodes_2_innodes[a] < nodes_2_innodes[b]) {
-#ifdef DEBUGPRINT
-                    cout << "\t\t\t\tnodes_2_innodes[b] is bigger" << endl;
-#endif
-                    if (nodes_2_innodes[b].front() < nodes_2_innodes[a].back()) {
-                        this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
-                    }
-                    b_bigger_entry = true;
-                    final_cmp = true;
-                } else if (nodes_2_innodes[a] > nodes_2_innodes[b]) {
-#ifdef DEBUGPRINT
-                    cout << "\t\t\t\tnodes_2_innodes[a] is bigger" << endl;
-#endif
-                    if (nodes_2_innodes[a].front() < nodes_2_innodes[b].back()) {
-                        this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
-                    }
-                    a_bigger_entry = true;
-                    final_cmp = false;
-                } else if (nodes_2_innodes[a] == nodes_2_innodes[b]) {
-#ifdef DEBUGPRINT
-                    cout << "\t\t\t\tnodes_2_innodes[a] == nodes_2_innodes[b] bigger" << endl;
-#endif
-                }
-
-                if (nodes_2_outnodes[a][edgelabel].empty() && nodes_2_outnodes[b][edgelabel].empty()) {
-                    // Cannot decide the order. 'a_bigger_entry', 'b_bigger_entry' remain the same
-                    // Don't swap order 
-#ifdef DEBUGPRINT
-                    cout << "\t\t\tBoth nodes_2_outnodes[a][edgelabel] and nodes_2_outnodes[b][edgelabel] are empty." << endl;
-#endif
-                } else if (nodes_2_outnodes[a][edgelabel].empty() && !nodes_2_outnodes[b][edgelabel].empty()) {
-                    // Cannot decide the order. 'a_bigger_entry', 'b_bigger_entry' remain the same
-                    // Don't swap order
-#ifdef DEBUGPRINT
-                    cout << "\t\t\tnodes_2_outnodes[a][edgelabel] is empty but nodes_2_outnodes[b][edgelabel] is not empty." << endl;
-#endif
-                } else if (!nodes_2_outnodes[a][edgelabel].empty() && nodes_2_outnodes[b][edgelabel].empty()) {
-                    // Cannot decide the order. 'a_bigger_entry', 'b_bigger_entry' remain the same
-                    // Don't swap order
-#ifdef DEBUGPRINT
-                    cout << "\t\t\tnodes_2_outnodes[a][edgelabel] is not empty but nodes_2_outnodes[b][edgelabel] is empty." << endl;
-#endif
-                } else if (!nodes_2_outnodes[a][edgelabel].empty() && !nodes_2_outnodes[b][edgelabel].empty()) {
-                    // Can decide the order!!
-                    // swap order if nodes_2_outnodes[a][edgelabel] < nodes_2_outnodes[b][edgelabel].
-#ifdef DEBUGPRINT
-                    cout << "\t\t\tBoth nodes_2_outnodes[a][edgelabel] and nodes_2_outnodes[b][edgelabel] are not empty." << endl;
-#endif
-                    // These are invalid situation.
-                    if (nodes_2_outnodes[a][edgelabel] < nodes_2_outnodes[b][edgelabel]) {
-#ifdef DEBUGPRINT
-                        cout << "\t\t\t\tnodes_2_outnodes[b][edgelabel] is bigger" << endl;
-#endif
-                        if (nodes_2_outnodes[b][edgelabel].front() < nodes_2_outnodes[a][edgelabel].back()) {
-                            this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
-                        }
-                        b_bigger_entry = true;
-                        final_cmp = true;
-                    } else if (nodes_2_outnodes[a][edgelabel] > nodes_2_outnodes[b][edgelabel]) {
-#ifdef DEBUGPRINT
-                        cout << "\t\t\t\tnodes_2_outnodes[a][edgelabel] is bigger" << endl;
-#endif
-                        if (nodes_2_outnodes[a][edgelabel].front() < nodes_2_outnodes[b][edgelabel].back()) {
-                            this -> invalid_wheeler_graph("'in_out_nodelist_repeat_node_sort'!!!", true);
-                        }
-                        a_bigger_entry = true;
-                        final_cmp = false;
-                    } else if (nodes_2_outnodes[a][edgelabel] == nodes_2_outnodes[b][edgelabel]) {
-                        // Their in-node lists are same => Do not change their order.
-#ifdef DEBUGPRINT
-                        cout << "\t\t\t\tnodes_2_outnodes[a][edgelabel] == nodes_2_outnodes[b][edgelabel] bigger" << endl;
-#endif
-                    }
-                }
-                if (a_bigger_entry && b_bigger_entry) {
-                    this -> invalid_wheeler_graph("Wrong!! The vector comparisons in different edge labels have to be in consistant order.", true);
-                }
-#ifdef DEBUGPRINT
-                cout << "Checkpoint 0-1" << endl;
-                cout << "a_bigger_entry: " << a_bigger_entry << endl;
-                cout << "b_bigger_entry: " << b_bigger_entry << endl;
-#endif
-                // Check vectors are consistent
-                // Smallest node vs biggest next in two groups.
-            }
-            if ((a_bigger_entry && !b_bigger_entry) || (!a_bigger_entry && b_bigger_entry)) {
-                return final_cmp;
-                // return false;
-            } 
-            if (!a_bigger_entry && !b_bigger_entry) {
-                return false;
-                // return true;
-            }
-            return false;
-            // return true;
-        }
-    );
-
-#ifdef DEBUGPRINT
-    cout << "&&&&&&&& After sorting (nodes_2_innodes)!!!!" << endl;
-    for (int i = 0; i < index.size(); i++) {
-        cout << this -> get_node_label(nodes_same_label_vec[index[i]]) << " (" << this -> ascii2string(nodes_same_label_vec[index[i]]) << ")  " << endl << "\t";
-        for (auto& innode : nodes_2_innodes[index[i]]) {
-            cout << innode << ",  ";
-        }
-    cout << endl;
-    }
-
-    cout << "&&&&&&&& After sorting (nodes_2_outnodes)!!!!" << endl;
-    for (int i = 0; i < index.size(); i++) {
-        // cout << "index[i]: " << index[i] << endl;
-        cout << this -> get_node_label(nodes_same_label_vec[index[i]]) << " (" << this -> ascii2string(nodes_same_label_vec[index[i]]) << ")  " << endl;
-        for (auto& [edgelabel, outnodes] : nodes_2_outnodes[index[i]]) {
-            cout << "\t>>(($$$$$$$ edge label: " << edgelabel << endl;
-            cout << "\t\t>>(($$$$$$$ outnode : ";
-            for (auto& outnode: outnodes) {
-                cout << outnode << ",  ";
-            }
-            cout << endl;
-        }
-    }
-#endif
-}
-
-
-void digraph::in_out_nodelist_repeat_node_re_label(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index) {
-#ifdef DEBUGPRINT
-    cout << "***************************" << endl;
-    cout << "**** in_out_nodelist_repeat_node_re_label " << endl;
-    cout << "***************************" << endl;
-#endif
-    vector<int> innode_prev{};
-    map<string, vector<int> > outnode_prev{};
-    // all nodes have the same label in `nodes_same_label_vec`.
-    int original_label = this->get_node_label(nodes_same_label_vec.front());
-    int prev_relabel_num = original_label;
-
-    for (int i = 0; i < nodes_same_label_vec.size(); i++) {
-        int relabel_num = 0;
-        // Change the condition!!! When we cannot determine their order.!!!!!!!!!!!!
-        bool no_order = true;
-        for (auto& pair : _edge_label_2_edge) {
-            // Check we cannot determine the order in all edge_label.
-            auto edgelabel = pair.first;
-            if (innode_prev == nodes_2_innodes[i]) {
-                no_order = true;
-            } else {
-                no_order = false;
-            }
-            if (nodes_2_outnodes[index[i]][edgelabel].empty() || outnode_prev[edgelabel].empty()) {
-                // Cannot decide the order. 'a_bigger_entry', 'b_bigger_entry' remain the same
-#ifdef DEBUGPRINT
-                cout << "\t\t\tnodes_2_outnodes[index[i]][edgelabel] or outnode_prev[edgelabel] are empty." << endl;
-#endif
-                no_order = no_order && true;
-            } else if (!nodes_2_outnodes[index[i]][edgelabel].empty() && !outnode_prev[edgelabel].empty()) {
-#ifdef DEBUGPRINT
-                cout << "\t\t\tBoth nodes_2_outnodes[index[i]][edgelabel] and outnode_prev[edgelabel] are not empty." << endl;
-#endif
-                if (nodes_2_outnodes[index[i]][edgelabel] == outnode_prev[edgelabel]) {
-                    no_order = no_order && true;
-                } else {
-                    // We can determine the order between `nodes_2_outnodes[index[i]][edgelabel]` and `v_previous`.
-                    no_order = false;
-                }
-            }
-            if (!no_order) {
-                break;
-            }
-        }
-
-        if (no_order) {
-            relabel_num = prev_relabel_num;
-#ifdef DEBUGPRINT
-            cout << "\t** No order!!! Use the same label " << endl;
-            cout << "\t**** Current !!!!" << endl;
-            for (auto& [edgelabel, outnodes] : nodes_2_outnodes[index[i]]) {
-                cout << "\t>>(($$$$$$$ edge label: " << edgelabel << endl;
-                cout << "\t\t>>(($$$$$$$ outnode : ";
-                for (auto& outnode: outnodes) {
-                    cout << this -> ascii2string(outnode) << " (" << this -> get_node_label(outnode) << ")   ";
-                }
-                cout << endl;
-            }
-            cout << "\t**** outnode_Previous !!!!" << endl;
-            for (auto& [edgelabel, outnodes] : outnode_prev) {
-                cout << "\t>>(($$$$$$$ edge label: " << edgelabel << endl;
-                cout << "\t\t>>(($$$$$$$ outnode : ";
-                for (auto& outnode: outnodes) {
-                    cout << this -> ascii2string(outnode) << " (" << this -> get_node_label(outnode) << ")   ";
-                }
-                cout << endl;
-            }
-#endif
-        } else {
-            // Change the relabelling condition!!!!!!!!!
-                        // relabel_num = i + accum_edgegp_size + 2;!!!!
-            relabel_num = i + original_label;
-            prev_relabel_num = relabel_num;
-        }
-#ifdef DEBUGPRINT
-        cout << ">>>>>>>> index: " << index[i] << "\tnew_label: " << relabel_num << "\t nodes_same_label_vec: " << this -> ascii2string(nodes_same_label_vec[index[i]]);
-#endif
-        this -> relabel_by_node_name(nodes_same_label_vec[index[i]], relabel_num);
-        innode_prev = nodes_2_innodes[index[i]];
-        outnode_prev = nodes_2_outnodes[index[i]];
     }
 }
 
@@ -1113,6 +875,39 @@ void digraph::sort_edge_label_2_edge(string &label) {
     sort(_edge_label_2_edge[label].begin(), _edge_label_2_edge[label].end(),
         [&](edge& e1, edge& e2) {
             return (e1 < e2);
+        }
+    );
+
+#ifdef DEBUGPRINT
+    cout << "After sorting ... "  << endl;
+    for (auto& edge: _edge_label_2_edge[label]) {
+        cout << edge.get_tail() << ", " << edge.get_head() << endl;
+    }
+    for (auto& edge: _edge_label_2_edge[label]) {
+        cout << *edge.get_tail() << ", " << *edge.get_head()<< endl;
+    }
+#endif
+}
+
+void digraph::sort_edge_label_2_edge_by_tail(string &label) {
+#ifdef DEBUGPRINT
+    cout << "***************************" << endl;
+    cout << "**** sort_edge_label_2_edge_by_tail" << endl;
+    cout << "***************************" << endl;
+
+    cout << "&&& label: " << label << endl;
+    cout << "Before sorting ... "  << endl;
+    for (auto& edge: _edge_label_2_edge[label]) {
+        cout << edge.get_tail() << ", " << edge.get_head() << endl;
+    }
+    for (auto& edge: _edge_label_2_edge[label]) {
+        cout << *edge.get_tail() << ", " << *edge.get_head()<< endl;
+    }
+#endif
+
+    sort(_edge_label_2_edge[label].begin(), _edge_label_2_edge[label].end(),
+        [&](edge& e1, edge& e2) {
+            return (e1 << e2);
         }
     );
 
@@ -1171,8 +966,14 @@ bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges) {
                     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
                     cout << "XXXXX After sorting, the invalid edges: XXXXX" << endl;
                     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+
+
+
                     prev(edge) -> print_edge();
                     edge -> print_edge();
+
+                    this->get_innodes_labels(label, prev(edge)->get_head_name());
+                    this->get_innodes_labels(label, edge->get_head_name());
                 }
                 this -> invalid_wheeler_graph(msg, false);
                 break;
@@ -1188,6 +989,10 @@ bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges) {
                     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
                     prev(edge) -> print_edge();
                     edge -> print_edge();
+
+
+                    this->get_innodes_labels(label, prev(edge)->get_head_name());
+                    this->get_innodes_labels(label, edge->get_head_name());
                 }
                 this -> invalid_wheeler_graph(msg, false);
                 break;
@@ -1247,6 +1052,7 @@ bool digraph::WG_checker() {
 
 
 void digraph::WG_final_check() {
+    print_node_2_innodes_graph();
     if (_valid_WG_num > 0) {
         _is_wg = true;
         cout << "(v) It is a wheeler graph!!" << endl;
@@ -1265,13 +1071,13 @@ void digraph::find_root_node() {
         if (verbose) {
             cout << "Trying node name: " << this->ascii2string(node) << endl;
         }
+
         if (_node_2_innodes.find(node) == _node_2_innodes.end()) {
             if (verbose) {
-                cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
-#ifdef DEBUGPRINT
+// #ifdef DEBUGPRINT
                 cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
                 this->print_node(node);
-#endif
+// #endif
             }
             // Not found => The in-degree of the node is zero. => possible root.
             counter += 1;

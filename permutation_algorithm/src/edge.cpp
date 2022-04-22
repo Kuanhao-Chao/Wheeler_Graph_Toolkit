@@ -89,6 +89,23 @@ bool edge::operator <(edge& e) {
     }
 }
 
+bool edge::operator <<(edge& e) {
+    if (*_head < e.get_head_label()) {
+        return true;
+    } else if (*_head == e.get_head_label()) {
+        if (*_tail < e.get_tail_label()) {
+            return true;
+        } else if (*_tail == e.get_tail_label()) {
+            // return true;
+            return false;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 bool edge::operator ==(edge& e) {
     if (
         *_tail == e.get_tail_label() &&

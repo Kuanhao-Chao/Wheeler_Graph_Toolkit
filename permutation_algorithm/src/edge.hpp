@@ -29,5 +29,6 @@ class edge {
         int string2ascii(string line);
         string ascii2string(int node_name);
         bool operator <(edge& e);
+        bool operator <<(edge& e);
         bool operator ==(edge& e);
 };

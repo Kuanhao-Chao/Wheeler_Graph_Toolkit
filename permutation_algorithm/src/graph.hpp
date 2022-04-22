@@ -107,6 +107,7 @@ class digraph {
         void in_out_nodelist_repeat_node_re_label(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index);
 
         void sort_edge_label_2_edge(string &label);
+        void sort_edge_label_2_edge_by_tail(string &label);
 
         string get_first_edge_label();
         string get_last_edge_label();

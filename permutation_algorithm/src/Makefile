@@ -1,6 +1,7 @@
 output: wg.o graph.o edge.o GBase.o GArgs.o print_func.o get_func.o
 	g++ -std=c++17 wg.o graph.o edge.o GBase.o GArgs.o print_func.o get_func.o -o recognizer_p
 	rm *.o
+	rm ../../bin/recognizer_p
 	cp recognizer_p ../../bin
 	
 wg.o: wg.cpp
