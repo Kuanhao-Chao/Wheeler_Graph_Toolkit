@@ -176,7 +176,7 @@ def redoCondOne(G):
     # nx.drawing.nx_pydot.write_dot(G, ("print" + str(count) + ".dot"))
 
 
-def makeBad(G):
+def makeBad(G, numPartitions, cur_partition):
     edges = list(G.edges(data=True))
     d = {}
     for u, v, edge in edges:
@@ -191,14 +191,15 @@ def makeBad(G):
     alphabet_size = len(alphabet)
     
     # print(alphabet)
-    partition_selected = 3
-    partitions = 8
+    partition_selected = int(cur_partition)
+    partitions = int(numPartitions)
 
     if(alphabet_size/partitions < 1):
         # sys.exit("ERROR: too many partitions for alphabet size")
         return
 
     split_alphabet = list(split(alphabet, partitions))
+    # print("Partition selected: " + str(cur_partition))
     # print(split_alphabet)
 
     mutate_range = split_alphabet[partition_selected]
@@ -223,7 +224,7 @@ def split(a, n):
     k, m = divmod(len(a), n)
     return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-def generateBadWG(num_nodes, edge_prob, visualize, output_file, randomize):
+def generateBadWG(num_nodes, edge_prob, visualize, output_file, randomize, numPartitions, cur_partition):
 
     #Create a correct random graph
     G = nx.gnp_random_graph(num_nodes, edge_prob, directed=True)
@@ -233,20 +234,22 @@ def generateBadWG(num_nodes, edge_prob, visualize, output_file, randomize):
     redoCondOne(Gn)
 
     # edit one of the edges at a particular partition to violate conditions 
-    makeBad(Gn)
+    makeBad(Gn, numPartitions, cur_partition)
 
     # Check the graph to ensure a condition was violated
-    output_file_samples = "bad_samples" + output_file
+    output_file_samples = output_file
     nx.drawing.nx_pydot.write_dot(Gn, output_file_samples)
     con1, con2, con3 = checker(output_file_samples)
 
     # continue producing graphs until an incorrect one is produced
     while con2 and con3:
-        makeBad(Gn)
+        makeBad(Gn, numPartitions, cur_partition)
         nx.drawing.nx_pydot.write_dot(Gn, output_file_samples)
         _, con2, con3 = checker(output_file_samples)
         
-    print(str(con1) + str(con2) + str(con3))
+    if con1 and con2 and con3:
+        print("ALL TRUE " + output_file)
+    # print(str(con1) + str(con2) + str(con3))
 
     #if this option is selected, the graph pdf will be opened
     if visualize:

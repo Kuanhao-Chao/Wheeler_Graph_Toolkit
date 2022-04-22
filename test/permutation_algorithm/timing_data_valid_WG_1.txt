@@ -1,0 +1,14 @@
+WG with 5 nodes: 0.7306959629058838 seconds
+WG with 10 nodes: 0.7796370983123779 seconds
+WG with 15 nodes: 1.2651140689849854 seconds
+WG with 20 nodes: 2.309796094894409 seconds
+WG with 25 nodes: 2.974357843399048 seconds
+WG with 30 nodes: 3.347090244293213 seconds
+WG with 35 nodes: 3.969118118286133 seconds
+WG with 40 nodes: 4.727171897888184 seconds
+WG with 45 nodes: 5.2191078662872314 seconds
+WG with 50 nodes: 6.294409990310669 seconds
+WG with 55 nodes: 6.90067720413208 seconds
+WG with 60 nodes: 12.814954996109009 seconds
+WG with 65 nodes: 19.97146701812744 seconds
+WG with 70 nodes: 46.512131214141846 seconds
