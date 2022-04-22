@@ -1,0 +1,1 @@
+WG with 5 nodes: 1814.9678139686584 seconds

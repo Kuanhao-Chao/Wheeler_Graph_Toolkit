@@ -36,6 +36,7 @@ def main(path):
 
         df[str(node_count)] = time_list
         w.write("WG with " + str(node_count) + " nodes: " + str(end-start) + " seconds\n")
+        print("WG with " + str(node_count) + " nodes: " + str(end-start) + " seconds\n")
         # print(onlyfiles)
         print('\n\n\n')
         node_count = str(int(node_count) + 5)
