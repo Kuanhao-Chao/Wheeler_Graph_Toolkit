@@ -1201,6 +1201,7 @@ void digraph::invalid_wheeler_graph(string msg, bool stop) {
         }
     }
     if (stop) {
+        cout << "(x) It is not a wheeler graph!!" << endl;
         this -> exit_program(-1);
     }
 }

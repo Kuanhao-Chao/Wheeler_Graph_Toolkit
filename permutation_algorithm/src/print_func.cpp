@@ -158,9 +158,9 @@ void digraph::print_edge_label_2_next_edge_label() {
 
 
 void digraph::print_wg_result_number() {
-#ifdef PRINTER
+// #ifdef PRINTER
     cout << endl;
     cout << "** Number of valid WG: " << _valid_WG_num << endl;
     cout << "** Number of invalid try: " << _invalid_stop_num << endl;
-#endif
+// #endif
 }
