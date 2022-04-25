@@ -15,7 +15,7 @@ def main(path, csv_name, txt_name):
     
     edge_prob = .05
     for _ in range(num_folders):
-        graph_path = path + '/' + str(format(float(edge_prob), '.2f')) + "edge_prob"
+        graph_path = path + '/' + str(format(float(edge_prob), '.2f')) + "_edge_prob"
         onlyfiles = [f for f in listdir(graph_path) if isfile(join(graph_path, f))]
         group_start = time.time()
         time_list = []

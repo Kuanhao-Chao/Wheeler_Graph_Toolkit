@@ -41,7 +41,7 @@ def generateGraphs(file_path, node_count, num_graphs, start, stop, step):
             filename = graph_path + "/test_"  + str(j) + ".dot"
             #Function parameters described below:
             #generateWG(num_nodes, edge_prob, print_graph?, filename, random_nodes?)
-            generateWG(num_nodes, float(edge_prob), False, filename, False)
+            generateWG(num_nodes, float(edge_prob), False, filename, False, None, None)
         edge_prob = format(math.fsum((float(edge_prob), step)), '.2g')
 
 if (len(sys.argv) != 7):
