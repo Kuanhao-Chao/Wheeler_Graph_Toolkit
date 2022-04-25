@@ -38,9 +38,31 @@ def generateMultiple(file_path, num_graphs, start, stop, step):
 
             #Function parameters described below:
             #generateWG(num_nodes, edge_prob, print_graph?, filename, random_nodes?)
-            generateWG(num_nodes,.2, False, filename, False)
+            generateWG(num_nodes,.2, False, filename, False, None, None)
         node_count = node_count + step
         
+
+def generateMultipleRandom(file_path, num_graphs, start, stop, step):
+    node_count = start
+    num_iter = int((stop-start) / step + 1)
+    #make graphs from 5 to 80 nodes
+    for _ in range(num_iter):
+        graph_path = file_path + '/' +str(node_count) + 'nodes'
+        if not os.path.exists(graph_path):
+            os.makedirs(graph_path)
+            os.makedirs(graph_path + "/before_shuffle")
+            os.makedirs(graph_path + "/after_shuffle")
+
+        for j in range(num_graphs):
+            filename = graph_path + "/test_"  + str(j) + ".dot"
+            num_nodes = int(calc_node_num(node_count))
+
+            #Function parameters described below:
+            #generateWG(num_nodes, edge_prob, print_graph?, filename, random_nodes?)
+            generateWG(num_nodes,.2, False, filename, True, graph_path, j)
+        node_count = node_count + step
+
+
 def makeFilePath(file_path):
     #file path does not exist
     if not os.path.exists(file_path):
@@ -58,10 +80,10 @@ def makeFilePath(file_path):
 
 
 if __name__ == "__main__":
-    if(len(sys.argv) != 4 and len(sys.argv) != 6):
+    if(len(sys.argv) != 4 and len(sys.argv) != 6 and len(sys.argv) != 7):
         print("Incorrect number of arguments. Please run as one the following arguments:\n" +
   "python3 generate_WG_samples.py [folder for samples] [number of samples] [node count]\n" + 
-  "python3 generate_WG_samples.py [folder for samples] [number of samples] [start_node] [stop_node] [step] \n")
+  "python3 generate_WG_samples.py [folder for samples] [number of samples] [start_node] [stop_node] [step] [-r (optional)] \n")
 
     file_path = sys.argv[1]
 
@@ -71,14 +93,18 @@ if __name__ == "__main__":
         path = makeFilePath(file_path)
         generateSingle(path, num_graphs, nodes_in_graph)
 
-    if(len(sys.argv) == 6):
+    # if(len(sys.argv) == 6):
+    else:
         num_graphs = int(sys.argv[2])
         start = int(sys.argv[3])
         stop = int(sys.argv[4])
         step = int(sys.argv[5])
-        if((stop-start) % step != 0):
+        if((stop-start) % step != 0 or start > stop or step < 1 or start < 0):
             print("Please enter valid start, stop, and step increments")
         else:
             path = makeFilePath(file_path)
-            generateMultiple(path, num_graphs, start, stop, step)
+            if(len(sys.argv)) == 6:
+                generateMultiple(path, num_graphs, start, stop, step)
+            elif (len(sys.argv) == 7):
+                generateMultipleRandom(path, num_graphs, start, stop, step)
 
