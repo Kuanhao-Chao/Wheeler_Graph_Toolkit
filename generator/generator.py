@@ -154,7 +154,7 @@ def redoCondOne(G):
 
         to_delete = list(filter(lambda high: high > highest_zero_node, zerol))
 
-def generateWG(num_nodes, edge_prob, visualize, output_file, randomize):
+def generateWG(num_nodes, edge_prob, visualize, output_file, randomize, parent, iter):
 
     #Create a random graph
     G = nx.gnp_random_graph(num_nodes, edge_prob, directed=True)
@@ -163,8 +163,9 @@ def generateWG(num_nodes, edge_prob, visualize, output_file, randomize):
     cond3(Gn)
     redoCondOne(Gn)
 
-    output_file_samples = output_file
-    nx.drawing.nx_pydot.write_dot(Gn, output_file_samples)
+    if not randomize:
+        output_file_samples = output_file
+        nx.drawing.nx_pydot.write_dot(Gn, output_file_samples)
 
 
     # con1, con2, con3 = checker(output_file_samples)
@@ -180,7 +181,7 @@ def generateWG(num_nodes, edge_prob, visualize, output_file, randomize):
     #For testing purposes, the valid graph before the node shuffle will be 
     #stored, along with the new shuffled graph
     if randomize: 
-        output_file_before = "before_shuffle"  + output_file
+        output_file_before = parent + "/before_shuffle/test_"  + str(iter) + ".dot"
         nx.drawing.nx_pydot.write_dot(Gn, output_file_before)
         num_nodes = len(Gn.nodes())
         new_list = list(range(0,num_nodes))
@@ -197,5 +198,5 @@ def generateWG(num_nodes, edge_prob, visualize, output_file, randomize):
             new_labels[i] = string_list.pop(0)
 
         Gn = nx.relabel_nodes(Gn, new_labels)
-        output_file_after = "after_shuffle" + output_file
+        output_file_after = parent + "/after_shuffle/test_"  + str(iter) + ".dot"
         nx.drawing.nx_pydot.write_dot(Gn, output_file_after)
