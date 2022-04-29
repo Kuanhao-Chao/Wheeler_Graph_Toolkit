@@ -9,6 +9,7 @@ import pandas as pd
 
 def main(path, csv_name, txt_name):
     df = pd.DataFrame() #for storing node counts
+    df2 = pd.DataFrame() #for storing files
     w = open(txt_name, 'w')
     graph_paths = [name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
 
@@ -17,19 +18,23 @@ def main(path, csv_name, txt_name):
         onlyfiles = [f for f in listdir(graph_path) if isfile(join(graph_path, f))]
         start = time.time()
         time_list = []
+        file_list = []
         for file in onlyfiles:
             start_file = time.time()
             filepath = graph_path + '/' + file
             # print(filepath)
             subprocess.run(["../../../bin/recognizer_p", filepath, ">", "/dev/null"])
             end_file = time.time()
+            file_list.append(file)
             time_list.append(str(end_file-start_file))
         end = time.time()
 
         df[str(graph_paths[i])] = time_list
+        df2[str(graph_paths[i])] = file_list
         w.write("WG with " + str(graph_paths[i])  + str(end-start) + " seconds\n")
 
     df.to_csv(csv_name)
+    df2.to_csv(csv_name + '_files')
     w.close()
 
 if __name__ == "__main__":
