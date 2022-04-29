@@ -1,0 +1,13 @@
+WG with 0.05 edge_prob: 1.7264540195465088 seconds
+WG with 0.1 edge_prob: 2.4450089931488037 seconds
+WG with 0.15 edge_prob: 3.0840659141540527 seconds
+WG with 0.2 edge_prob: 4.519804954528809 seconds
+WG with 0.25 edge_prob: 5.144217014312744 seconds
+WG with 0.3 edge_prob: 6.703598976135254 seconds
+WG with 0.35 edge_prob: 9.954792976379395 seconds
+WG with 0.4 edge_prob: 8.203553915023804 seconds
+WG with 0.45 edge_prob: 44.04747176170349 seconds
+WG with 0.5 edge_prob: 22.870809078216553 seconds
+WG with 0.55 edge_prob: 774.8237390518188 seconds
+WG with 0.6 edge_prob: 272.1919422149658 seconds
+WG with 0.65 edge_prob: 40772.64066171646 seconds

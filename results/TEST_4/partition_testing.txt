@@ -1,0 +1,10 @@
+Invalid WG at partition 0: 4.373104095458984 seconds
+Invalid WG at partition 1: 4.515705823898315 seconds
+Invalid WG at partition 2: 4.238638877868652 seconds
+Invalid WG at partition 3: 5.102417945861816 seconds
+Invalid WG at partition 4: 4.383857011795044 seconds
+Invalid WG at partition 5: 4.59312891960144 seconds
+Invalid WG at partition 6: 5.425034999847412 seconds
+Invalid WG at partition 7: 4.57650089263916 seconds
+Invalid WG at partition 8: 4.701514005661011 seconds
+Invalid WG at partition 9: 4.518880605697632 seconds

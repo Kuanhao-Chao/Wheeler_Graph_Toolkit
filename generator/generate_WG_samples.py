@@ -2,11 +2,6 @@ from generator import generateWG
 import os
 import sys
 
-#remove any old samples in the directory
-# dir = 'samples'
-# for f in os.listdir(dir):
-#     os.remove(os.path.join(dir, f))
-
 # y = 0.0252x^2 + 0.226x + 6.2819
 def calc_node_num(num):
     """Function to determine how many nodes the generator should 

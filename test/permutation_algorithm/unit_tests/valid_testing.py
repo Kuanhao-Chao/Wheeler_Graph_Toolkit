@@ -20,6 +20,7 @@ def main(path, csv_name, txt_name):
         for file in onlyfiles:
             start_file = time.time()
             filepath = graph_path + '/' + file
+            # print(filepath)
             subprocess.run(["../../../bin/recognizer_p", filepath, ">", "/dev/null"])
             end_file = time.time()
             time_list.append(str(end_file-start_file))
