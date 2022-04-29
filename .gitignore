@@ -1,2 +1,3 @@
 .DS_Store
+graph/correctness_test/*
 .vscode

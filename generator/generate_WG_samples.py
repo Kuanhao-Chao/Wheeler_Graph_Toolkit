@@ -16,7 +16,7 @@ def generateSingle(file_path, num_graphs, node_count):
 
         #Function parameters described below:
         #generateWG(num_nodes, edge_prob, print_graph?, filename, random_nodes?)
-        generateWG(num_nodes,.2, False, filename, False)
+        generateWG(num_nodes,.2, False, filename, False, None, None)
 
 def generateMultiple(file_path, num_graphs, start, stop, step):
     node_count = start
