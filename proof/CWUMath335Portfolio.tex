@@ -1,0 +1,93 @@
+\documentclass[12pt]{extarticle}
+%Some packages I commonly use.
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumerate}
+\usepackage[utf8]{inputenc}
+\usepackage[top=1 in,bottom=1in, left=1 in, right=1 in]{geometry}
+
+%A bunch of definitions that make my life easier
+\newcommand{\matlab}{{\sc Matlab} }
+\newcommand{\cvec}[1]{{\mathbf #1}}
+\newcommand{\rvec}[1]{\vec{\mathbf #1}}
+\newcommand{\ihat}{\hat{\textbf{\i}}}
+\newcommand{\jhat}{\hat{\textbf{\j}}}
+\newcommand{\khat}{\hat{\textbf{k}}}
+\newcommand{\minor}{{\rm minor}}
+\newcommand{\trace}{{\rm trace}}
+\newcommand{\spn}{{\rm Span}}
+\newcommand{\rem}{{\rm rem}}
+\newcommand{\ran}{{\rm range}}
+\newcommand{\range}{{\rm range}}
+\newcommand{\mdiv}{{\rm div}}
+\newcommand{\proj}{{\rm proj}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\renewcommand{\emptyset}{\varnothing}
+\newcommand{\attn}[1]{\textbf{#1}}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{definition}{Definition}
+\newtheorem*{example}{Example}
+\newtheorem*{note}{Note}
+\newtheorem{exercise}{Exercise}
+\newcommand{\bproof}{\bigskip {\bf Proof. }}
+\newcommand{\eproof}{\hfill\qedsymbol}
+\newcommand{\Disp}{\displaystyle}
+\newcommand{\qe}{\hfill\(\bigtriangledown\)}
+\setlength{\columnseprule}{1 pt}
+
+
+\title{Math 335 Portfolio}
+\author{Jean Marie Linhart}
+\date{January 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Induction Proofs}
+\subsection{Ordinary Induction}
+\begin{exercise} Prove, for all natural numbers $n$, that 
+\begin{equation} \sum_{k=0}^n k = 1 + 2 + 3 + \cdots + n = \dfrac{n(n+1)}{2}
+\label{eq:Pn}\end{equation}
+\end{exercise}
+
+\begin{proof}
+We prove this by induction on $n\in\N$.  In the base case, $n=0$, and \eqref{eq:Pn} becomes
+$$\sum_{k=0}^n k = \sum_{k=0}^0 k = 0 = \dfrac{0(1)}{2} = \dfrac{n(n+1)}{2}$$
+
+Now, let $n>0$ be arbitrary, and assume \eqref{eq:Pn}.
+We show $\displaystyle \sum_{k=0}^{n+1} k = \dfrac{(n+1)(n+2)}{2}$.
+To that end note 
+\begin{align*}
+	\sum_{k=0}^{n+1} k &= \left(\sum_{k=0}^{n} k\right) + (n+1) &\mbox{(sum definition)}\\
+	&= \frac{n(n+1)}{2} + (n+1) &\mbox{(induction hypothesis)}
+	\\
+	&= \frac{n(n+1)}{2} + \frac{2n+2}{2} &\mbox{(common denominator)}
+	\\
+	&= \frac{n^2 +n}{2} + \frac{2n+2}{2} &\mbox{(distribute)}
+	\\
+	&= \frac{n^2 +3n + 2}{2} &\mbox{(combine like terms)}
+	\\
+	&= \frac{(n+1)(n+2)}{2} & \mbox{(factor the numerator)}\\
+\end{align*}
+
+In all cases, \eqref{eq:Pn} is true, so $\forall n\in \N$, 
+$\Disp \sum_{k=0}^n k = \dfrac{n(n+1)}{2}$
+\end{proof}
+
+
+
+\end{document}
