@@ -12,7 +12,7 @@ strict digraph  {
 	S7 -> S9 [ label = G ];
 	S7 -> S10 [ label = C ];
 	S8 -> S11 [ label = T ];
-	S9 -> S12 [ label = $ ];
+	S9 -> S12 [ label = 0 ];
 	S10 -> S8 [ label = C ];
 	S11 -> S9 [ label = G ];
 }

@@ -30,11 +30,11 @@ filename = sys.argv[1]
 nodes, edges, has_incoming_edge = parse(filename)
 no_incoming_edge = nodes.difference(has_incoming_edge)
 
-print(f'# nodes: {len(nodes)}')
-print(nodes)
-print(f'# edges: {len(edges)}')
-print(edges)
-print(f'no incoming edge: {no_incoming_edge}')
+# print(f'# nodes: {len(nodes)}')
+# print(nodes)
+# print(f'# edges: {len(edges)}')
+# print(edges)
+# print(f'no incoming edge: {no_incoming_edge}')
 
 s = Solver()
 # Range for nodes
@@ -70,5 +70,12 @@ with open('g.smt2', 'w') as f:
 
 sat = s.check()
 
+# Print out the node ordering if the given graph is wheeler..
 print(sat)
 if sat: print(s.model())
+
+# Only report if the given graph is wheeler.
+if sat:
+    sys.exit(1)
+else: 
+    sys.exit(0)
