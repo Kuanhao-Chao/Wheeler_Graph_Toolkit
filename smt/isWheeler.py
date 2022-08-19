@@ -9,7 +9,7 @@ def parse(filename):
     has_incoming_edge = set()
     if filename[-4:] == '.dot':
         G = nx.Graph(nx.nx_pydot.read_dot(filename))
-        nodes.update([Int(node) for node in list(G.nodes()) if node != '\\n'])
+        nodes= set(Int(node) for node in list(G.nodes()) if node != '\\n')
         edges = [(Int(u), Int(v), ord(attr['label'])) 
                 for (u, v, attr) in G.edges(data=True)]
         for (u, v, l) in edges:
@@ -52,11 +52,15 @@ for i in range(len(edges)):
     for j in range(i+1, len(edges)):
         ui, vi, wi = edges[i]
         uj, vj, wj = edges[j]
+
+        if wi == wj: s.add(Implies(ui < uj, vi <= vj))
+        elif wi < wj: s.add(vi < vj)
+        elif wi > wj: s.add(vi > vj)
+        else: raise RuntimeError
+
         # Constraint 1
-        if wi < wj: s.add(vi < vj)
         # s.add(Implies(wi < wj, vi < vj))
         # Constraint 2
-        if wi == wj: s.add(Implies(ui < uj, vi <= vj))
         # s.add(Implies(
         #     And(wi == wj, ui < uj),
         #     vi <= vj))
