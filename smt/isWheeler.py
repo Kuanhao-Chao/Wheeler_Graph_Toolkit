@@ -8,7 +8,7 @@ def parse(filename):
     edges = []
     has_incoming_edge = set()
     if filename[-4:] == '.dot':
-        G = nx.Graph(nx.nx_pydot.read_dot(filename))
+        G = nx.DiGraph(nx.nx_pydot.read_dot(filename))
         nodes= set(Int(node) for node in list(G.nodes()) if node != '\\n')
         edges = [(Int(u), Int(v), ord(attr['label'])) 
                 for (u, v, attr) in G.edges(data=True)]
