@@ -170,6 +170,7 @@ int main(int argc, char* argv[]) {
                     node_names_set.insert(node_1_name);
                     node_names_set.insert(node_2_name);
                     edge_labels.push_back(match[3]);
+                    cout << "match[3]: " << match[3] << endl;
                 }
             }
         }   

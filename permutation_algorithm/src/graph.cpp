@@ -712,22 +712,23 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
             } else if (edgegp_node_2_innodes_vec[a] > edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[a].front() < edgegp_node_2_innodes_vec[b].back()) {
             
-#ifdef DEBUGPRINT
-                    cout << "edgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
-                    cout << "edgegp_label: " << this -> get_node_label(edgegp_nodes[a]) << endl;
-                    cout << "edgegp_node_2_innodes_vec[a]: " << endl;
+// #ifdef DEBUGPRINT
+                    cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
+                    cout << "XX\tedgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
+                    cout << "XX\tedgegp_label: " << this -> get_node_label(edgegp_nodes[a]) << endl;
+                    cout << "XX\tedgegp_node_2_innodes_vec[a]: " << endl << "\t\t";
                     for (auto& aa : edgegp_node_2_innodes_vec[a]) {
                         cout << aa << " ";
                     }
                     cout << endl;
-                    cout << "edgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
-                    cout << "edgegp_label: " << this -> get_node_label(edgegp_nodes[b]) << endl;
-                    cout << "edgegp_node_2_innodes_vec[b]: " << endl;
+                    cout << "XX\tedgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
+                    cout << "XX\tedgegp_label: " << this -> get_node_label(edgegp_nodes[b]) << endl;
+                    cout << "XX\tedgegp_node_2_innodes_vec[b]: " << endl << "\t\t";
                     for (auto& bb : edgegp_node_2_innodes_vec[b]) {
                         cout << bb << " ";
                     }
                     cout << endl;
-#endif
+// #endif
                     this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
                 }
             }

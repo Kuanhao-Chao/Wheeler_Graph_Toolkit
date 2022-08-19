@@ -1,7 +1,8 @@
 class node:
-    def __init__(self, nodeID, nodeLabel):
+    def __init__(self, nodeID, nodeLabel, nodeColid):
         self.nodeid = nodeID
         self.nodelabel = nodeLabel
+        self.nodecolid = nodeColid
         self.parents = []
         self.children = []
         print("Initializing a node: ", self.nodeid, self.nodelabel)
@@ -10,7 +11,14 @@ class node:
         self.parents.append(parent)
 
     def add_child(self, child):
-        self.children.append(child)
+        if child not in self.children:
+            self.children.append(child)
+        else:
+            print("The child was added before!")
+
+
+    def set_nodeid(self, nodeID):
+        self.nodeid = nodeID
 
     # def merge_node(self, node):
     #     # check children
