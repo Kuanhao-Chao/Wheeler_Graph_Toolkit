@@ -76,7 +76,7 @@ def main():
 
                     while (alignment[row_idx, col_idx+sec_nongap_node_offset] == "-"): 
                         sec_nongap_node_offset += 1
-                        print("Skipping gap!!")
+                        print("Skipping 2nd node gap!!")
 
                     #############################
                     ## The second node selection 
@@ -85,7 +85,7 @@ def main():
                     print("(col_idx+sec_nongap_node_offset, alignment[row_idx, col_idx+sec_nongap_node_offset]): ", (col_idx+sec_nongap_node_offset, alignment[row_idx, col_idx+sec_nongap_node_offset]))
                     mid_prev_node = prev_nodes[(col_idx+sec_nongap_node_offset, alignment[row_idx, col_idx+sec_nongap_node_offset])]
 
-                    print("First: ", alignment[row_idx, col_idx], alignment[row_idx, col_idx+sec_nongap_node_offset])
+                    print("First nongap node: ", alignment[row_idx, col_idx], ";  Second nongap node: ", alignment[row_idx, col_idx+sec_nongap_node_offset])
                     print(">> mid_curr_node: ", mid_curr_node.nodelabel)
                     print(">> mid_prev_node: ", mid_prev_node.nodelabel)
                     mid_curr_node.add_child(mid_prev_node)
@@ -103,7 +103,7 @@ def main():
                     first_nongap_node_offset = 1
                     while (alignment[row_idx, col_idx+first_nongap_node_offset] == "-"): 
                         first_nongap_node_offset += 1
-                        print("Skipping gap!!")
+                        print("Skipping 2nd node gap!!")
 
                     # this first_nongap_node should be kept in the 'prev_nodes' dictionary
 

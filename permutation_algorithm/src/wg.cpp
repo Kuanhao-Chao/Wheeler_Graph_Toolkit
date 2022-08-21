@@ -39,8 +39,6 @@ void processOptions(GArgs& args);
 
 int main(int argc, char* argv[]) {
 
-    // c_start = clock();
-
     c_start = chrono::high_resolution_clock::now();
     (void)argc;
     string line;    
@@ -140,15 +138,11 @@ int main(int argc, char* argv[]) {
     ifstream ifile_dot(argv[1]);
     filesystem::path path_name(argv[1]);
 
-    // string method;
-    // bool !all_valid_WG;
-    // bool print_invalid;
-
     vector<string> node1_vec;
     vector<string> node2_vec;
     vector<string> node_names;
     set<string> node_names_set;
-    vector<string> edge_labels;
+    vector<string> edgeLabels;
     unordered_map<int,int> node_2_ptr_idx;
 
     /********************************
@@ -169,7 +163,7 @@ int main(int argc, char* argv[]) {
                     node2_vec.push_back(node_2_name);
                     node_names_set.insert(node_1_name);
                     node_names_set.insert(node_2_name);
-                    edge_labels.push_back(match[3]);
+                    edgeLabels.push_back(match[3]);
                     cout << "match[3]: " << match[3] << endl;
                 }
             }
@@ -179,53 +173,47 @@ int main(int argc, char* argv[]) {
     node_names.assign(node_names_set.begin(), node_names_set.end());
 
     int nodes_num = node_names.size();
-    int edges_num = edge_labels.size();
+    int edges_num = edgeLabels.size();
 
     /********************************
     *** Initialize the graph. 
     ********************************/
     digraph g = digraph(node_names, nodes_num, edges_num, path_name.stem());
-    g.add_edges(node1_vec, node2_vec, edge_labels);
+    g.add_edges(node1_vec, node2_vec, edgeLabels);
 
 // #ifdef DEBUGPRINT
-//         string label = g.get_first_edge_label();
+//         string label = g.get_first_edgeLabel();
 //         while(label != "" ) {
-//             g.sort_edge_label_2_edge(label);
-//             label = g.get_next_edge_label(label);
+//             g.sort_edgeLabel_2_edge(label);
+//             label = g.get_next_edgeLabel(label);
 //         }
 //         g.print_graph();
 // #endif
 
 
     // if (method == "m1") {
-    /****************************************
-    **** Method 1: do all possible permutation!!!
-    *****************************************/
-
-    // Step 1: If after initialization, it is not a WG => it is not a WG.
+    /********************************
+    *** Step 1: If after initialization, it is not a WG => it is not a WG.
+    ********************************/
     g.relabel_initialization();
-    // if (!valid_wg) {
-    //     g.exit_program();
-    //     return -1;
-    // }
 #ifdef DEBUGPRINT
     g.print_graph();
 #endif
 
-    // Step 2: If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
-    // valid_wg = 
+    /********************************
+    *** Step 2: If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
+    ********************************/
     g.innodelist_sort_relabel();
-    // if (!valid_wg) {
-    //     g.exit_program();
-    //     return -1;
-    // }
 #ifdef DEBUGPRINT
     g.print_graph();
 #endif
 
-    // Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
+    /********************************
+    *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
+    ********************************/
     g.permutation_start(!all_valid_WG);
-    // g.permutation_4_edge_group(g.get_first_edge_label(), !all_valid_WG, print_invalid);
+    // g.permutation_4_edge_group(g.get_first_edgeLabel(), !all_valid_WG, print_invalid);
+
     g.WG_final_check();
     // } else if (method == "m2") {
     //     bool valid_WG = true; 

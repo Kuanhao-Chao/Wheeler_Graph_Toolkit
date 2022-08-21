@@ -57,14 +57,14 @@ void digraph::in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec
     }
 #endif
 
-    // Now I need to check & sort!!! _node_2_edgelabel_2_outnodes[node]; (type: map<string, set<int> >)
+    // Now I need to check & sort!!! _node_2_edgeLabel_2_outnodes[node]; (type: map<string, set<int> >)
     sort(index.begin(), index.end(),
         [&](const int& a, const int& b) {
             bool final_cmp = false; // false -> do not swap;  true -> swap
             bool a_bigger_entry = false;
             bool b_bigger_entry = false;
             // for (auto& [edgelabel, outnodes] : nodes_2_outnodes[a]) {
-            for (auto& pair : _edge_label_2_edge) {
+            for (auto& pair : _edgeLabel_2_edge) {
                 // Check order is consistant among all labels.
                 auto edgelabel = pair.first;
                 // convert set to vector
@@ -221,8 +221,8 @@ void digraph::in_out_nodelist_repeat_node_re_label(vector<int> &nodes_same_label
         int relabel_num = 0;
         // Change the condition!!! When we cannot determine their order.!!!!!!!!!!!!
         bool no_order = true;
-        for (auto& pair : _edge_label_2_edge) {
-            // Check we cannot determine the order in all edge_label.
+        for (auto& pair : _edgeLabel_2_edge) {
+            // Check we cannot determine the order in all edgeLabel.
             auto edgelabel = pair.first;
             if (innode_prev == nodes_2_innodes[i]) {
                 no_order = true;
@@ -295,7 +295,7 @@ void digraph::in_out_nodelist_sort_relabel() {
     cout << "** Sort & relabel nodes by in_out_node-list : " << endl;
     cout << "************************** " << endl; 
 #endif  
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
         set<int> nodes_same_label_set;
         vector<int> nodes_same_label_vec;
         vector<vector<int> > nodes_2_innodes;
@@ -323,7 +323,7 @@ void digraph::in_out_nodelist_sort_relabel() {
                             nodes_2_outnodes.push_back(this->get_outnodes_labels(node));
                         }
                         /********************************
-                        *** Sorting nodes by in- & out-node list (sort `_node_2_edgelabel_2_outnodes` unordered_map by values).
+                        *** Sorting nodes by in- & out-node list (sort `_node_2_edgeLabel_2_outnodes` unordered_map by values).
                         ********************************/
                         vector<int> index(nodes_same_label_set.size(), 0);
                         this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);
@@ -357,7 +357,7 @@ void digraph::in_out_nodelist_sort_relabel() {
                 nodes_2_outnodes.push_back(this->get_outnodes_labels(node));
             }
             /********************************
-            *** Sorting nodes by out-node list (sort `_node_2_edgelabel_2_outnodes` unordered_map by values).
+            *** Sorting nodes by out-node list (sort `_node_2_edgeLabel_2_outnodes` unordered_map by values).
             ********************************/
             vector<int> index(nodes_same_label_set.size(), 0);
             this -> in_out_nodelist_repeat_node_sort(nodes_same_label_vec, nodes_2_innodes, nodes_2_outnodes, index);

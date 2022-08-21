@@ -59,14 +59,16 @@ digraph::~digraph() {
 }
 
 
-void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vector<string> edge_labels) {
+void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vector<string> edgeLabels) {
     /***********************************************
     *** Iterate through all edges and add one by one
     ************************************************/
 #ifdef DEBUGPRINT
     cout << "* Initialize the graph: " << endl;
 #endif
-    // This is a temporary variable storing node group set.
+    /***********************************************
+    *** Iterating all edges and constructing all data structures.
+    ************************************************/
     map<string, set<int> > label_2_node_group_set;
     for (int i=0; i<_edges_num; i++) {
         int node_1_name = this->string2ascii(node1_vec[i]);
@@ -78,18 +80,23 @@ void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vect
         cout << "_node_ptrs[i]: " << _node_ptrs[i] << endl;
 #endif
 
-        if (_node_2_edgelabel_2_outnodes.find(node_1_name) == _node_2_edgelabel_2_outnodes.end()) {
-            // Not found the node key.
+        /***********************************************
+        ***  Constructing the outnode dictionary.
+        ************************************************/
+        if (_node_2_edgeLabel_2_outnodes.find(node_1_name) == _node_2_edgeLabel_2_outnodes.end()) {
+            //  The node key is not found.
             map<string, set<int> > edgelabel_2_outnodes;
-            _node_2_edgelabel_2_outnodes[node_1_name] = edgelabel_2_outnodes; 
-            for (auto& edge_label : edge_labels) {
+            _node_2_edgeLabel_2_outnodes[node_1_name] = edgelabel_2_outnodes; 
+            for (auto& edgeLabel : edgeLabels) {
                 set<int> outnodes{};
-                _node_2_edgelabel_2_outnodes[node_1_name][edge_label] = outnodes;
+                _node_2_edgeLabel_2_outnodes[node_1_name][edgeLabel] = outnodes;
             }
         } 
-        _node_2_edgelabel_2_outnodes[node_1_name][edge_labels[i]].insert(node_2_name);
+        _node_2_edgeLabel_2_outnodes[node_1_name][edgeLabels[i]].insert(node_2_name);
 
-        // Find the innode vector
+        /***********************************************
+        ***  Constructing the innode dictionary.
+        ************************************************/
         if (_node_2_innodes.find(node_2_name) == _node_2_innodes.end()) {
             // Not found => the first appearance.
             set<int> new_innodes_vc{node_1_name};
@@ -97,22 +104,28 @@ void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vect
         } else {
             _node_2_innodes[node_2_name].insert(node_1_name);
         }
-        edge e = edge(edge_labels[i], node_1_name, this->get_node_address(node_1_name), node_2_name, this->get_node_address(node_2_name));
-        // Find the label to edge vector & calculate node group set.
-        if (_edge_label_2_edge.find(e.get_label()) == _edge_label_2_edge.end()) {
-            // Not found
+        edge e = edge(edgeLabels[i], node_1_name, this->get_node_address(node_1_name), node_2_name, this->get_node_address(node_2_name));
+
+        /***********************************************
+        ***  Constructing the edge dictionary.
+        ************************************************/
+        if (_edgeLabel_2_edge.find(e.get_label()) == _edgeLabel_2_edge.end()) {
+            // Not found => the first appearance.
             vector<edge> new_sub_edge_vc{e};
-            _edge_label_2_edge[e.get_label()] = new_sub_edge_vc;
+            _edgeLabel_2_edge[e.get_label()] = new_sub_edge_vc;
         } else {
-            _edge_label_2_edge[e.get_label()].push_back(e);
+            _edgeLabel_2_edge[e.get_label()].push_back(e);
         }
     }
     this -> find_root_node();
-    // calculate number of nodes in each node group set.
+
+    /***********************************************
+    *** Chaining the edge labels.
+    ************************************************/
     string prev_label = "";
-    for (auto& [label, edges] : _edge_label_2_edge ) {
+    for (auto& [label, edges] : _edgeLabel_2_edge ) {
         if (prev_label != "") {
-            _edge_label_2_next_edge_label[prev_label] = label;
+            _edgeLabel_2_next_edgeLabel[prev_label] = label;
         }
         prev_label = label;
     }
@@ -135,7 +148,7 @@ void digraph::relabel_initialization() {
 
     // Relabel all edge group nodes
     int accum_label= _root.size();
-    for (auto& [edge_label, edges] : _edge_label_2_edge) {
+    for (auto& [edgeLabel, edges] : _edgeLabel_2_edge) {
         set<int> edgenodes_set;
         for (auto& edge : edges) {
             edgenodes_set.insert(edge.get_head_name());
@@ -143,7 +156,7 @@ void digraph::relabel_initialization() {
         // Relabel the node with the largest possible value in the edge group.
         accum_label = accum_label + edgenodes_set.size();
         for (auto& edge: edges) {
-            this -> relabel_by_node_address(edge.get_head(), accum_label);
+            this -> relabel_node(edge.get_head(), accum_label);
         }
     }
 
@@ -164,7 +177,7 @@ void digraph::innodelist_sort_relabel() {
     cout << "************************** " << endl; 
 #endif
     int accum_edgegp_size = 0;
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
 #ifdef DEBUGPRINT
         cout << "****** LABEL: " << label << endl;
 #endif
@@ -260,7 +273,7 @@ void digraph::relabel_forward(vector<int> &repeat_vec, vector<int> &original_lab
 #endif
     for (int i = 0; i < repeat_vec.size(); i++) {
         original_labels.push_back(*nodes_2_relabelled_nodes_vec[prev_num_vec[index]][i]);
-        this -> relabel_by_node_address(nodes_2_relabelled_nodes_vec[prev_num_vec[index]][i], repeat_vec[i]);
+        this -> relabel_node(nodes_2_relabelled_nodes_vec[prev_num_vec[index]][i], repeat_vec[i]);
 #ifdef DEBUGPRINT
         cout << repeat_vec[i] << ", ";
 #endif
@@ -286,7 +299,7 @@ void digraph::relabel_reverse(vector<int> &repeat_vec, vector<int> &original_lab
     this -> print_graph();
 #endif
     for (int i = 0; i < repeat_vec.size(); i++) {
-        this -> relabel_by_node_address(nodes_2_relabelled_nodes_vec[prev_num_vec[index]][i], original_labels[i]);
+        this -> relabel_node(nodes_2_relabelled_nodes_vec[prev_num_vec[index]][i], original_labels[i]);
     }
 #ifdef DEBUGPRINT
     cout << "\t............................................" << endl;
@@ -308,7 +321,7 @@ void digraph::relabel_by_node_name(int node_name, int new_val) {
 }
 
 
-void digraph::relabel_by_node_address(int* node_add, int new_val) {
+void digraph::relabel_node(int* node_add, int new_val) {
     *node_add = new_val;
 }
 
@@ -320,7 +333,7 @@ map<string, vector<int> > digraph::get_outnodes_labels(int node_name) {
     cout << "*********************************" << endl;
 #endif
     map<string, vector<int> > outnodes_label_ls;
-    for (auto& pair : _node_2_edgelabel_2_outnodes[node_name]) {
+    for (auto& pair : _node_2_edgeLabel_2_outnodes[node_name]) {
         auto edgelabel = pair.first;
         auto outnodes_set = pair.second;
         vector<int> outnodes_vec(outnodes_set.size());
@@ -346,7 +359,7 @@ map<string, vector<int> > digraph::get_outnodes_labels(int node_name) {
 }
 
 
-vector<int> digraph::get_innodes_labels(string edge_label, int node_name) {
+vector<int> digraph::get_innodes_labels(string edgeLabel, int node_name) {
 #ifdef DEBUGPRINT
     cout << "*********************************" << endl;
     cout << "*** get_innodes_labels =>  node_name: "  << this->ascii2string(node_name) << "  "<< this -> get_node_label(node_name) << endl;
@@ -355,7 +368,7 @@ vector<int> digraph::get_innodes_labels(string edge_label, int node_name) {
     // vector<int> innodes_label_ls;
     vector<int> innodes_label_uniq_ls;
     set<int*> innodes_address_set;
-    for (auto& edge : _edge_label_2_edge[edge_label]) {
+    for (auto& edge : _edgeLabel_2_edge[edgeLabel]) {
         if (edge.get_head_name() == node_name) {
             if (innodes_address_set.find(edge.get_tail()) == innodes_address_set.end()) {
 #ifdef DEBUGPRINT
@@ -390,7 +403,7 @@ vector<int> digraph::get_innodes_labels(string edge_label, int node_name) {
 
 int digraph::get_valid_WG_num_2() {
     _valid_WG_num = 1;
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
         set<int*> node_with_same_label;
         int prev_node_label = edges.front().get_head_label();
         for (auto& edge : edges) {
@@ -452,22 +465,22 @@ void digraph::one_scan_through_wg_rg(string label) {
     int* prev_address = &prev_num; // This is just initialization to a random address.
     int accum_same = 1;
 
-    vector<edge>::iterator itv_1 = _edge_label_2_edge[label].begin();
+    vector<edge>::iterator itv_1 = _edgeLabel_2_edge[label].begin();
 
     start_node_label = itv_1 -> get_head_label();
-    end_node_label = prev(_edge_label_2_edge[label].end()) -> get_head_label();
+    end_node_label = prev(_edgeLabel_2_edge[label].end()) -> get_head_label();
 #ifdef DEBUGPRINT
     cout << "start_node_label: " << start_node_label << endl;
     cout << "end_node_label: " << end_node_label << endl;
 #endif  
 
-    vector<edge>::iterator itv = _edge_label_2_edge[label].begin();
+    vector<edge>::iterator itv = _edgeLabel_2_edge[label].begin();
     vector<edge> smaller_gp;
     vector<edge> same_gp;
     vector<edge> bigger_gp;
 
     do{
-        if (itv != _edge_label_2_edge[label].end()) {
+        if (itv != _edgeLabel_2_edge[label].end()) {
 #ifdef DEBUGPRINT
             itv -> print_edge();
 #endif  
@@ -488,7 +501,7 @@ void digraph::one_scan_through_wg_rg(string label) {
 #endif  
             }
         }
-    } while (itv++ != _edge_label_2_edge[label].end());
+    } while (itv++ != _edgeLabel_2_edge[label].end());
 #ifdef DEBUGPRINT
     cout << "** >> smaller_gp: " << endl;
     cout << "** >> same_gp: " << endl;;
@@ -523,7 +536,7 @@ void digraph::permutation_start(bool early_stop) {
         }
         cout << endl;
 #endif
-        this -> permutation_4_edge_group(this -> get_first_edge_label(), early_stop);
+        this -> permutation_4_edge_group(this -> get_first_edgeLabel(), early_stop);
         // Relabel back before trying another permutation.
         this -> relabel_reverse_root(repeat_vec, original_labels);
     } while(std::next_permutation(repeat_vec.begin(), repeat_vec.end()));
@@ -544,13 +557,13 @@ void digraph::permutation_4_edge_group(string label, bool early_stop) {
     vector<int> accum_same_vec;
     map<int, vector<int*> > nodes_2_relabelled_nodes_vec;
 
-    vector<edge>::iterator itv = _edge_label_2_edge[label].begin();
+    vector<edge>::iterator itv = _edgeLabel_2_edge[label].begin();
     vector<int*> relabelled_nodes_vec;
 
-    this -> sort_edge_label_2_edge_by_tail(label);
+    this -> sort_edgeLabel_2_edge_by_tail(label);
 
     do{
-        if (itv != _edge_label_2_edge[label].end()) {
+        if (itv != _edgeLabel_2_edge[label].end()) {
 #ifdef DEBUGPRINT
             cout << "&&&&& Iterating edges!!!" << endl;
             itv->print_edge();
@@ -592,7 +605,7 @@ void digraph::permutation_4_edge_group(string label, bool early_stop) {
             prev_num = itv->get_head_label();
             prev_address_set_size = address_set.size();
         }
-    } while (itv++ != _edge_label_2_edge[label].end());
+    } while (itv++ != _edgeLabel_2_edge[label].end());
 
     if (prev_num!=0 && accum_same!=1) {
         prev_num_vec.push_back(prev_num);
@@ -640,7 +653,7 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             // Relabel & try the new permutation.
             this -> relabel_forward(repeat_vec, original_labels, nodes_2_relabelled_nodes_vec, prev_num_vec, index);
             bool WG_valid = true;
-            WG_valid = this -> WG_checker_in_edge_group(label, _edge_label_2_edge[label]);
+            WG_valid = this -> WG_checker_in_edge_group(label, _edgeLabel_2_edge[label]);
 #ifdef DEBUGPRINT
             cout << "???????????????????????????" << endl;
             cout << "????   permutation_4_sub_edge_group" << endl;
@@ -661,18 +674,18 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
 #ifdef DEBUGPRINT
         cout << "There is no more permutation in 'permutation_4_edge_group' label " << label << endl;
 #endif
-        if (this -> get_next_edge_label(label)  != "" ) {
+        if (this -> get_next_edgeLabel(label)  != "" ) {
 #ifdef DEBUGPRINT
-            cout << "Move on to the next edge group label: " << this -> get_next_edge_label(label) << endl;
+            cout << "Move on to the next edge group label: " << this -> get_next_edgeLabel(label) << endl;
 #endif   
             bool WG_valid = true;
-            WG_valid = this -> WG_checker_in_edge_group(label, _edge_label_2_edge[label]);
+            WG_valid = this -> WG_checker_in_edge_group(label, _edgeLabel_2_edge[label]);
             if (WG_valid) {
-                this -> permutation_4_edge_group(this -> get_next_edge_label(label), early_stop);            
+                this -> permutation_4_edge_group(this -> get_next_edgeLabel(label), early_stop);            
             }
-        } else if (this -> get_next_edge_label(label)  == ""  ) {
+        } else if (this -> get_next_edgeLabel(label)  == ""  ) {
 #ifdef DEBUGPRINT
-            cout << "This is the end of all edge groups!!!! " << this -> get_next_edge_label(label) << endl;
+            cout << "This is the end of all edge groups!!!! " << this -> get_next_edgeLabel(label) << endl;
 #endif
             bool WG_valid = true;
             WG_valid = this -> WG_checker();
@@ -857,23 +870,23 @@ void digraph::in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, v
 }
 
 
-void digraph::sort_edge_label_2_edge(string &label) {
+void digraph::sort_edgeLabel_2_edge(string &label) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
-    cout << "**** sort_edge_label_2_edge " << endl;
+    cout << "**** sort_edgeLabel_2_edge " << endl;
     cout << "***************************" << endl;
 
     cout << "&&& label: " << label << endl;
     cout << "Before sorting ... "  << endl;
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << edge.get_tail() << ", " << edge.get_head() << endl;
     }
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << *edge.get_tail() << ", " << *edge.get_head()<< endl;
     }
 #endif
 
-    sort(_edge_label_2_edge[label].begin(), _edge_label_2_edge[label].end(),
+    sort(_edgeLabel_2_edge[label].begin(), _edgeLabel_2_edge[label].end(),
         [&](edge& e1, edge& e2) {
             return (e1 < e2);
         }
@@ -881,32 +894,32 @@ void digraph::sort_edge_label_2_edge(string &label) {
 
 #ifdef DEBUGPRINT
     cout << "After sorting ... "  << endl;
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << edge.get_tail() << ", " << edge.get_head() << endl;
     }
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << *edge.get_tail() << ", " << *edge.get_head()<< endl;
     }
 #endif
 }
 
-void digraph::sort_edge_label_2_edge_by_tail(string &label) {
+void digraph::sort_edgeLabel_2_edge_by_tail(string &label) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
-    cout << "**** sort_edge_label_2_edge_by_tail" << endl;
+    cout << "**** sort_edgeLabel_2_edge_by_tail" << endl;
     cout << "***************************" << endl;
 
     cout << "&&& label: " << label << endl;
     cout << "Before sorting ... "  << endl;
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << edge.get_tail() << ", " << edge.get_head() << endl;
     }
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << *edge.get_tail() << ", " << *edge.get_head()<< endl;
     }
 #endif
 
-    sort(_edge_label_2_edge[label].begin(), _edge_label_2_edge[label].end(),
+    sort(_edgeLabel_2_edge[label].begin(), _edgeLabel_2_edge[label].end(),
         [&](edge& e1, edge& e2) {
             return (e1 << e2);
         }
@@ -914,29 +927,29 @@ void digraph::sort_edge_label_2_edge_by_tail(string &label) {
 
 #ifdef DEBUGPRINT
     cout << "After sorting ... "  << endl;
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << edge.get_tail() << ", " << edge.get_head() << endl;
     }
-    for (auto& edge: _edge_label_2_edge[label]) {
+    for (auto& edge: _edgeLabel_2_edge[label]) {
         cout << *edge.get_tail() << ", " << *edge.get_head()<< endl;
     }
 #endif
 }
 
 
-string digraph::get_first_edge_label() {
-    return _edge_label_2_edge.begin()->first;
+string digraph::get_first_edgeLabel() {
+    return _edgeLabel_2_edge.begin()->first;
 }
 
 
-string digraph::get_last_edge_label() {
-    return (--_edge_label_2_edge.end())->first;
+string digraph::get_last_edgeLabel() {
+    return (--_edgeLabel_2_edge.end())->first;
 }
 
 
-string digraph::get_next_edge_label(string label) {
-    if (_edge_label_2_next_edge_label.find(label) != _edge_label_2_next_edge_label.end()) {
-        return _edge_label_2_next_edge_label[label];
+string digraph::get_next_edgeLabel(string label) {
+    if (_edgeLabel_2_next_edgeLabel.find(label) != _edgeLabel_2_next_edgeLabel.end()) {
+        return _edgeLabel_2_next_edgeLabel[label];
     } else {
 #ifdef DEBUGPRINT
         cout << "The label " << label << " is the last edge label in the graph." << endl;
@@ -953,7 +966,7 @@ bool digraph::WG_checker_in_edge_group(string label, vector<edge> &edges) {
     cout << "****  `WG_checker_in_edge_group` " << endl;
     cout << "***************************" << endl;
 #endif
-    this -> sort_edge_label_2_edge(label);
+    this -> sort_edgeLabel_2_edge(label);
     bool WG_valid = true;
     vector<edge>::iterator edge;
     for (edge = edges.begin(); edge != edges.end(); edge++) {
@@ -1012,25 +1025,25 @@ bool digraph::WG_checker() {
     cout << "**** `WG_checker` " << endl;
     cout << "***************************" << endl;
 #endif
-    string first_edge_label = this -> get_first_edge_label();
-    string label = first_edge_label;
+    string first_edgeLabel = this -> get_first_edgeLabel();
+    string label = first_edgeLabel;
     while(label != "" ) {
-        this -> sort_edge_label_2_edge(label);
-        label = this -> get_next_edge_label(label);
+        this -> sort_edgeLabel_2_edge(label);
+        label = this -> get_next_edgeLabel(label);
     }
 
     int last_edgegp_num = 0;
     string last_label = "";
     map<string, vector<edge> >::iterator it;
     bool WG_valid = true;
-    for (it = _edge_label_2_edge.begin(); it != _edge_label_2_edge.end(); it++) {
+    for (it = _edgeLabel_2_edge.begin(); it != _edgeLabel_2_edge.end(); it++) {
 #ifdef DEBUGPRINT
-        if (it != _edge_label_2_edge.begin()) {
+        if (it != _edgeLabel_2_edge.begin()) {
             cout << "prev(it).first: " << prev(it)->first << endl;
         }
         cout << "it.first: " << it->first << endl;
 #endif
-        if (next(it) != _edge_label_2_edge.end()) {
+        if (next(it) != _edgeLabel_2_edge.end()) {
 #ifdef DEBUGPRINT
             cout << "next(it).first: " << next(it)->first << endl;
             cout << "it.second: " << (it->second.end()-1)->get_head_label() << endl;
@@ -1073,6 +1086,9 @@ void digraph::find_root_node() {
             cout << "Trying node name: " << this->ascii2string(node) << endl;
         }
 
+        /***********************************************
+        ***  Cannot find this node in the innodes dictionary.
+        ************************************************/
         if (_node_2_innodes.find(node) == _node_2_innodes.end()) {
             if (verbose) {
 // #ifdef DEBUGPRINT
@@ -1080,7 +1096,7 @@ void digraph::find_root_node() {
                 this->print_node(node);
 // #endif
             }
-            // Not found => The in-degree of the node is zero. => possible root.
+            // Not found => The in-degree of the node is zero. => root.
             counter += 1;
             _is_wg = true;
             _root.push_back(node);
@@ -1242,7 +1258,7 @@ void digraph::output_wg_gagie() {
     *****************************************/
     for (auto& root_node : _root) {
         int outnodes_size = 0;
-        for (auto& [edgelabel, outnodes] : _node_2_edgelabel_2_outnodes[root_node]) {
+        for (auto& [edgelabel, outnodes] : _node_2_edgeLabel_2_outnodes[root_node]) {
             outnodes_size += outnodes.size();
         }
         ostringstream repeated_I;
@@ -1262,7 +1278,7 @@ void digraph::output_wg_gagie() {
         cout << "repeated_O: " << repeated_O.str()+"1" << endl;
 #endif
         // Bit array L
-        for (auto& [edgelabel, outnodes] : _node_2_edgelabel_2_outnodes[root_node]) {
+        for (auto& [edgelabel, outnodes] : _node_2_edgeLabel_2_outnodes[root_node]) {
             for (int i = 0; i < outnodes.size(); i++) {
                 repeated_L = repeated_L + edgelabel;
             }
@@ -1278,9 +1294,9 @@ void digraph::output_wg_gagie() {
     }
 
     /****************************************
-    **** Processing _edge_label_2_edge
+    **** Processing _edgeLabel_2_edge
     *****************************************/
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
 #ifdef DEBUGPRINT
         cout << "** labels: " << label << endl;
 #endif
@@ -1290,7 +1306,7 @@ void digraph::output_wg_gagie() {
             ofile_DOT << "\t" << to_string(edge.get_tail_label()) << " -> " << to_string(edge.get_head_label()) << " [label=" << edge.get_label() << "];" << endl;
             if ((edge.get_head() != pre_edge.get_head())) {
             int outnodes_size = 0;
-            for (auto& [edgelabel, outnodes] : _node_2_edgelabel_2_outnodes[edge.get_head_name()]) {
+            for (auto& [edgelabel, outnodes] : _node_2_edgeLabel_2_outnodes[edge.get_head_name()]) {
                 outnodes_size += outnodes.size();
             }
 
@@ -1318,7 +1334,7 @@ void digraph::output_wg_gagie() {
                 cout << "repeated_O: " << repeated_O.str()+"1" << endl;
 #endif
                 // Bit array L
-                for (auto& [edgelabel, outnodes] : _node_2_edgelabel_2_outnodes[edge.get_head_name()]) {
+                for (auto& [edgelabel, outnodes] : _node_2_edgeLabel_2_outnodes[edge.get_head_name()]) {
                     for (int i = 0; i < outnodes.size(); i++) {
                         repeated_L = repeated_L + edgelabel;
                     }
@@ -1346,7 +1362,7 @@ void digraph::output_wg_gagie() {
 void digraph::output_wg_dot() {
     filesystem::create_directory(to_string(_valid_WG_num)+"__"+_path_name);
     string outfile_dot = to_string(_valid_WG_num)+"__"+_path_name + "/graph.dot";
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
 
     }
 }

@@ -16,20 +16,20 @@ void digraph::print_graph(string offset) {
 
 // #ifdef PRINTER
     cout << offset << "\t************************** " << endl; 
-    cout << offset << "\t** Print _edge_labels: " << endl; 
+    cout << offset << "\t** Print _edgeLabels: " << endl; 
     cout << offset << "\t************************** " << endl; 
     cout << offset;
 
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
         for (auto& edge : edges) {
             cout << "\t   " << edge.get_label() << " ";
         }
     }
     cout << endl;
     cout << offset << "\t************************** " << endl; 
-    cout << offset << "\t** Print _edge_label_2_edge: " << endl; 
+    cout << offset << "\t** Print _edgeLabel_2_edge: " << endl; 
     cout << offset << "\t************************** " << endl; 
-    for (auto& it : _edge_label_2_edge) {
+    for (auto& it : _edgeLabel_2_edge) {
         cout << offset << "\t   >> " << it.first << endl;
         for (auto& it_e : it.second) 
             it_e.print_edge(offset);
@@ -48,7 +48,7 @@ void digraph::print_graph(string offset) {
         }
     }
 
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
         cout << offset << "\t** labels: " << label << endl;
         edge pre_edge = edge();
         for (auto& edge : edges) {
@@ -63,13 +63,13 @@ void digraph::print_graph(string offset) {
 }
 
 
-void digraph::print_edge_label_2_edge_graph() {
+void digraph::print_edgeLabel_2_edge_graph() {
 #ifdef PRINTER
     cout << "************************** " << endl; 
-    cout << "** Print '_edge_label_2_edge': " << endl;
+    cout << "** Print '_edgeLabel_2_edge': " << endl;
     cout << "************************** " << endl; 
-    for (auto& [edge_label, edges] : _edge_label_2_edge) {
-        cout << edge_label << ": " << endl;
+    for (auto& [edgeLabel, edges] : _edgeLabel_2_edge) {
+        cout << edgeLabel << ": " << endl;
         for (auto& edge: edges) {
             cout << edge.get_tail() << ", " << edge.get_head() << endl;
         }
@@ -98,10 +98,10 @@ void digraph::print_node_2_innodes_graph() {
 }
 
 
-void digraph::print_node_2_edgelabel_2_outnodes() {
+void digraph::print_node_2_edgeLabel_2_outnodes() {
 #ifdef PRINTER
-    // unordered_map<int, map<string, set<int> > > _node_2_edgelabel_2_outnodes;
-    for (auto& [node, edgelabel_2_outnodes] : _node_2_edgelabel_2_outnodes) {
+    // unordered_map<int, map<string, set<int> > > _node_2_edgeLabel_2_outnodes;
+    for (auto& [node, edgelabel_2_outnodes] : _node_2_edgeLabel_2_outnodes) {
         cout << "$$$$$$$ Node: " << this -> ascii2string(node) << endl;
         for (auto& [edgelabel, outnodes] : edgelabel_2_outnodes) {
             cout << "\t$$$$$$$ edge label: " << edgelabel << endl;
@@ -130,7 +130,7 @@ void digraph::print_node_names_2_node_labels() {
         }
     }
 
-    for (auto& [label, edges] : _edge_label_2_edge) {
+    for (auto& [label, edges] : _edgeLabel_2_edge) {
         cout << "\t** labels: " << label << endl;
         edge pre_edge = edge();
         for (auto& edge : edges) {
@@ -144,12 +144,12 @@ void digraph::print_node_names_2_node_labels() {
 }
 
 
-void digraph::print_edge_label_2_next_edge_label() {
+void digraph::print_edgeLabel_2_next_edgeLabel() {
 #ifdef PRINTER
     cout << "************************** " << endl; 
-    cout << "** Print edge_label_2_next_edge_label: " << endl;
+    cout << "** Print edgeLabel_2_next_edgeLabel: " << endl;
     cout << "************************** " << endl; 
-    for (auto& [curr_label, next_label] : _edge_label_2_next_edge_label) {
+    for (auto& [curr_label, next_label] : _edgeLabel_2_next_edgeLabel) {
         cout << "\tCurrent label: " << curr_label << endl;
         cout << "\tNext label: " << next_label << endl;   
     }
