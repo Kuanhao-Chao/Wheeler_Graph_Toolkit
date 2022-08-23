@@ -104,7 +104,7 @@ def main():
                 ##   Only do the search if it's not "-".
                 #############################
                 preceding_nongap_node_offset = 1
-                while (col_idx-preceding_nongap_node_offset > -1 and alignment[row_idx, col_idx-preceding_nongap_node_offset] == "-"):
+                while (col_idx-preceding_nongap_node_offset > 0 and alignment[row_idx, col_idx-preceding_nongap_node_offset] == "-"):
                     preceding_nongap_node_offset += 1
                     print("\t\t Skipping preceding node gap!!")
 
@@ -201,11 +201,14 @@ def main():
     ##############################
     ## Writing out the graph into dot file
     ##############################
-    try:
-        os.remove("./dot/output.dot")
+    fw_name = "./dot/Rev_det_"+ os.path.basename(sys.argv[1])
+    fw_name = fw_name.replace('.fasta', '.dot')
+    print("fw_name: ", fw_name)
+    try:    
+        os.remove(fw_name)
     except OSError:
         pass
-    fw = open("./dot/output.dot", "a")
+    fw = open(fw_name, "a")
     fw.write("strict digraph  {\n")
     bfs(visited, source)
     visited = []

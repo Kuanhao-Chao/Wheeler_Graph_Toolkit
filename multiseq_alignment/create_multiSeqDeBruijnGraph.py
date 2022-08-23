@@ -84,11 +84,14 @@ def main():
     ##############################
     ## Writing out the graph into dot file
     ##############################
-    try:
-        os.remove("./dot/output.dot")
+    fw_name = "./dot/DeBruijn_k_"+str(k) + "_" + os.path.basename(sys.argv[1])
+    fw_name = fw_name.replace('.fasta', '.dot')
+    print("fw_name: ", fw_name)
+    try:    
+        os.remove(fw_name)
     except OSError:
         pass
-    fw = open("./dot/output.dot", "a")
+    fw = open(fw_name, "a")
     fw.write("strict digraph  {\n")
     bfs(visited, kmer_dic["$"])
     visited = []
@@ -132,9 +135,6 @@ def bfs_write(visited, node, fw): #function for BFS
                 visited.append(child)
                 queue.append(child)
                 # print("Appending into queue") 
-
-
-
 
 if __name__ == "__main__":
     main()
