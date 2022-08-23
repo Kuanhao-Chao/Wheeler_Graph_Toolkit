@@ -2,3 +2,5 @@
 graph/correctness_test/*
 .vscode
 __pycache__/
+g.smt2
+*.smt2
