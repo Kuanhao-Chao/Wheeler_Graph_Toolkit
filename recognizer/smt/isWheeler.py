@@ -1,5 +1,5 @@
 #! /Users/chaokuan-hao/miniconda3/bin/python
-from z3 import Int, Solver, And, Implies, Distinct
+from z3 import Int, Solver, And, Implies, Distinct, sat, unsat
 import sys
 import networkx as nx
 import os
@@ -13,7 +13,6 @@ def parse(filename):
         global G
         G = nx.DiGraph(nx.nx_pydot.read_dot(filename))
         nodes= set(Int(node) for node in list(G.nodes()) if node != '\\n')
-        print(G.edges(data=True))
         edges = [(Int(u), Int(v), ord(attr['label'])) 
                 for (u, v, attr) in G.edges(data=True)]
         for (u, v, l) in edges:
@@ -56,7 +55,7 @@ for u in no_incoming_edge:
 ##  need to check both directions
 ##############################
 for i in range(len(edges)):
-    for j in range(len(edges)):
+    for j in range(i+1, len(edges)):
         if i != j:
             ui, vi, wi = edges[i]
             uj, vj, wj = edges[j]
@@ -64,33 +63,35 @@ for i in range(len(edges)):
             ##############################
             ## Approach 1:
             ##############################
-            # if wi == wj: s.add(Implies(ui < uj, vi <= vj))
-            # elif wi < wj: s.add(vi < vj)
-            # elif wi > wj: s.add(vi > vj)
-            # else: raise RuntimeError
+            if wi == wj: 
+                s.add(Implies(ui < uj, vi <= vj))
+                s.add(Implies(ui > uj, vi >= vj))
+            elif wi < wj: s.add(vi < vj)
+            elif wi > wj: s.add(vi > vj)
+            else: raise RuntimeError
 
             ##############################
             ## Approach 2:
             ##############################
             # Constraint 1
-            s.add(Implies(wi < wj, vi < vj))
+            # s.add(Implies(wi < wj, vi < vj))
             # Constraint 2
-            s.add(Implies(
-                And(wi == wj, ui < uj),
-                vi <= vj))
+            # s.add(Implies(
+            #     And(wi == wj, ui < uj),
+            #     vi <= vj))
 
 with open('g.smt2', 'w') as f:
     f.write(s.to_smt2())
 
-sat = s.check()
+res = s.check()
 
 # Print out the node ordering if the given graph is wheeler..
 
 mapping = {}
-print(sat)
+print(res)
 
 
-if sat.r == 1: 
+if res == sat: 
     model = s.model()
     print(model)
     for node in model:
@@ -124,7 +125,7 @@ if sat.r == 1:
     fw.close()
 
 # Only report if the given graph is wheeler.
-if sat.r == 1:
+if res == sat:
     sys.exit(1)
-elif sat.r == -1: 
+elif res == unsat: 
     sys.exit(0)
