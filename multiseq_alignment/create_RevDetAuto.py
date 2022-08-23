@@ -8,6 +8,7 @@ from Bio.Align import MultipleSeqAlignment
 
 import node as n
 import sys
+import os
 
 queue = []     #Initialize a queue
 
@@ -200,6 +201,10 @@ def main():
     ##############################
     ## Writing out the graph into dot file
     ##############################
+    try:
+        os.remove("./dot/output.dot")
+    except OSError:
+        pass
     fw = open("./dot/output.dot", "a")
     fw.write("strict digraph  {\n")
     bfs(visited, source)

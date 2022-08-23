@@ -8,7 +8,10 @@ class node:
         print("Initializing a node: ", self.nodeid, self.nodelabel)
     
     def add_parent(self, parent):
-        self.parents.append(parent)
+        if parent not in self.parents:
+            self.parents.append(parent)
+        else:
+            print("The parent was added before!")
 
     def add_child(self, child):
         if child not in self.children:
