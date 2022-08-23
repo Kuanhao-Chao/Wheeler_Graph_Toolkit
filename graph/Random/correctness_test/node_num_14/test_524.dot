@@ -1,0 +1,15 @@
+strict digraph  {
+1;
+0;
+9;
+11;
+13;
+1 -> 13  [label=g];
+0 -> 11  [label=f];
+9 -> 1  [label=a];
+11 -> 1  [label=a];
+11 -> 13  [label=g];
+13 -> 1  [label=a];
+13 -> 9  [label=e];
+13 -> 11  [label=f];
+}

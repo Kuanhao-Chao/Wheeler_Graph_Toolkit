@@ -1,0 +1,10 @@
+strict digraph  {
+0;
+3;
+1;
+4;
+2;
+6;
+3 -> 6  [label=a];
+2 -> 4  [label=a];
+}

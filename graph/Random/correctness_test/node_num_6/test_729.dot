@@ -1,0 +1,5 @@
+strict digraph  {
+0;
+7;
+0 -> 7  [label=c];
+}

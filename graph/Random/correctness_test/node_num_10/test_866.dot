@@ -1,0 +1,19 @@
+strict digraph  {
+0;
+1;
+4;
+5;
+9;
+10;
+0 -> 5  [label=c];
+0 -> 10  [label=e];
+1 -> 0  [label=a];
+1 -> 4  [label=b];
+1 -> 5  [label=c];
+4 -> 1  [label=a];
+4 -> 5  [label=c];
+4 -> 9  [label=d];
+9 -> 4  [label=b];
+9 -> 10  [label=e];
+10 -> 9  [label=d];
+}
