@@ -727,7 +727,6 @@ strict digraph  {
 	S431 -> S439 [ label = T ];
 	S432 -> S410 [ label = A ];
 	S432 -> S440 [ label = G ];
-	S433 -> S441 [ label = "$" ];
 	S434 -> S442 [ label = G ];
 	S435 -> S443 [ label = A ];
 	S435 -> S442 [ label = G ];
@@ -763,7 +762,6 @@ strict digraph  {
 	S451 -> S462 [ label = G ];
 	S451 -> S463 [ label = A ];
 	S452 -> S461 [ label = T ];
-	S452 -> S441 [ label = "$" ];
 	S453 -> S461 [ label = T ];
 	S454 -> S461 [ label = T ];
 	S455 -> S457 [ label = G ];
@@ -811,7 +809,6 @@ strict digraph  {
 	S480 -> S487 [ label = A ];
 	S481 -> S487 [ label = A ];
 	S481 -> S484 [ label = C ];
-	S482 -> S441 [ label = "$" ];
 	S483 -> S488 [ label = T ];
 	S483 -> S489 [ label = G ];
 	S483 -> S408 [ label = A ];
@@ -831,7 +828,6 @@ strict digraph  {
 	S491 -> S498 [ label = A ];
 	S492 -> S499 [ label = G ];
 	S493 -> S500 [ label = T ];
-	S493 -> S441 [ label = "$" ];
 	S493 -> S501 [ label = A ];
 	S494 -> S502 [ label = T ];
 	S494 -> S498 [ label = A ];
@@ -859,7 +855,6 @@ strict digraph  {
 	S510 -> S516 [ label = T ];
 	S511 -> S514 [ label = C ];
 	S512 -> S517 [ label = T ];
-	S513 -> S441 [ label = "$" ];
 	S514 -> S518 [ label = A ];
 	S514 -> S519 [ label = C ];
 	S515 -> S520 [ label = G ];
@@ -888,7 +883,6 @@ strict digraph  {
 	S531 -> S536 [ label = T ];
 	S531 -> S537 [ label = G ];
 	S532 -> S536 [ label = T ];
-	S533 -> S441 [ label = "$" ];
 	S534 -> S538 [ label = A ];
 	S535 -> S539 [ label = T ];
 	S536 -> S539 [ label = T ];
@@ -909,7 +903,6 @@ strict digraph  {
 	S546 -> S549 [ label = A ];
 	S547 -> S549 [ label = A ];
 	S547 -> S550 [ label = G ];
-	S547 -> S441 [ label = "$" ];
 	S548 -> S551 [ label = T ];
 	S549 -> S551 [ label = T ];
 	S549 -> S552 [ label = G ];
@@ -920,11 +913,8 @@ strict digraph  {
 	S552 -> S555 [ label = T ];
 	S553 -> S556 [ label = G ];
 	S554 -> S557 [ label = A ];
-	S555 -> S441 [ label = "$" ];
 	S556 -> S558 [ label = G ];
 	S556 -> S559 [ label = T ];
-	S556 -> S441 [ label = "$" ];
-	S557 -> S441 [ label = "$" ];
 	S558 -> S479 [ label = T ];
 	S559 -> S479 [ label = T ];
 }

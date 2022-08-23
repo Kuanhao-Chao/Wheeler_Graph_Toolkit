@@ -18,7 +18,7 @@ def main():
     alignment_len = alignment.get_alignment_length()
     seq_number = len(alignment)
     source = n.node(sys.maxsize, "#", 0)
-    sink = n.node(0, '"$"', alignment_len)
+    sink = n.node(0, "$", alignment_len)
     # print("Iterating the alignment from the back")
 
     nodeID = 1
@@ -243,7 +243,8 @@ def bfs_write(visited, node, fw): #function for BFS
         # print("Dequeue") 
         # print("-"*m.nodecolid, m.nodelabel, "(", m.nodeid, ")") 
         for m_child in m.children:
-            fw.write("\tS" + str(m.nodeid) + " -> S" + str(m_child.nodeid) + " [ label = "+m_child.nodelabel+" ];\n")
+            if m_child.nodelabel != "$":
+                fw.write("\tS" + str(m.nodeid) + " -> S" + str(m_child.nodeid) + " [ label = "+m_child.nodelabel+" ];\n")
             # fw.write("S" + str(m.nodeid) + " S" + str(m_child.nodeid) + " "+m_child.nodelabel+"\n")
             # print(m.nodeid, " -> ", m_child.nodeid)
 

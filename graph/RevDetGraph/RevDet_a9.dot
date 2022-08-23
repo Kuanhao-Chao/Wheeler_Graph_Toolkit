@@ -76,7 +76,6 @@ strict digraph  {
 	S62 -> S63 [ label = T ];
 	S63 -> S64 [ label = G ];
 	S64 -> S65 [ label = G ];
-	S65 -> S66 [ label = "$" ];
 	S65 -> S67 [ label = G ];
 	S67 -> S68 [ label = G ];
 	S68 -> S69 [ label = T ];
@@ -85,7 +84,6 @@ strict digraph  {
 	S70 -> S71 [ label = A ];
 	S71 -> S72 [ label = A ];
 	S72 -> S73 [ label = G ];
-	S73 -> S66 [ label = "$" ];
 	S73 -> S74 [ label = A ];
 	S74 -> S75 [ label = T ];
 	S75 -> S76 [ label = T ];
@@ -99,5 +97,4 @@ strict digraph  {
 	S83 -> S84 [ label = A ];
 	S84 -> S85 [ label = T ];
 	S85 -> S86 [ label = G ];
-	S86 -> S66 [ label = "$" ];
 }

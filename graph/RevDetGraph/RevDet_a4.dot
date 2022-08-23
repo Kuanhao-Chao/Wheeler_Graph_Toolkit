@@ -15,7 +15,6 @@ strict digraph  {
 	S9 -> S12 [ label = A ];
 	S10 -> S13 [ label = C ];
 	S11 -> S12 [ label = A ];
-	S12 -> S14 [ label = "$" ];
 	S13 -> S15 [ label = T ];
 	S15 -> S8 [ label = C ];
 }

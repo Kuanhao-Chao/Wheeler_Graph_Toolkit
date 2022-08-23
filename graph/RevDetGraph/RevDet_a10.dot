@@ -985,5 +985,4 @@ strict digraph  {
 	S747 -> S749 [ label = G ];
 	S748 -> S750 [ label = A ];
 	S749 -> S750 [ label = A ];
-	S750 -> S751 [ label = "$" ];
 }

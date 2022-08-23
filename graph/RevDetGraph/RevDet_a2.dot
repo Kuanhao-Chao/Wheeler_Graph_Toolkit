@@ -34,5 +34,4 @@ strict digraph  {
 	S23 -> S22 [ label = T ];
 	S24 -> S26 [ label = C ];
 	S25 -> S26 [ label = C ];
-	S26 -> S27 [ label = "$" ];
 }
