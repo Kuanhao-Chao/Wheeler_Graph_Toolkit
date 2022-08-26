@@ -1,5 +1,5 @@
 #! /Users/chaokuan-hao/miniconda3/bin/python
-from z3 import Int, Solver, And, Implies, Distinct
+from z3 import Int, Solver, And, Implies, Distinct, sat, unsat
 import sys
 import networkx as nx
 import os
@@ -15,7 +15,6 @@ def parse(inputfile):
         global G
         G = nx.DiGraph(nx.nx_pydot.read_dot(inputfile))
         nodes= set(Int(node) for node in list(G.nodes()) if node != '\\n')
-        # print(G.edges(data=True))
         edges = [(Int(u), Int(v), ord(attr['label'])) 
                 for (u, v, attr) in G.edges(data=True)]
         for (u, v, l) in edges:
@@ -31,7 +30,6 @@ def parse(inputfile):
                 nodes.update([u, v])
                 edges.append((u,v,w))
     return nodes, edges, has_incoming_edge
-
 
 def main(argv):
     # in microseconds.
