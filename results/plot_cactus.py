@@ -2,9 +2,7 @@ import sys
 from matplotlib import pyplot as plt
 import itertools
 
-marker = itertools.cycle((',', '+', '.', 'o', '*')) 
-n_instances = 0
-
+marker = itertools.cycle(('+', 'o', '*')) 
 all_times = []
 
 for file in sys.argv[1:]:
@@ -17,8 +15,6 @@ for file in sys.argv[1:]:
     agg_times = [ sorted_times[0] ]
     for i in range(1, len(sorted_times)):
         agg_times.append(agg_times[i-1] + sorted_times[i])
-
-    n_instances = max(n_instances, len(agg_times))
 
     all_times.append((agg_times, file))
 
