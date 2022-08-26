@@ -25,6 +25,7 @@ using namespace std;
 
 extern bool debugMode;
 extern bool verbose;
+extern bool writeIOL;
 extern bool print_invalid;
 extern bool all_valid_WG;
 extern chrono::high_resolution_clock::time_point c_start;
@@ -725,7 +726,7 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
             } else if (edgegp_node_2_innodes_vec[a] > edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[a].front() < edgegp_node_2_innodes_vec[b].back()) {
             
-// #ifdef DEBUGPRINT
+#ifdef DEBUGPRINT
                     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
                     cout << "XX\tedgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
                     cout << "XX\tedgegp_label: " << this -> get_node_label(edgegp_nodes[a]) << endl;
@@ -741,7 +742,7 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
                         cout << bb << " ";
                     }
                     cout << endl;
-// #endif
+#endif
                     this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
                 }
             }
@@ -1069,11 +1070,11 @@ void digraph::WG_final_check() {
     print_node_2_innodes_graph();
     if (_valid_WG_num > 0) {
         _is_wg = true;
-        cout << "(v) It is a wheeler graph!!" << endl;
+        // cout << "(v) It is a wheeler graph!!" << endl;
         this -> exit_program(1);
     } else {
         _is_wg = false;
-        cout << "(x) It is not a wheeler graph!!" << endl;
+        // cout << "(x) It is not a wheeler graph!!" << endl;
         this -> exit_program(-1);
     }
 }
@@ -1195,7 +1196,9 @@ void digraph::valid_wheeler_graph(bool early_stop) {
         cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
     }
     _valid_WG_num += 1;
-    this -> output_wg_gagie();
+    if (writeIOL) {
+        this -> output_wg_gagie();
+    }
     if (early_stop) {
         this -> WG_final_check();
     }
@@ -1218,18 +1221,23 @@ void digraph::invalid_wheeler_graph(string msg, bool stop) {
         }
     }
     if (stop) {
-        cout << "(x) It is not a wheeler graph!!" << endl;
+        // cout << "(x) It is not a wheeler graph!!" << endl;
         this -> exit_program(-1);
     }
 }
 
 
 void digraph::exit_program(int return_val) {
-    this -> print_wg_result_number();
+    if (verbose) {
+        this -> print_wg_result_number();
+    }
     c_end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::microseconds>(c_end - c_start);
-    cout << "Runtime : "
-         << duration.count() << " microseconds" << endl;
+
+    cout << return_val << "\t" << to_string(_nodes_num) << "\t" << duration.count() << "\t" << _path_name << endl;
+
+    // cout << "Runtime : "
+    //      << duration.count() << " microseconds" << endl;
     exit(return_val);
 }
 

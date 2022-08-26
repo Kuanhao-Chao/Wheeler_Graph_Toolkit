@@ -84,7 +84,12 @@ def main():
     ##############################
     ## Writing out the graph into dot file
     ##############################
-    fw_name = "../../graph/DeBruijnGraph/DeBruijn_k_"+str(k) + "_" + os.path.basename(sys.argv[1])
+    relative_filename = os.path.relpath(sys.argv[1], "../../multiseq_alignment/")
+    dir_name = os.path.dirname(relative_filename)
+    file_basename = os.path.basename(relative_filename)
+    new_dir_name = os.path.join("../../graph/DeBruijnGraph", dir_name)
+    os.makedirs(new_dir_name, exist_ok = True)
+    fw_name = os.path.join(new_dir_name, "DeBruijn_k_"+str(k) + "_" + file_basename)
     fw_name = fw_name.replace('.fasta', '.dot')
     print("fw_name: ", fw_name)
     try:    

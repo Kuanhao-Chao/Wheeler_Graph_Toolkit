@@ -23,13 +23,14 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-i / --print_invalid] [-a / --all_valid_WG]\n\n"
+\trecognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-w / --writeIOL] [-i / --print_invalid] [-a / --all_valid_WG]\n\n"
 
 using namespace std;
 
 bool valid_wg=true;
 bool debugMode=false;
 bool verbose=false;
+bool writeIOL=false;
 bool print_invalid=false;
 bool all_valid_WG = false;
 chrono::high_resolution_clock::time_point c_start;
@@ -51,7 +52,7 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;verbose;print_invalid;all_valid_WG;"
+	"debug;help;version;verbose;writeIOL;print_invalid;all_valid_WG;"
     "exclude=hviax:n:j:s:D:G:C:S:l:m:o:j:c:f:p:g:P:M:Bb:A:E:F:T:");
 
 	processOptions(args);
@@ -164,7 +165,7 @@ int main(int argc, char* argv[]) {
                     node_names_set.insert(node_1_name);
                     node_names_set.insert(node_2_name);
                     edgeLabels.push_back(match[3]);
-                    cout << "match[3]: " << match[3] << endl;
+                    // cout << "match[3]: " << match[3] << endl;
                 }
             }
         }   
@@ -267,6 +268,7 @@ void processOptions(GArgs& args) {
         args.printCmdLine(stderr);
     }
 
+    writeIOL=(args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
     print_invalid=(args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
     all_valid_WG=(args.getOpt('a')!=NULL || args.getOpt("all_valid_WG"));
 
