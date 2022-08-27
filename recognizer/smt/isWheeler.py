@@ -1,5 +1,5 @@
 #! /Users/chaokuan-hao/miniconda3/bin/python
-from z3 import Int, Solver, And, Implies, Distinct, sat, unsat
+from z3 import Int, Solver, And, Implies, Distinct, sat, unsat, SolverFor
 import sys
 import networkx as nx
 import os
@@ -75,7 +75,8 @@ def main(argv):
     ##############################
     ## Adding Wheeler graph constraints
     ##############################
-    s = Solver()
+    # s = Solver()
+    s = SolverFor('QF_IDL')
     # 1. Range for nodes
     for u in nodes:
         s.add(And(u > 0, u < len(nodes)+1))
@@ -125,8 +126,8 @@ def main(argv):
     print(sat, end = "\t")
 
     if sat.r == 1: 
+        model = s.model()
         if verbose:
-            model = s.model()
             print(model)
         if outputfile != '':
             for node in model:
