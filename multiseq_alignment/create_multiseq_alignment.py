@@ -1,4 +1,7 @@
 #! /Users/chaokuan-hao/miniconda3/bin/python 
+
+# Usage: python create_multiseq_alignment.py <root_fasta> <output_dir>
+
 from Bio import AlignIO, SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
