@@ -212,7 +212,7 @@ void digraph::innodelist_sort_relabel() {
     WG_valid = this -> WG_checker();
     if (!WG_valid) {
         // Invalid graph !! Terminate the program.
-        cout << "XX After sorting by innode-list and relabelling, it is not a wheeler graph" << endl;
+        // cout << "XX After sorting by innode-list and relabelling, it is not a wheeler graph" << endl;
         this -> WG_final_check();
         this -> exit_program(-1);
     }

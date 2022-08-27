@@ -4,3 +4,4 @@ graph/correctness_test/*
 __pycache__/
 g.smt2
 *.smt2
+slides/
