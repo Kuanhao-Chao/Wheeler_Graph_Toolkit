@@ -2,14 +2,13 @@ import sys
 from matplotlib import pyplot as plt
 import itertools
 
-marker = itertools.cycle(('+', 'o', '*')) 
+marker = itertools.cycle(('+', 'o', '*'))
 all_times = []
 
 for file in sys.argv[1:]:
     with open(file, 'r') as f:
         lines = f.readlines()
         times = [float(line.split()[2]) for line in lines]
-        print("times: ", times)
 
     sorted_times = sorted(times)
 
