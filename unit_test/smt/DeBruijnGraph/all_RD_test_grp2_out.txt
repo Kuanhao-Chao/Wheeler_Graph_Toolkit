@@ -1478,3 +1478,4 @@ sat	558	50697264.5	../../graph/DeBruijnGraph/test_grp2/DeBruijn_k_8_a162.dot
 sat	559	50967767.75	../../graph/DeBruijnGraph/test_grp2/DeBruijn_k_8_a163.dot
 sat	565	52328518.25	../../graph/DeBruijnGraph/test_grp2/DeBruijn_k_8_a164.dot
 sat	570	53844165.75	../../graph/DeBruijnGraph/test_grp2/DeBruijn_k_8_a165.dot
+sat	571	54452014.25	../../graph/DeBruijnGraph/test_grp2/DeBruijn_k_8_a166.dot

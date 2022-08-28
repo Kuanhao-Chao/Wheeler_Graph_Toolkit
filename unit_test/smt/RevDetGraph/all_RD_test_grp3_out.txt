@@ -354,3 +354,4 @@ unsat	736	126238622.75	../../graph/RevDetGraph/test_grp3/RevDet_a420.dot
 unsat	737	127218148.0	../../graph/RevDetGraph/test_grp3/RevDet_a421.dot
 unsat	738	128718298.25	../../graph/RevDetGraph/test_grp3/RevDet_a422.dot
 unsat	740	129755269.25	../../graph/RevDetGraph/test_grp3/RevDet_a423.dot
+unsat	741	129839717.25	../../graph/RevDetGraph/test_grp3/RevDet_a424.dot
