@@ -1,6 +1,8 @@
 import sys
 from matplotlib import pyplot as plt
 import itertools
+import os
+import re
 
 marker = itertools.cycle(('+', 'o', '*'))
 all_times = []
@@ -18,11 +20,18 @@ for file in sys.argv[1:]:
 
     all_times.append((agg_times, file))
 
+gtype = os.path.basename(os.path.dirname(sys.argv[1]))
 
+# p = re.compile(sys.argv[1])
+result = re.search("test_grp[0-9]*", sys.argv[1])
+test_case = result.group()
+# print(result.group[0])
+plt.figure(figsize=(12, 6), dpi=200)
 
 plt.xlabel('# of instances')
 plt.ylabel('time (msec)')
 for agg_times, label in all_times:
     plt.plot(range(len(agg_times)), agg_times, label=label, marker=next(marker))
 plt.legend()
-plt.show()
+# plt.show()
+plt.savefig(os.path.join(gtype, test_case+"_cactus_plot.png"), format="PNG")

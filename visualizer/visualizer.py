@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import getopt
 import sys
 import random
-from colordict import *
+import os
 
 random.seed(1)
 color_default = ["blue", "red", "green", "orange"]
@@ -32,6 +32,8 @@ def main(argv):
     ##############################
     ## Parsing arguments
     ##############################
+    inputfile = ""
+    outputfile = ""
     inputfile_given = False
     try:
         opts, args = getopt.getopt(argv,"hvi:o:",["ifile=","ofile="])
@@ -54,13 +56,14 @@ def main(argv):
         print('isWheeler.py -i <inputfile> -o <outputfile> -v')
         sys.exit(2)
     nodes, edges, edge_labels, has_incoming_edge = parse(inputfile)
+
     node_num = len(nodes)
     print(nodes)
     print(edges)
     print(edge_labels)
     print(has_incoming_edge)
 
-    figure_width = node_num
+    figure_width = node_num*0.9
     f = plt.figure(figsize=(figure_width, 6), dpi=100)
     ax = f.add_subplot(1,1,1)
 
@@ -112,7 +115,11 @@ def main(argv):
     plt.legend(fontsize="x-large")
     f.tight_layout()
     # plt.show()
-    plt.savefig("Graph.png", format="PNG")
+    if outputfile == "":
+        defualt_outfile=os.path.splitext(inputfile[4:])[0]+".png"
+        plt.savefig(defualt_outfile, format="PNG")
+    else:
+        plt.savefig(outputfile, format="PNG")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
