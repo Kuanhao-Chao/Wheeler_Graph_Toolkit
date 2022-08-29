@@ -4,6 +4,6 @@ do
 	for entry in "$1/"*
 	do
     		#echo ./create_multiSeqDeBruijnGraph.py $entry $d
-    		./create_multiSeqDeBruijnGraph.py $entry $d
+    		python create_multiSeqDeBruijnGraph.py $entry $d
 	done
 done

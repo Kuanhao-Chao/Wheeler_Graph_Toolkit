@@ -23,16 +23,19 @@ def main():
     print("seq_number: ", seq_number)
     print("alignment: ", alignment)
 
+    # if alignment_len > 200:
+    #     alignment_len = 200
+
     try:    
         os.remove(fwdir)
     except OSError:
         pass
     os.makedirs(fwdir)
 
-    for i in range(5, alignment_len+1, 1):
-        print(alignment[:, :i].get_alignment_length())
+    for i in range(5, alignment_len+1-38, 1):
+        print(alignment[:, 38:i+38].get_alignment_length())
         fwname = os.path.join(fwdir, "a"+str(i)+".fasta")
-        SeqIO.write(alignment[:, :i], fwname, "fasta")
+        SeqIO.write(alignment[:, 38:i+38], fwname, "fasta")
 
 if __name__ == "__main__":
     main()

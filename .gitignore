@@ -5,3 +5,4 @@ __pycache__/
 g.smt2
 *.smt2
 slides/
+graph/

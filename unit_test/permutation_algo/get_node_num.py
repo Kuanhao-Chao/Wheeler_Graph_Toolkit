@@ -2,7 +2,6 @@
 import sys
 import networkx as nx
 import os
-import time
 
 # Return nodes as z3 Ints
 def parse(inputfile):
@@ -15,7 +14,6 @@ def parse(inputfile):
 
 def main():
     # in microseconds.
-    time_start = time.time_ns() / (10 ** 3)
     inputfile_given = False
     inputfile = ''
     outputfile = ''
@@ -26,7 +24,7 @@ def main():
     ##############################
     inputfile = sys.argv[1]
     nodes = parse(inputfile)
-    if len(nodes) > 65:
+    if len(nodes) > 60:
         sys.exit(-1)
     else:
         sys.exit(1)
