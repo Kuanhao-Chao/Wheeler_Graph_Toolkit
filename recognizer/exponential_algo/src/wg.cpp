@@ -6,6 +6,7 @@
 
 // #define DEBUGPRINT
 // #define PERMUTATION
+#define BENCHMARK
 
 #include <iostream>
 #include <fstream>
@@ -245,6 +246,7 @@ int main(int argc, char* argv[]) {
 
     n_len = e_n_len - e_len;
 
+#ifndef BENCHMARK
     cout << "*  |E|: " << e_len << endl;
     cout << "*  |N|: " << n_len << endl;
     cout << "*  |σ|: " << sigma_len << endl;
@@ -271,11 +273,11 @@ int main(int argc, char* argv[]) {
     cout << "\n*  L bitvector: " << endl << "\t";
     for_each(L_array.begin(), L_array.end(), [](char v) {cout << v;});
 
-
     // int L_zero_count = count(L_array.begin(), L_array.end(), '0');
     // cout << "*  L_zero_count: " << L_zero_count << endl;
 
     cout << "\n\n*  Total number of iteration times (without filteration): 2^|I| * 2^|O| * 2^|L| (" << pow(2, I_array.size()) << " * " << pow(2, O_array.size()) << " * " << pow(2, L_array.size()) << "): "<< pow(2, I_array.size()) * pow(2, O_array.size()) * pow(2, L_array.size()) << endl;
+#endif
 
     vector<char> L_array_char_sorted(L_array_char.size());
 #ifdef PERMUTATION
@@ -308,14 +310,20 @@ int main(int argc, char* argv[]) {
     // } while ( next_permutation(L_array_char_sorted.begin(),L_array_char_sorted.end()) );
 
 
+#ifndef BENCHMARK
     // Iterating the WG
     cout << "\nIterating through 3 bit arrays: " << endl;
+#endif
     // Bit array I
     bit_array_itr(I_array, O_array, L_array, L_array_char, L_array_char_sorted, e_len, n_len, sigma_len);
 
     c_end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::microseconds>(c_end - c_start);
+
+#ifndef BENCHMARK
     cout << "Runtime : " << duration.count() << " microseconds" << endl;
+#endif
+
     return 0;
 }
 

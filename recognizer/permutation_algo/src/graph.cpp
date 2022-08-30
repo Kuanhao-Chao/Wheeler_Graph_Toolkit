@@ -28,8 +28,11 @@ extern bool verbose;
 extern bool writeIOL;
 extern bool print_invalid;
 extern bool all_valid_WG;
-extern chrono::high_resolution_clock::time_point c_start;
-extern chrono::high_resolution_clock::time_point c_end;
+// extern chrono::high_resolution_clock::time_point c_start;
+// extern chrono::high_resolution_clock::time_point c_end;
+extern clock_t c_start;
+extern clock_t c_end;
+extern double cpu_time_used;
 
 digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name) {
     _nodes_num = nodes_num;
@@ -1231,10 +1234,12 @@ void digraph::exit_program(int return_val) {
     if (verbose) {
         this -> print_wg_result_number();
     }
-    c_end = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::microseconds>(c_end - c_start);
+    // c_end = chrono::high_resolution_clock::now();
+    // auto duration = chrono::duration_cast<chrono::microseconds>(c_end - c_start);
+    c_end = clock();
+    cpu_time_used = ((double) (c_end - c_start));
 
-    cout << return_val << "\t" << to_string(_nodes_num) << "\t" << duration.count() << "\t" << _path_name << endl;
+    cout << return_val << "\t" << to_string(_nodes_num) << "\t" << cpu_time_used << "\t" << _path_name << endl;
 
     // cout << "Runtime : "
     //      << duration.count() << " microseconds" << endl;

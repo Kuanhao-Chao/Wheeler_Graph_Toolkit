@@ -16,7 +16,8 @@
 #include <unordered_map>
 #include <set>
 #include <new>
-#include <chrono>
+// #include <chrono>
+#include <time.h>
 #include "GArgs.h"
 #include "edge.hpp"
 #include "graph.hpp"
@@ -33,14 +34,16 @@ bool verbose=false;
 bool writeIOL=false;
 bool print_invalid=false;
 bool all_valid_WG = false;
-chrono::high_resolution_clock::time_point c_start;
-chrono::high_resolution_clock::time_point c_end;
+// chrono::high_resolution_clock::time_point c_start;
+// chrono::high_resolution_clock::time_point c_end;
+clock_t c_start, c_end;
+double cpu_time_used;
 
 void processOptions(GArgs& args);
 
 int main(int argc, char* argv[]) {
 
-    c_start = chrono::high_resolution_clock::now();
+    c_start = clock();
     (void)argc;
     string line;    
 

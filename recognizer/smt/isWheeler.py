@@ -4,7 +4,7 @@ import sys
 import networkx as nx
 import os
 import getopt
-import time
+from time import process_time_ns
 
 # Return nodes as z3 Ints
 def parse(inputfile):
@@ -33,7 +33,7 @@ def parse(inputfile):
 
 def main(argv):
     # in microseconds.
-    time_start = time.time_ns() / (10 ** 3)
+    time_start = process_time_ns() / (10 ** 3)
     inputfile_given = False
     inputfile = ''
     outputfile = ''
@@ -161,7 +161,7 @@ def main(argv):
             fw.close()
 
     # Only report if the given graph is wheeler.
-    time_end = time.time_ns() / (10 ** 3)
+    time_end = process_time_ns() / (10 ** 3)
 
     print(len(nodes), end="\t")
     print(time_end - time_start, end="\t")

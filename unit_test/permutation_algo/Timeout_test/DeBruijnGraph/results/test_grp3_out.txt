@@ -1,0 +1,7 @@
+1	28	12534	DeBruijn_k_4_a10
+1	27	12924	DeBruijn_k_4_a11
+1	28	13301	DeBruijn_k_4_a12
+1	32	15079	DeBruijn_k_4_a13
+1	37	17631	DeBruijn_k_4_a14
+1	39	18457	DeBruijn_k_4_a15
+1	44	20729	DeBruijn_k_4_a16
