@@ -181,6 +181,8 @@ void digraph::innodelist_sort_relabel() {
     cout << "************************** " << endl; 
 #endif
     int accum_edgegp_size = 0;
+
+    // To-do: maybe I can repeat the sorting & relabling until the node labels do not change.
     for (auto& [label, edges] : _edgeLabel_2_edge) {
 #ifdef DEBUGPRINT
         cout << "****** LABEL: " << label << endl;

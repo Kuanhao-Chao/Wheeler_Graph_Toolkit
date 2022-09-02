@@ -32,4 +32,6 @@ for nodes, times, label in all_vars:
     # plt.plot(range(len(agg_times)), agg_times, label=label, marker=next(marker))
 plt.legend()
 # plt.show()
+# plt.savefig(os.path.join(gtype, test_case+"_node_vs_time_plot.png"), format="PNG")
+# plt.savefig(os.path.join(gtype, "p_vs_e_node_vs_time_plot.png"), format="PNG")
 plt.savefig(os.path.join(gtype, test_case+"_node_vs_time_plot.png"), format="PNG")

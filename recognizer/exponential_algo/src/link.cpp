@@ -3,13 +3,12 @@
 
 extern bool debugMode;
 extern bool verbose;
-extern chrono::high_resolution_clock::time_point c_start;
-extern chrono::high_resolution_clock::time_point c_end;
+// extern chrono::high_resolution_clock::time_point c_start;
+// extern chrono::high_resolution_clock::time_point c_end;
 
-void bit_array_itr(vector<char>& I_array, vector<char>& O_array, vector<char>& L_array, vector<char>& L_array_char, vector<char>& L_array_char_sorted, int e_len, int n_len, int sigma_len) {
-    int I_len = I_array.size();
-    int O_len = O_array.size();
-    int L_len = L_array.size();
+void bit_array_itr(int e_len, int n_len, int sigma_len, int L_len) {
+    int I_len = e_len + n_len;
+    int O_len = e_len + n_len;
     /***********************
     * Iterating I array
     ************************/

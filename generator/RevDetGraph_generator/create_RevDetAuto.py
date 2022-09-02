@@ -90,13 +90,13 @@ def main():
                     mid_curr_node.add_child(mid_prev_node)
                     mid_prev_node.add_parent(mid_curr_node)
 
-                    # Adding source as the parent.
-                    if col_idx == 0:
-                        print("\tAdding source as parent")
-                        source.add_child(mid_curr_node)
-                        print("\t\tsource: ", source.nodelabel)
-                        print("\t\tmid_curr_node: ", mid_curr_node.nodelabel)
-                        mid_curr_node.add_parent(source)
+                # Adding source as the parent.
+                if col_idx == 0:
+                    print("\tAdding source as parent")
+                    source.add_child(mid_curr_node)
+                    print("\t\tsource: ", source.nodelabel)
+                    print("\t\tmid_curr_node: ", mid_curr_node.nodelabel)
+                    mid_curr_node.add_parent(source)
 
 
                 #############################

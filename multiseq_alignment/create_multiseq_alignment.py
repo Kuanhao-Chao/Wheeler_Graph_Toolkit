@@ -32,10 +32,16 @@ def main():
         pass
     os.makedirs(fwdir)
 
-    for i in range(5, alignment_len+1-38, 1):
+    # for i in range(5, alignment_len+1-38, 1):
+    #     print(alignment[:, 38:i+38].get_alignment_length())
+    #     fwname = os.path.join(fwdir, "a"+str(i)+".fasta")
+    #     SeqIO.write(alignment[:, 38:i+38], fwname, "fasta")
+
+    for i in range(1, 10, 1):
         print(alignment[:, 38:i+38].get_alignment_length())
         fwname = os.path.join(fwdir, "a"+str(i)+".fasta")
         SeqIO.write(alignment[:, 38:i+38], fwname, "fasta")
+
 
 if __name__ == "__main__":
     main()

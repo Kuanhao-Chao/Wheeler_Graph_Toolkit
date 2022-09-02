@@ -24,7 +24,7 @@ def main():
     ##############################
     inputfile = sys.argv[1]
     nodes = parse(inputfile)
-    if len(nodes) > 300:
+    if len(nodes) > 280:
         sys.exit(-1)
     else:
         sys.exit(1)
