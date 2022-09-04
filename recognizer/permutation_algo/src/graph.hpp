@@ -131,6 +131,4 @@ class digraph {
         void invalid_wheeler_graph(string msg, bool stop);
         void exit_program(int return_val);
         void output_wg_gagie();
-        void output_wg_dot();
-        void output_nodes_conversion();
 };

@@ -114,12 +114,12 @@ def main(argv):
 
     plt.legend(fontsize="x-large")
     f.tight_layout()
-    # plt.show()
-    if outputfile == "":
-        defualt_outfile=os.path.splitext(inputfile[4:])[0]+".png"
-        plt.savefig(defualt_outfile, format="PNG")
-    else:
-        plt.savefig(outputfile, format="PNG")
+    plt.show()
+    # if outputfile == "":
+    #     defualt_outfile=os.path.splitext(inputfile[4:])[0]+".png"
+    #     plt.savefig(defualt_outfile, format="PNG")
+    # else:
+    #     plt.savefig(outputfile, format="PNG")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

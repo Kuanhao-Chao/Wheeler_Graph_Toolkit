@@ -26,6 +26,8 @@ class edge {
         int get_head_label();
         int get_tail_name();
         int get_head_name();
+        string get_tail_name_string();
+        string get_head_name_string();
         int string2ascii(string line);
         string ascii2string(int node_name);
         bool operator <(edge& e);

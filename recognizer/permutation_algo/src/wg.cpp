@@ -16,7 +16,6 @@
 #include <unordered_map>
 #include <set>
 #include <new>
-// #include <chrono>
 #include <time.h>
 #include "GArgs.h"
 #include "edge.hpp"
@@ -24,18 +23,20 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-w / --writeIOL] [-i / --print_invalid] [-a / --all_valid_WG]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-p / --preprocess] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-a / --all_valid_WG] [-b / --benchmark]\n\n"
 
 using namespace std;
 
+string outDir;
 bool valid_wg=true;
 bool debugMode=false;
 bool verbose=false;
+bool preprocess=false;
 bool writeIOL=false;
+bool writeRange=false;
 bool print_invalid=false;
-bool all_valid_WG = false;
-// chrono::high_resolution_clock::time_point c_start;
-// chrono::high_resolution_clock::time_point c_end;
+bool all_valid_WG=false;
+bool benchmark_mode=false;
 clock_t c_start, c_end;
 double cpu_time_used;
 
@@ -55,82 +56,10 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;verbose;writeIOL;print_invalid;all_valid_WG;"
-    "exclude=hviax:n:j:s:D:G:C:S:l:m:o:j:c:f:p:g:P:M:Bb:A:E:F:T:");
+	"debug;help;version;outDir=;verbose;preprocess;writeIOL;writeRange;print_invalid;all_valid_WG;"
+    "exclude=hvpwriabx:n:j:s:D:G:C:S:l:m:o:j:c:f:p:g:P:M:Bb:A:E:F:T:");
 
 	processOptions(args);
-
-
-
-    // if (argc == 1 || argc > 6) {
-    //     cout << USAGE;
-    //     if (argc == 1) {
-    //         cerr << "You have to provide the DOT file path." << endl;
-    //     }
-    //     if (argc > 1) {
-    //         cerr << "You are input more than 3 options." << endl;
-    //     }
-    //     exit(0);
-    // }
-
-    // Default options
-    // Option 3
-    // if (argc <= 5) {
-    //     // verbose_mode = false;
-    // }
-    // if (argc <= 4) {
-    //     print_invalid = false;
-    // }
-    // // Option 2
-    // if (argc <= 3) {
-    //     !all_valid_WG = true;
-    // }
-    // // Option 1
-    // if (argc <= 2) {
-    //     method = "m1";
-    // }
-
-
-    // // Checker for options.
-    // if (argc >= 3) {
-    //     // Check wg_recognizer_method 'm1' or 'm2'
-    //     if (!(strcmp(argv[2], "m1")==0)  &&  !(strcmp(argv[2], "m2")==0)) {
-    //         cout << USAGE;
-    //         cerr << "wg_recognizer_method must be either 'm1' or 'm2'" << endl;
-    //         exit(0);
-    //     }
-    //     method = argv[2];
-    // }
-    // if (argc >= 4) {
-    //     // Check all_valid_WG 'm1' or 'm2'
-    //     if (!(strcmp(argv[3], "!all_valid_WG")==0)  &&  !(strcmp(argv[3], "normal")==0)) {
-    //         cout << USAGE;
-    //         cerr << "all_valid_WG must be either '!all_valid_WG' or 'normal'" << endl;
-    //         exit(0);
-    //     }
-    //     !all_valid_WG = (strcmp( argv[3], "!all_valid_WG") == 0);
-    // } 
-    // if (argc >= 5) {
-    //     // Check print_invalid 0 or 1
-    //     if (!(strcmp(argv[4], "0")==0)  &&  !(strcmp(argv[4], "1")==0)) {
-    //         cout << USAGE;
-    //         cerr << "print_invalid must be either 0 or 1" << endl;
-    //         exit(0);
-    //     }
-    //     print_invalid = (strcmp( argv[4], "1") == 0);
-    // }
-
-    // if (argc >= 6) {
-    //     // Check print_invalid 0 or 1
-    //     if (!(strcmp(argv[5], "0")==0)  &&  !(strcmp(argv[5], "1")==0)) {
-    //         cout << USAGE;
-    //         cerr << "print_invalid must be either 0 or 1" << endl;
-    //         exit(0);
-    //     }
-    //     // verbose_mode = (strcmp( argv[5], "1") == 0);
-    // }
-
-
     string file_extension = filesystem::path(argv[1]).extension();
     if (file_extension != ".dot") {
         cout << USAGE;
@@ -185,17 +114,16 @@ int main(int argc, char* argv[]) {
     digraph g = digraph(node_names, nodes_num, edges_num, path_name.stem());
     g.add_edges(node1_vec, node2_vec, edgeLabels);
 
-// #ifdef DEBUGPRINT
-//         string label = g.get_first_edgeLabel();
-//         while(label != "" ) {
-//             g.sort_edgeLabel_2_edge(label);
-//             label = g.get_next_edgeLabel(label);
-//         }
-//         g.print_graph();
-// #endif
+#ifdef DEBUGPRINT
+        string label = g.get_first_edgeLabel();
+        while(label != "" ) {
+            g.sort_edgeLabel_2_edge(label);
+            label = g.get_next_edgeLabel(label);
+        }
+        g.print_graph();
+#endif
 
 
-    // if (method == "m1") {
     /********************************
     *** Step 1: If after initialization, it is not a WG => it is not a WG.
     ********************************/
@@ -215,45 +143,31 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    g.permutation_start(!all_valid_WG);
-    // g.permutation_4_edge_group(g.get_first_edgeLabel(), !all_valid_WG, print_invalid);
-
-    g.WG_final_check();
-    // } else if (method == "m2") {
-    //     bool valid_WG = true; 
-    //     /****************************************
-    //     **** Method 2: sorting by in-node & out-node list!!!
-    //     *****************************************/
-    //     g.relabel_initialization(print_invalid);
-    //     valid_WG = g.WG_checker(print_invalid);
-    //     g.print_graph();
-    //     // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
-    //     g.innodelist_sort_relabel(print_invalid);
-    //     valid_WG = g.WG_checker(print_invalid);
-    //     g.print_graph();
-
-    //     int counter = 0;
-    //     while (valid_WG) {
-    //         g.innodelist_sort_relabel(print_invalid);
-    //         g.WG_checker(print_invalid);
-    //         // If after innodelist sorting & relabelling, it is not a WG => it is not a WG.
-    //         g.print_graph();
-
-    //         g.in_out_nodelist_sort_relabel(print_invalid);
-    //         g.WG_checker(print_invalid);
-    //         counter ++;
-    //         if (counter == 50) break;
-    //     }
-    //     g.print_graph();
-    //     // valid_WG_num = g.get_valid_WG_num_2();    
-    // }
+    if (!preprocess) {
+        g.permutation_start(!all_valid_WG);
+        // g.permutation_4_edge_group(g.get_first_edgeLabel(), !all_valid_WG, print_invalid);
+        g.WG_final_check();
+    }
     return valid_wg;
 }
-
 
 void processOptions(GArgs& args) {
 
 	debugMode=(args.getOpt("debug")!=NULL || args.getOpt('D')!=NULL);
+
+    char* s = args.getOpt("outDir");
+    if (s == NULL) {
+        s=args.getOpt('o');
+    }
+    if (s == NULL) {
+        outDir = "./";
+    } else {
+        outDir = s;
+        if (outDir.back() != '/') {
+            outDir += '/';
+        }
+    }
+
 
 	if (args.getOpt('h') || args.getOpt("help")) {
 		fprintf(stdout,"%s",USAGE);
@@ -271,13 +185,25 @@ void processOptions(GArgs& args) {
         args.printCmdLine(stderr);
     }
 
+    preprocess=(args.getOpt('p')!=NULL || args.getOpt("preprocess"));
     writeIOL=(args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
+    writeRange=(args.getOpt('r')!=NULL || args.getOpt("writeRange"));
     print_invalid=(args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
     all_valid_WG=(args.getOpt('a')!=NULL || args.getOpt("all_valid_WG"));
+    benchmark_mode=(args.getOpt('b')!=NULL || args.getOpt("benchmark"));
 
-    // cout << "debugMode: " << debugMode << endl;
-    // cout << "verbose: " << verbose << endl;
-    // cout << "print_invalid: " << print_invalid << endl;
-    // cout << "all_valid_WG: " << all_valid_WG << endl;
+    if (preprocess) {
+        writeRange=true;
+    }
+
+#ifdef DEBUGPRINT
+    cout << "debugMode: " << debugMode << endl;
+    cout << "outDir: " << outDir << endl;
+    cout << "verbose: " << verbose << endl;
+    cout << "writeIOL: " << writeIOL << endl;
+    cout << "writeRange: " << writeRange << endl;
+    cout << "print_invalid: " << print_invalid << endl;
+    cout << "all_valid_WG: " << all_valid_WG << endl;
+#endif
 }
 

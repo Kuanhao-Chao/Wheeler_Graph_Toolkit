@@ -72,6 +72,13 @@ int edge::get_head_name() {
     return _head_name;
 }
 
+string edge::get_tail_name_string() {
+    return ascii2string(_tail_name);
+}
+string edge::get_head_name_string() {
+    return ascii2string(_head_name);
+}
+
 bool edge::operator <(edge& e) {
     if (*_tail < e.get_tail_label()) {
         return true;
