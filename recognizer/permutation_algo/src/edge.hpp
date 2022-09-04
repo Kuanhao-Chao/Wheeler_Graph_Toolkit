@@ -9,7 +9,10 @@ class edge {
     private:
         string _label;
         int* _tail;
+        int* _prev_tail;
         int* _head;
+        int* _prev_head;
+
         int _tail_name;
         int _head_name;
 

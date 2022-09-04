@@ -34,9 +34,12 @@ extern clock_t c_end;
 extern double cpu_time_used;
 
 digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name) {
+    // Storing the current node label and previous node label.
     _nodes_num = nodes_num;
     _edges_num = edges_num;
     _node_ptrs = new int[_nodes_num];
+    _prev_node_ptrs = new int[_nodes_num];
+
     _path_name = path_name;
 
     /********************************
@@ -46,12 +49,18 @@ digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string
     int itr_count = 0;
     for(auto node : node_names) {
         _node_2_ptr_address[this->string2ascii(node)] = &_node_ptrs[itr_count];
+        _prev_node_2_ptr_address[this->string2ascii(node)] = &_prev_node_ptrs[itr_count];
+
         _node_ptrs[itr_count] = itr_count + 1; 
+        _prev_node_ptrs[itr_count] = itr_count + 1; 
+
         itr_count = itr_count+1;
 #ifdef DEBUGPRINT
         cout << "** itr_count: " << itr_count-1 << endl;
         cout << "** _node_2_ptr_address[node]: " << _node_2_ptr_address[this->string2ascii(node)] << endl;
+        cout << "** _prev_node_2_ptr_address[node]: " << _prev_node_2_ptr_address[this->string2ascii(node)] << endl;
         cout << "** _node_ptrs[itr_count]: " << _node_ptrs[itr_count-1] << endl;
+        cout << "** _prev_node_ptrs[itr_count]: " << _prev_node_ptrs[itr_count-1] << endl;
 #endif
     }
 }
@@ -184,38 +193,59 @@ void digraph::innodelist_sort_relabel() {
     int accum_edgegp_size = 0;
 
     // To-do: maybe I can repeat the sorting & relabling until the node labels do not change.
-    for (auto& [label, edges] : _edgeLabel_2_edge) {
+    bool prelabels_fixed = false;
+    while (!prelabels_fixed) {
+        accum_edgegp_size = 0;
+        for (auto& [label, edges] : _edgeLabel_2_edge) {
 #ifdef DEBUGPRINT
-        cout << "****** LABEL: " << label << endl;
+            cout << "****** LABEL: " << label << endl;
 #endif
-        vector<int> edgegp_nodes;
-        vector<vector<int> > edgegp_node_2_innodes_vec;
+            vector<int> edgegp_nodes;
+            vector<vector<int> > edgegp_node_2_innodes_vec;
 
-        for (auto& edge : edges) {
+            for (auto& edge : edges) {
 #ifdef DEBUGPRINT
-            edge.print_edge();
+                edge.print_edge();
 #endif
-            if (find(edgegp_nodes.begin(), edgegp_nodes.end(), edge.get_head_name()) == edgegp_nodes.end()) {
-                // The node has not been added into the map yet! 
-                edgegp_nodes.push_back(edge.get_head_name());
-                edgegp_node_2_innodes_vec.push_back(this->get_innodes_labels(label, edge.get_head_name()));
+                if (find(edgegp_nodes.begin(), edgegp_nodes.end(), edge.get_head_name()) == edgegp_nodes.end()) {
+                    // The node has not been added into the map yet! 
+                    edgegp_nodes.push_back(edge.get_head_name());
+                    edgegp_node_2_innodes_vec.push_back(this->get_innodes_labels(label, edge.get_head_name()));
+                }
+            }
+
+            /********************************
+            *** Sorting nodes by in-node list (sort `edgegp_node_2_innodes` map by values).
+            ********************************/
+            vector<int> index(edgegp_nodes.size(), 0);
+            this->in_edge_group_sort(edgegp_nodes, edgegp_node_2_innodes_vec, index);
+
+            /********************************
+            *** Get the new pre-label list
+            ***      When there is a tie, label nodes with the **smallest**.
+            ********************************/
+            this->in_edge_group_pre_label(label, edgegp_nodes, edgegp_node_2_innodes_vec, index, accum_edgegp_size);
+            accum_edgegp_size += edgegp_nodes.size();
+        }
+        // Check if all the prelabels are fixed.
+        for (int i=0; i<_nodes_num; i++ ) {
+#ifdef DEBUGPRINT
+            // cout << "*_node_ptrs[i]: " << _node_ptrs[i] << endl;
+            // cout << "*_prev_node_ptrs[i]: " << _prev_node_ptrs[i] << endl;
+#endif
+            prelabels_fixed = true;
+            if (_node_ptrs[i] != _prev_node_ptrs[i]) {
+                prelabels_fixed = false;
             }
         }
-        /********************************
-        *** Sorting nodes by in-node list (sort `edgegp_node_2_innodes` map by values).
-        ********************************/
-        vector<int> index(edgegp_nodes.size(), 0);
-        this->in_edge_group_sort(edgegp_nodes, edgegp_node_2_innodes_vec, index);
-
-        /********************************
-        *** Get the new pre-label list
-        ***      When there is a tie, label nodes with the **smallest**.
-        ********************************/
-        this->in_edge_group_pre_label(label, edgegp_nodes, edgegp_node_2_innodes_vec, index, accum_edgegp_size);
-        accum_edgegp_size += edgegp_nodes.size();
     }
+
+
+
     bool WG_valid = true;
     WG_valid = this -> WG_checker();
+
+
     if (!WG_valid) {
         // Invalid graph !! Terminate the program.
         if (!benchmark_mode) {
@@ -379,10 +409,15 @@ void digraph::relabel_reverse(vector<int> &repeat_vec, vector<int> &original_lab
 void digraph::relabel_by_node_name(int node_name, int new_val) {
 #ifdef DEBUGPRINT
     cout << "node_name : " << node_name << endl;
+    cout << "_prev_node_2_ptr_address[node_name]: " << _prev_node_2_ptr_address[node_name] << endl;
+    cout << "*_prev_node_2_ptr_address[node_name]: " << *_prev_node_2_ptr_address[node_name] << endl;
+    cout << "prev_val: " << *_node_2_ptr_address[node_name] << endl;
+
     cout << "_node_2_ptr_address[node_name]: " << _node_2_ptr_address[node_name] << endl;
     cout << "*_node_2_ptr_address[node_name]: " << *_node_2_ptr_address[node_name] << endl;
     cout << "new_val: " << new_val << endl;
 #endif
+    *_prev_node_2_ptr_address[node_name] = *_node_2_ptr_address[node_name];
     *_node_2_ptr_address[node_name] = new_val;
 }
 

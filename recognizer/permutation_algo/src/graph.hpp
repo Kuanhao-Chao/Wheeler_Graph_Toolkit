@@ -33,11 +33,16 @@ class digraph {
         vector<int> _root;
         int _nodes_num;
         int _edges_num;
+
         int* _node_ptrs;
+        int* _prev_node_ptrs;
+
         int _valid_WG_num = 0;
         int _invalid_stop_num = 0;
         // node to memory address dict in heap
         unordered_map<int,int*> _node_2_ptr_address;
+        unordered_map<int,int*> _prev_node_2_ptr_address;
+
         unordered_map<int,set<int> > _node_2_innodes;
         // Node -> edgeLabel -> outnodes
         unordered_map<int, map<string, set<int> > > _node_2_edgeLabel_2_outnodes;

@@ -206,4 +206,3 @@ void processOptions(GArgs& args) {
     cout << "all_valid_WG: " << all_valid_WG << endl;
 #endif
 }
-
