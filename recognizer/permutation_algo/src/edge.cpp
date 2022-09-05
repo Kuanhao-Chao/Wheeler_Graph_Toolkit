@@ -1,13 +1,14 @@
+/**
+ * @file edge.cpp
+ * @author Kuan-Hao Chao
+ * Contact: kh.chao@cs.jhu.edu
+ */
+
 #include <iostream>
 #include <string>
 #include "edge.hpp"
 
 using namespace std;
-
-extern bool debugMode;
-extern bool verbose;
-extern bool print_invalid;
-extern bool all_valid_WG;
 
 edge::edge(string label, int node_1_name, int* node_1, int node_2_name, int* node_2) {
     _label = label;
@@ -37,7 +38,7 @@ edge::edge() {
 edge::~edge(){}
 
 void edge::print_edge(string offset) {
-    cout << offset << "\t       " << "label val: " << _label << "\ttail: " << *_tail << " (" << this->ascii2string(_tail_name)  << ")\t\thead val: " << *_head << " (" << this->ascii2string(_head_name)  << ")" << endl;
+    cout << offset << "\t       " << "label val: " << _label << "\ttail: " << *_tail << " (" << _newNodeName_2_nodeName[_tail_name]  << ")\t\thead val: " << *_head << " (" << _newNodeName_2_nodeName[_head_name]  << ")" << endl;
     cout << offset << "\t       " << "label ads: " << _label << "\ttail: " << _tail << "\thead ads: " << _head << endl;
 }
 
@@ -70,13 +71,6 @@ int edge::get_tail_name() {
 }
 int edge::get_head_name() {
     return _head_name;
-}
-
-string edge::get_tail_name_string() {
-    return ascii2string(_tail_name);
-}
-string edge::get_head_name_string() {
-    return ascii2string(_head_name);
 }
 
 bool edge::operator <(edge& e) {
@@ -126,37 +120,4 @@ bool edge::operator ==(edge& e) {
     } else {
         return false;
     }
-}
-
-int edge::string2ascii(string line) {
-    string s_join;
-    for (int i = 0; i < line.length(); i++) {
-        int x = int(line.at(i));
-        if (x >= 32 && x <= 122) {
-            // Concatenate strings
-            s_join = s_join + to_string(x);
-        } 
-    }
-    int c = stoi(s_join);
-    // cout << c << endl;
-    // cout << &c << endl;
-    return c;
-}
-
-string edge::ascii2string(int node_name) {
-    int tmp = 0;
-    string str = to_string(node_name);
-    int len = str.length();
-    string str_converted = "";
-    for (int i=0; i<len; i++) {
-        tmp = tmp*10 + (str[i] - '0');
-        if (tmp >= 32 && tmp <= 122) {
-            // Convert num to char
-            char ch = (char)tmp;
-            // Reset num to 0
-            tmp = 0;
-            str_converted = str_converted + ch;
-        }
-    }
-    return str_converted;
 }

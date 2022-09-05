@@ -1,11 +1,13 @@
 /**
  * @file graph.hpp
  * @author Kuan-Hao Chao
- * Contact: kuanhao.chao@gmail.com
+ * Contact: kh.chao@cs.jhu.edu
  */
 
-#pragma once
+#ifndef __GRAPH_HPP__
+#define __GRAPH_HPP__
 
+#pragma once
 #include <string>
 #include <vector>
 #include <regex>
@@ -21,6 +23,20 @@
 
 using namespace std;
 
+// extern bool debugMode;
+extern string outDir;
+extern bool verbose;
+extern bool writeIOL;
+extern bool writeRange;
+extern bool print_invalid;
+extern bool all_valid_WG;
+extern bool benchmark_mode;
+extern clock_t c_start;
+extern clock_t c_end;
+extern double cpu_time_used;
+extern unordered_map<string,int> _nodeName_2_newNodeName;
+extern unordered_map<int,string> _newNodeName_2_nodeName;
+
 /********************************
 *** When number of duplicates is large, faster to convert to set and 
 *** then dump the data back into a vector.
@@ -28,6 +44,8 @@ using namespace std;
 // https://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector
 class digraph {
     private:
+        int _nodeName_mapper_counter = 0;
+
         string _path_name;
         bool _is_wg = true;
         vector<int> _root;
@@ -128,8 +146,8 @@ class digraph {
         bool get_is_wg();
 
         void bfs();
-        int string2ascii(string line);
-        string ascii2string(int node_name);
+        int get_encoded_nodeName(string line);
+        string get_decoded_nodeName(int node_name);
 
 
         void valid_wheeler_graph(bool early_stop);
@@ -137,3 +155,5 @@ class digraph {
         void exit_program(int return_val);
         void output_wg_gagie();
 };
+
+#endif

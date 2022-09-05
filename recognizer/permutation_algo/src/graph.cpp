@@ -1,7 +1,7 @@
 /**
  * @file graph.cpp
  * @author Kuan-Hao Chao
- * Contact: kuanhao.chao@gmail.com
+ * Contact: kh.chao@cs.jhu.edu
  */
 
 // #define DEBUGPRINT
@@ -21,25 +21,12 @@
 #include "graph.hpp"
 using namespace std;
 
-// extern bool debugMode;
-extern string outDir;
-extern bool verbose;
-extern bool writeIOL;
-extern bool writeRange;
-extern bool print_invalid;
-extern bool all_valid_WG;
-extern bool benchmark_mode;
-extern clock_t c_start;
-extern clock_t c_end;
-extern double cpu_time_used;
-
 digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name) {
     // Storing the current node label and previous node label.
     _nodes_num = nodes_num;
     _edges_num = edges_num;
     _node_ptrs = new int[_nodes_num];
     _prev_node_ptrs = new int[_nodes_num];
-
     _path_name = path_name;
 
     /********************************
@@ -48,17 +35,15 @@ digraph::digraph(vector<string> node_names, int nodes_num, int edges_num, string
     // This number decides the offset.
     int itr_count = 0;
     for(auto node : node_names) {
-        _node_2_ptr_address[this->string2ascii(node)] = &_node_ptrs[itr_count];
-        _prev_node_2_ptr_address[this->string2ascii(node)] = &_prev_node_ptrs[itr_count];
-
+        _node_2_ptr_address[this->get_encoded_nodeName(node)] = &_node_ptrs[itr_count];
+        _prev_node_2_ptr_address[this->get_encoded_nodeName(node)] = &_prev_node_ptrs[itr_count];
         _node_ptrs[itr_count] = itr_count + 1; 
         _prev_node_ptrs[itr_count] = itr_count + 1; 
-
         itr_count = itr_count+1;
 #ifdef DEBUGPRINT
         cout << "** itr_count: " << itr_count-1 << endl;
-        cout << "** _node_2_ptr_address[node]: " << _node_2_ptr_address[this->string2ascii(node)] << endl;
-        cout << "** _prev_node_2_ptr_address[node]: " << _prev_node_2_ptr_address[this->string2ascii(node)] << endl;
+        cout << "** _node_2_ptr_address[node]: " << _node_2_ptr_address[this->get_encoded_nodeName(node)] << endl;
+        cout << "** _prev_node_2_ptr_address[node]: " << _prev_node_2_ptr_address[this->get_encoded_nodeName(node)] << endl;
         cout << "** _node_ptrs[itr_count]: " << _node_ptrs[itr_count-1] << endl;
         cout << "** _prev_node_ptrs[itr_count]: " << _prev_node_ptrs[itr_count-1] << endl;
 #endif
@@ -83,8 +68,8 @@ void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vect
     ************************************************/
     map<string, set<int> > label_2_node_group_set;
     for (int i=0; i<_edges_num; i++) {
-        int node_1_name = this->string2ascii(node1_vec[i]);
-        int node_2_name = this->string2ascii(node2_vec[i]);
+        int node_1_name = this->get_encoded_nodeName(node1_vec[i]);
+        int node_2_name = this->get_encoded_nodeName(node2_vec[i]);
 #ifdef DEBUGPRINT
         cout << "node1_vec[i]: " << node_1_name << "  node2_vec[i]: " << node_2_name << endl;
         cout << "node1_vec[i] addr: " << _node_2_ptr_address[node_1_name] << "  node2_vec[i] addr: " << _node_2_ptr_address[node_2_name] << endl;
@@ -269,7 +254,7 @@ void digraph::innodelist_sort_relabel() {
 
             int roots_size = _root.size();
             for (auto root : _root) {
-                ofile_range << ascii2string(root) << " " << 1 << " " << roots_size << endl;   
+                ofile_range << get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl;   
             }
             for (auto& [label, edges] : _edgeLabel_2_edge) {
                 for (auto& edge : edges) {
@@ -293,7 +278,7 @@ void digraph::innodelist_sort_relabel() {
                         }
                         node_set.clear();
                     }
-                    node_set.insert(edge.get_head_name_string());
+                    node_set.insert(this->get_decoded_nodeName(edge.get_head_name()));
                     prev_val = curr_val;
                 }
             }
@@ -430,7 +415,7 @@ void digraph::relabel_node(int* node_add, int new_val) {
 map<string, vector<int> > digraph::get_outnodes_labels(int node_name) {
 #ifdef DEBUGPRINT
     cout << "*********************************" << endl;
-    cout << "*** get_outnodes_labels =>  node_name: " << this->ascii2string(node_name) << "  "<< this -> get_node_label(node_name) << endl;
+    cout << "*** get_outnodes_labels =>  node_name: " << this->get_decoded_nodeName(node_name) << "  "<< this -> get_node_label(node_name) << endl;
     cout << "*********************************" << endl;
 #endif
     map<string, vector<int> > outnodes_label_ls;
@@ -463,7 +448,7 @@ map<string, vector<int> > digraph::get_outnodes_labels(int node_name) {
 vector<int> digraph::get_innodes_labels(string edgeLabel, int node_name) {
 #ifdef DEBUGPRINT
     cout << "*********************************" << endl;
-    cout << "*** get_innodes_labels =>  node_name: "  << this->ascii2string(node_name) << "  "<< this -> get_node_label(node_name) << endl;
+    cout << "*** get_innodes_labels =>  node_name: "  << this->get_decoded_nodeName(node_name) << "  "<< this -> get_node_label(node_name) << endl;
     cout << "*********************************" << endl;
 #endif
     // vector<int> innodes_label_ls;
@@ -828,14 +813,14 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
             
 #ifdef DEBUGPRINT
                     cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
-                    cout << "XX\tedgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
+                    cout << "XX\tedgegp_nodes[a]: " << this -> get_decoded_nodeName(edgegp_nodes[a]) << endl;
                     cout << "XX\tedgegp_label: " << this -> get_node_label(edgegp_nodes[a]) << endl;
                     cout << "XX\tedgegp_node_2_innodes_vec[a]: " << endl << "\t\t";
                     for (auto& aa : edgegp_node_2_innodes_vec[a]) {
                         cout << aa << " ";
                     }
                     cout << endl;
-                    cout << "XX\tedgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
+                    cout << "XX\tedgegp_nodes[b]: " << this -> get_decoded_nodeName(edgegp_nodes[b]) << endl;
                     cout << "XX\tedgegp_label: " << this -> get_node_label(edgegp_nodes[b]) << endl;
                     cout << "XX\tedgegp_node_2_innodes_vec[b]: " << endl << "\t\t";
                     for (auto& bb : edgegp_node_2_innodes_vec[b]) {
@@ -847,13 +832,13 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
                 }
             }
 #ifdef DEBUGPRINT
-            cout << "edgegp_nodes[a]: " << this -> ascii2string(edgegp_nodes[a]) << endl;
+            cout << "edgegp_nodes[a]: " << this -> get_decoded_nodeName(edgegp_nodes[a]) << endl;
             cout << "edgegp_node_2_innodes_vec[a]: " << endl;
             for (auto& aa : edgegp_node_2_innodes_vec[a]) {
                 cout << aa << " ";
             }
             cout << endl;
-            cout << "edgegp_nodes[b]: " << this -> ascii2string(edgegp_nodes[b]) << endl;
+            cout << "edgegp_nodes[b]: " << this -> get_decoded_nodeName(edgegp_nodes[b]) << endl;
             cout << "edgegp_node_2_innodes_vec[b]: " << endl;
             for (auto& bb : edgegp_node_2_innodes_vec[b]) {
                 cout << bb << " ";
@@ -932,13 +917,13 @@ void digraph::in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, v
             prev_relabel_num = relabel_num;
         }
 #ifdef DEBUGPRINT
-        cout << "index: " << index[i] << "\tnew_label: " << relabel_num << "\t edgegp_nodes: " << this -> ascii2string(edgegp_nodes[i]);
+        cout << "index: " << index[i] << "\tnew_label: " << relabel_num << "\t edgegp_nodes: " << this -> get_decoded_nodeName(edgegp_nodes[i]);
 
         cout << "\toriginal: ";
         for (auto& edgegp_node_innode : edgegp_node_2_innodes_vec[i]) {
             cout << edgegp_node_innode << "  ";
         }
-        cout << "\t edgegp_nodes: " << this -> ascii2string(edgegp_nodes[index[i]]) << "\tordered: ";
+        cout << "\t edgegp_nodes: " << this -> get_decoded_nodeName(edgegp_nodes[index[i]]) << "\tordered: ";
         for (auto& edgegp_node_innode : edgegp_node_2_innodes_vec[index[i]]) {
             cout << edgegp_node_innode << "  ";
         }
@@ -1166,7 +1151,7 @@ void digraph::find_root_node() {
     }
     for (auto& [node, ptr_idx] : _node_2_ptr_address) {
         if (verbose) {
-            cout << "\tTrying node name: " << this->ascii2string(node) << endl;
+            cout << "\tTrying node name: " << this->get_decoded_nodeName(node) << endl;
         }
 
         /***********************************************
@@ -1175,7 +1160,7 @@ void digraph::find_root_node() {
         if (_node_2_innodes.find(node) == _node_2_innodes.end()) {
             if (verbose && !benchmark_mode) {
 #ifdef DEBUGPRINT
-                cout << "node name: " << this->ascii2string(node) << " is indegree 0." << endl;
+                cout << "node name: " << this->get_decoded_nodeName(node) << " is indegree 0." << endl;
                 this->print_node(node);
 #endif
             }
@@ -1233,36 +1218,43 @@ void digraph::bfs() {
 }
 
 
-int digraph::string2ascii(string line) {
-    string s_join;
-    for (int i = 0; i < line.length(); i++) {
-        int x = int(line.at(i));
-        if (x >= 32 && x <= 122) {
-            // Concatenate strings
-            s_join = s_join + to_string(x);
-        } 
+int digraph::get_encoded_nodeName(string line) {
+
+    if (_nodeName_2_newNodeName.find(line) == _nodeName_2_newNodeName.end()) {
+        // Add the node into the mappers dictionary if they haven't been added before.
+        _nodeName_2_newNodeName[line] = _nodeName_mapper_counter;
+        _newNodeName_2_nodeName[_nodeName_mapper_counter] = line;
+        _nodeName_mapper_counter += 1;
     }
-    int c = stoi(s_join);
-    return c;
+    // string s_join;
+    // for (int i = 0; i < line.length(); i++) {
+    //     int x = int(line.at(i));
+    //     if (x >= 32 && x <= 122) {
+    //         // Concatenate strings
+    //         s_join = s_join + to_string(x);
+    //     } 
+    // }
+    // int c = stoi(s_join);
+    return _nodeName_2_newNodeName[line];
 }
 
 
-string digraph::ascii2string(int node_name) {
-    int tmp = 0;
-    string str = to_string(node_name);
-    int len = str.length();
-    string str_converted = "";
-    for (int i=0; i<len; i++) {
-        tmp = tmp*10 + (str[i] - '0');
-        if (tmp >= 32 && tmp <= 122) {
-            // Convert num to char
-            char ch = (char)tmp;
-            // Reset num to 0
-            tmp = 0;
-            str_converted = str_converted + ch;
-        }
-    }
-    return str_converted;
+string digraph::get_decoded_nodeName(int node_name) {
+    // int tmp = 0;
+    // string str = to_string(node_name);
+    // int len = str.length();
+    // string str_converted = "";
+    // for (int i=0; i<len; i++) {
+    //     tmp = tmp*10 + (str[i] - '0');
+    //     if (tmp >= 32 && tmp <= 122) {
+    //         // Convert num to char
+    //         char ch = (char)tmp;
+    //         // Reset num to 0
+    //         tmp = 0;
+    //         str_converted = str_converted + ch;
+    //     }
+    // }
+    return _newNodeName_2_nodeName[node_name];
 }
 
 
@@ -1383,7 +1375,7 @@ void digraph::output_wg_gagie() {
 #endif
 
         // Output nodes conversion
-        ofile_NC << this -> ascii2string(root_node) << "\t" << to_string(this -> get_node_label(root_node)) << endl;
+        ofile_NC << this -> get_decoded_nodeName(root_node) << "\t" << to_string(this -> get_node_label(root_node)) << endl;
     }
 
     /****************************************
@@ -1404,7 +1396,7 @@ void digraph::output_wg_gagie() {
             }
 
 #ifdef DEBUGPRINT
-                cout << "node name (head): " << this -> ascii2string(edge.get_head_name()) << "    node label: " << this -> get_node_label(edge.get_head_name()) << endl;
+                cout << "node name (head): " << this -> get_decoded_nodeName(edge.get_head_name()) << "    node label: " << this -> get_node_label(edge.get_head_name()) << endl;
                 cout << to_string(_node_2_innodes[edge.get_head_name()].size()) << endl;
                 cout << to_string(outnodes_size) << endl;
 #endif
@@ -1439,7 +1431,7 @@ void digraph::output_wg_gagie() {
 #endif
 
                 // Output nodes conversion
-                ofile_NC << this -> ascii2string(edge.get_head_name()) << "\t" << to_string(this -> get_node_label(edge.get_head_name())) << endl;
+                ofile_NC << this -> get_decoded_nodeName(edge.get_head_name()) << "\t" << to_string(this -> get_node_label(edge.get_head_name())) << endl;
             }
             pre_edge = edge;
         }
