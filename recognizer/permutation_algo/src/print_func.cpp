@@ -1,3 +1,10 @@
+
+/**
+ * @file print_func.cpp
+ * @author Kuan-Hao Chao
+ * Contact: kh.chao@cs.jhu.edu
+ */
+
 #include <iostream>
 #include "graph.hpp"
 
@@ -7,7 +14,7 @@ using namespace std;
 
 void digraph::print_node(int node_name) {
 #ifdef DEBUGPRINT
-    cout << "\tnode name: " << this->ascii2string(node_name) << "\t\tnode label val: " << this->get_node_label(node_name)  << endl;
+    cout << "\tnode name: " << this->get_decoded_nodeName(node_name) << "\t\tnode label val: " << this->get_node_label(node_name)  << endl;
 #endif
 }
 
@@ -44,7 +51,7 @@ void digraph::print_graph(string offset) {
     } else {
         cout << offset << "\t** Root: " << endl;
         for (auto& _root_node : _root) {
-            cout << offset << "\t   node name: " << this -> ascii2string(_root_node) << "    node label: " << this -> get_node_label(_root_node) << endl;
+            cout << offset << "\t   node name: " << this -> get_decoded_nodeName(_root_node) << "    node label: " << this -> get_node_label(_root_node) << endl;
         }
     }
 
@@ -53,7 +60,7 @@ void digraph::print_graph(string offset) {
         edge pre_edge = edge();
         for (auto& edge : edges) {
             if ((edge.get_head() != pre_edge.get_head())) {
-                cout << offset << "\t   node name: " << this -> ascii2string(edge.get_head_name()) << "    node label: " << this -> get_node_label(edge.get_head_name()) << endl;
+                cout << offset << "\t   node name: " << this -> get_decoded_nodeName(edge.get_head_name()) << "    node label: " << this -> get_node_label(edge.get_head_name()) << endl;
             }
             pre_edge = edge;
         }
@@ -102,12 +109,12 @@ void digraph::print_node_2_edgeLabel_2_outnodes() {
 #ifdef PRINTER
     // unordered_map<int, map<string, set<int> > > _node_2_edgeLabel_2_outnodes;
     for (auto& [node, edgelabel_2_outnodes] : _node_2_edgeLabel_2_outnodes) {
-        cout << "$$$$$$$ Node: " << this -> ascii2string(node) << endl;
+        cout << "$$$$$$$ Node: " << this -> get_decoded_nodeName(node) << endl;
         for (auto& [edgelabel, outnodes] : edgelabel_2_outnodes) {
             cout << "\t$$$$$$$ edge label: " << edgelabel << endl;
             cout << "\t\t$$$$$$$ outnode : ";
             for (auto& outnode: outnodes) {
-                cout << this -> ascii2string(outnode) << "  ";
+                cout << this -> get_decoded_nodeName(outnode) << "  ";
             }
             cout << endl;
         }
@@ -126,7 +133,7 @@ void digraph::print_node_names_2_node_labels() {
     } else {
         cout << "\t** Root: " << endl;
         for (auto& _root_node : _root) {
-            cout << "\t   node name: " << this -> ascii2string(_root_node) << "    node label: " << this -> get_node_label(_root_node) << endl;
+            cout << "\t   node name: " << this -> get_decoded_nodeName(_root_node) << "    node label: " << this -> get_node_label(_root_node) << endl;
         }
     }
 
@@ -135,7 +142,7 @@ void digraph::print_node_names_2_node_labels() {
         edge pre_edge = edge();
         for (auto& edge : edges) {
             if ((edge.get_head() != pre_edge.get_head())) {
-                cout << "\t   node name: " << this -> ascii2string(edge.get_head_name()) << "    node label: " << this -> get_node_label(edge.get_head_name()) << endl;
+                cout << "\t   node name: " << this -> get_decoded_nodeName(edge.get_head_name()) << "    node label: " << this -> get_node_label(edge.get_head_name()) << endl;
             }
             pre_edge = edge;
         }

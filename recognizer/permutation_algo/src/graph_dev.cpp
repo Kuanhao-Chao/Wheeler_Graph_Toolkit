@@ -1,7 +1,7 @@
 /**
- * @file graph.cpp
+ * @file graph_dev.cpp
  * @author Kuan-Hao Chao
- * Contact: kuanhao.chao@gmail.com
+ * Contact: kh.chao@cs.jhu.edu
  */
 
 // #define DEBUGPRINT

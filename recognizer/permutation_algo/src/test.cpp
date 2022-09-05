@@ -1,9 +1,3 @@
-/**
- * @file wg.cpp
- * @author Kuan-Hao Chao
- * Contact: kuanhao.chao@gmail.com
- */
-
 // #define DEBUGPRINT
 
 #include <iostream>
@@ -29,22 +23,26 @@
 
 using namespace std;
 
-bool valid_wg=true;
-bool debugMode=false;
-bool verbose=false;
-bool print_invalid=false;
-bool all_valid_WG = false;
-chrono::high_resolution_clock::time_point c_start;
-chrono::high_resolution_clock::time_point c_end;
+// bool valid_wg=true;
+// bool debugMode=false;
+// bool verbose=false;
+// bool print_invalid=false;
+// bool all_valid_WG = false;
+// chrono::high_resolution_clock::time_point c_start;
+// chrono::high_resolution_clock::time_point c_end;
 
-void processOptions(GArgs& args);
+// void processOptions(GArgs& args);
 
 int main(int argc, char* argv[]) {
     // vector<int> vect{ 10, 20, 30 };
-    vector<int> a{1, 10, 11, 13, 19, 23, 37, 40, 44};
-    vector<int> b{2};
-    bool res = a < b;
-    cout << res << endl;
+    // vector<int> a{1, 10, 11, 13, 19, 23, 37, 40, 44};
+    // vector<int> b{2};
+    // bool res = a < b;
+    // cout << res << endl;
+    string a = "SASQ!";
+    int new_a = std::stoi( a );
+    cout << new_a << endl;
+
     return 0;
 }
 

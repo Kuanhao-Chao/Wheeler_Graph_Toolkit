@@ -1,7 +1,7 @@
 /**
  * @file wg.cpp
  * @author Kuan-Hao Chao
- * Contact: kuanhao.chao@gmail.com
+ * Contact: kh.chao@cs.jhu.edu
  */
 
 // #define DEBUGPRINT
@@ -17,6 +17,7 @@
 #include <set>
 #include <new>
 #include <time.h>
+// Change to chrono
 #include "GArgs.h"
 #include "edge.hpp"
 #include "graph.hpp"
@@ -39,6 +40,9 @@ bool all_valid_WG=false;
 bool benchmark_mode=false;
 clock_t c_start, c_end;
 double cpu_time_used;
+
+unordered_map<string,int> _nodeName_2_newNodeName;
+unordered_map<int,string> _newNodeName_2_nodeName;
 
 void processOptions(GArgs& args);
 

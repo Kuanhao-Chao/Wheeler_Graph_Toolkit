@@ -1,9 +1,25 @@
-#pragma once
+/**
+ * @file edge.hpp
+ * @author Kuan-Hao Chao
+ * Contact: kh.chao@cs.jhu.edu
+ */
 
+#ifndef __EDGE_HPP__
+#define __EDGE_HPP__
+
+#pragma once
+#include <unordered_map>
 #include <iostream>
 #include <string>
 
 using namespace std;
+
+extern bool debugMode;
+extern bool verbose;
+extern bool print_invalid;
+extern bool all_valid_WG;
+extern unordered_map<string,int> _nodeName_2_newNodeName;
+extern unordered_map<int,string> _newNodeName_2_nodeName;
 
 class edge {
     private:
@@ -29,11 +45,9 @@ class edge {
         int get_head_label();
         int get_tail_name();
         int get_head_name();
-        string get_tail_name_string();
-        string get_head_name_string();
-        int string2ascii(string line);
-        string ascii2string(int node_name);
         bool operator <(edge& e);
         bool operator <<(edge& e);
         bool operator ==(edge& e);
 };
+
+#endif
