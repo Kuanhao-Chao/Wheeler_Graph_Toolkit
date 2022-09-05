@@ -68,6 +68,7 @@ class digraph {
         // all edges
         map<string, vector<edge> > _edgeLabel_2_edge;
 
+        // Flatten edges
         // This is only for printing & 
         map<string, string> _edgeLabel_2_next_edgeLabel;
 

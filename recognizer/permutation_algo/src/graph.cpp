@@ -213,12 +213,12 @@ void digraph::innodelist_sort_relabel() {
             accum_edgegp_size += edgegp_nodes.size();
         }
         // Check if all the prelabels are fixed.
+        prelabels_fixed = true;
         for (int i=0; i<_nodes_num; i++ ) {
 #ifdef DEBUGPRINT
             // cout << "*_node_ptrs[i]: " << _node_ptrs[i] << endl;
             // cout << "*_prev_node_ptrs[i]: " << _prev_node_ptrs[i] << endl;
 #endif
-            prelabels_fixed = true;
             if (_node_ptrs[i] != _prev_node_ptrs[i]) {
                 prelabels_fixed = false;
             }
@@ -239,6 +239,8 @@ void digraph::innodelist_sort_relabel() {
         this -> WG_final_check();
         this -> exit_program(-1);
     } else {
+
+        // Pei-Wei modifies
         // Writing out the new possible range.
         if (writeRange) {
             int cur_min = 0;
