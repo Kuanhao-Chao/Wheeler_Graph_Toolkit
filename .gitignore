@@ -6,3 +6,6 @@ g.smt2
 *.smt2
 slides/
 graph/
+/ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/original_betterconcat.fasta
+multiseq_alignment/original_betterconcat.fasta
+multiseq_alignment/original_betterconcat/

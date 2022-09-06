@@ -18,8 +18,8 @@ gtype = os.path.basename(os.path.dirname(sys.argv[1]))
 
 # p = re.compile(sys.argv[1])
 result = re.search("test_grp[0-9]*", sys.argv[1])
-test_case = result.group()
-# print(result.group[0])
+if not result:
+    test_case = "original_betterconcat"
 plt.figure(figsize=(12, 6), dpi=300)
 
 plt.xlabel('# of nodes')
@@ -32,6 +32,6 @@ for nodes, times, label in all_vars:
     # plt.plot(range(len(agg_times)), agg_times, label=label, marker=next(marker))
 plt.legend()
 # plt.show()
-# plt.savefig(os.path.join(gtype, test_case+"_node_vs_time_plot.png"), format="PNG")
-# plt.savefig(os.path.join(gtype, "p_vs_e_node_vs_time_plot.png"), format="PNG")
 plt.savefig(os.path.join(gtype, test_case+"_node_vs_time_plot.png"), format="PNG")
+# plt.savefig(os.path.join(gtype, "p_vs_e_node_vs_time_plot.png"), format="PNG")
+# plt.savefig(os.path.join(gtype, test_case+"_node_vs_time_plot.png"), format="PNG")

@@ -37,10 +37,14 @@ def main():
     #     fwname = os.path.join(fwdir, "a"+str(i)+".fasta")
     #     SeqIO.write(alignment[:, 38:i+38], fwname, "fasta")
 
-    for i in range(1, 10, 1):
-        print(alignment[:, 38:i+38].get_alignment_length())
-        fwname = os.path.join(fwdir, "a"+str(i)+".fasta")
-        SeqIO.write(alignment[:, 38:i+38], fwname, "fasta")
+    # for i in range(1, 10, 1):
+    #     print(alignment[:, 38:i+38].get_alignment_length())
+    #     fwname = os.path.join(fwdir, "a"+str(i)+".fasta")
+    #     SeqIO.write(alignment[:, 38:i+38], fwname, "fasta")
+    
+    print(alignment[:, 0:10000].get_alignment_length())
+    fwname = os.path.join(fwdir, "a"+str(10000)+".fasta")
+    SeqIO.write(alignment[:, 0:10000], fwname, "fasta")
 
 
 if __name__ == "__main__":

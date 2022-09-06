@@ -252,7 +252,7 @@ void digraph::innodelist_sort_relabel() {
             
             ofstream ofile_range;
             filesystem::create_directories(outDir);
-            ofile_range.open (outDir+"range.txt");
+            ofile_range.open(outDir+"__"+_path_name + "/range.txt");
 
             int roots_size = _root.size();
             for (auto root : _root) {
@@ -1322,12 +1322,12 @@ void digraph::exit_program(int return_val) {
 
 
 void digraph::output_wg_gagie() {
-    filesystem::create_directories(outDir+to_string(_valid_WG_num)+"__"+_path_name);
-    string outfile_O = outDir+to_string(_valid_WG_num)+"__"+_path_name + "/O.txt";
-    string outfile_I = outDir+to_string(_valid_WG_num)+"__"+_path_name + "/I.txt";
-    string outfile_L = outDir+to_string(_valid_WG_num)+"__"+_path_name + "/L.txt";
-    string outfile_DOT = outDir+to_string(_valid_WG_num)+"__"+_path_name + "/graph.dot";
-    string outfile_NC = outDir+to_string(_valid_WG_num)+"__"+_path_name + "/nodes.txt";
+    filesystem::create_directories(outDir+"__"+_path_name);
+    string outfile_O = outDir+"__"+_path_name + "/O.txt";
+    string outfile_I = outDir+"__"+_path_name + "/I.txt";
+    string outfile_L = outDir+"__"+_path_name + "/L.txt";
+    string outfile_DOT = outDir+"__"+_path_name + "/graph.dot";
+    string outfile_NC = outDir+"__"+_path_name + "/nodes.txt";
 
     ofstream ofile_O;
     ofstream ofile_I;
