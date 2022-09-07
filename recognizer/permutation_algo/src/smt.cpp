@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <ctime>
 #include "z3++.h"
 
 #include "graph.hpp"
@@ -7,6 +8,7 @@
 using namespace z3;
 
 void digraph::solve_smt() {
+    clock_t start = clock();
     context c;
 
     /* Create variables */
@@ -22,8 +24,12 @@ void digraph::solve_smt() {
         int ub = range_pair.second;
         expr_vector distinct_nodes(c);
         for (int& idx : node_indices) {
-            expr r_constr = (xs[idx] > lb) && (xs[idx] <= ub);
-            s.add(r_constr);
+            expr constr(c);
+            if (lb + 1 == ub)
+                constr = (xs[idx] == ub);
+            else
+                constr = (xs[idx] > lb) && (xs[idx] <= ub);
+            s.add(constr);
             distinct_nodes.push_back(xs[idx]);
         }
         s.add(distinct(distinct_nodes));
@@ -45,9 +51,16 @@ void digraph::solve_smt() {
             }
         }
     }
+    clock_t end = clock();
+    double elapsed = (double) (end-start) / CLOCKS_PER_SEC;
+    cout << "SMT Setup: " << elapsed << " seconds\n";
 
     /* NOTE: profile SMT solving time here */
+    start = clock();
     auto res = s.check();
+    end = clock();
+    elapsed = (double) (end-start) / CLOCKS_PER_SEC;
+    cout << "SMT Solve: " << elapsed << " seconds\n";
 
     if (res == sat) {
         model m = s.get_model();
