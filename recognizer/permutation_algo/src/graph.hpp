@@ -72,6 +72,9 @@ class digraph {
         // This is only for printing & 
         map<string, string> _edgeLabel_2_next_edgeLabel;
 
+        // [ (lb, ub), [node_names] ]
+        vector< pair< pair<int, int>, vector<int> > > _node_ranges;
+
     public:
         digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name);
 
@@ -155,6 +158,8 @@ class digraph {
         void invalid_wheeler_graph(string msg, bool stop);
         void exit_program(int return_val);
         void output_wg_gagie();
+
+        void solve_smt();
 };
 
 #endif

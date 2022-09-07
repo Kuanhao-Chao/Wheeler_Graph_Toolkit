@@ -147,6 +147,8 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
+    /* TODO: change this */
+    g.solve_smt();
     if (!preprocess) {
         g.permutation_start(!all_valid_WG);
         // g.permutation_4_edge_group(g.get_first_edgeLabel(), !all_valid_WG, print_invalid);

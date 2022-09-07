@@ -18,6 +18,8 @@
 #include <set>
 #include <new>
 #include <queue>
+#include <utility>
+#include <iterator>
 #include "graph.hpp"
 using namespace std;
 
@@ -241,62 +243,75 @@ void digraph::innodelist_sort_relabel() {
     } else {
 
         // Pei-Wei modifies
-        // Writing out the new possible range.
-        if (writeRange) {
-            int cur_min = 0;
-            int cur_max = 0;
+        int cur_min = 0;
+        int cur_max = 0;
 
-            int curr_val = 0;
-            int prev_val = 0;
-            set<string> node_set;
-            
-            ofstream ofile_range;
-            filesystem::create_directories(outDir);
-            ofile_range.open(outDir+"__"+_path_name + "/range.txt");
+        int curr_val = 0;
+        int prev_val = 0;
+        set<int> node_set;
+        pair<int, int> range_pair;
+        vector<int> node_indices;
+        
+        ofstream ofile_range;
+        filesystem::create_directories(outDir);
+        ofile_range.open(outDir+"__"+_path_name + "/range.txt");
 
-            int roots_size = _root.size();
-            for (auto root : _root) {
-                ofile_range << get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl;   
-            }
-            for (auto& [label, edges] : _edgeLabel_2_edge) {
-                for (auto& edge : edges) {
-        #ifdef DEBUGPRINT
-                    edge.print_edge();
-        #endif
-                    curr_val = edge.get_head_label();
-                    if (curr_val == prev_val) {
-                        // 'cur_min' remain the same
-                    } else if (curr_val != prev_val) {
-                        cur_min = cur_max + 1;
-                        cur_max = curr_val - 1;
-    #ifdef DEBUGPRINT
-                        cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
-    #endif
-                        for (auto node_string : node_set) {
-    #ifdef DEBUGPRINT
-                            cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl;
-    #endif
-                            ofile_range << node_string << " " << cur_min << " " << cur_max << endl;
-                        }
-                        node_set.clear();
-                    }
-                    node_set.insert(this->get_decoded_nodeName(edge.get_head_name()));
-                    prev_val = curr_val;
-                }
-            }
-            cur_min = cur_max + 1;
-            cur_max = _nodes_num;
-    #ifdef DEBUGPRINT
-            cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
-    #endif
-            for (auto node_string : node_set) {
-    #ifdef DEBUGPRINT
-                cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl;
-    #endif
-                ofile_range << node_string << " " << cur_min << " " << cur_max << endl;
-            }
-            node_set.clear();
+        int roots_size = _root.size();
+        if (roots_size > 0) {
+            range_pair = make_pair(0, roots_size);
+            _node_ranges.push_back(make_pair( range_pair, _root ));
         }
+        /* for (auto root : _root) { */
+        /*     ofile_range << get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl; */   
+        /* } */
+        for (auto& [label, edges] : _edgeLabel_2_edge) {
+            for (auto& edge : edges) {
+    #ifdef DEBUGPRINT
+                edge.print_edge();
+    #endif
+                curr_val = edge.get_head_label();
+                if (curr_val == prev_val) {
+                    // 'cur_min' remain the same
+                } else if (curr_val != prev_val) {
+                    cur_min = cur_max + 1;
+                    cur_max = curr_val - 1;
+#ifdef DEBUGPRINT
+                    cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
+#endif
+                    if (!node_set.empty()) {
+                        range_pair = make_pair(cur_min - 1, cur_max);
+                        node_indices.assign(node_set.begin(), node_set.end());
+                        _node_ranges.push_back(make_pair( range_pair, node_indices ));
+                    }
+                    /* for (auto node_string : node_set) { */
+/* #ifdef DEBUGPRINT */
+                    /*     cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl; */
+/* #endif */
+                    /*     ofile_range << node_string << " " << cur_min << " " << cur_max << endl; */
+                    /* } */
+                    node_set.clear();
+                }
+                node_set.insert(edge.get_head_name());
+                prev_val = curr_val;
+            }
+        }
+        cur_min = cur_max + 1;
+        cur_max = _nodes_num;
+#ifdef DEBUGPRINT
+        cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
+#endif
+        if (!node_set.empty()) {
+            range_pair = make_pair(cur_min - 1, cur_max);
+            node_indices.assign(node_set.begin(), node_set.end());
+            _node_ranges.push_back(make_pair( range_pair, node_indices ));
+        }
+        /* for (auto node_string : node_set) { */
+/* #ifdef DEBUGPRINT */
+        /*     cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl; */
+/* #endif */
+        /*     ofile_range << node_string << " " << cur_min << " " << cur_max << endl; */
+        /* } */
+        node_set.clear();
     }
 }
 
