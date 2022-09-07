@@ -6,7 +6,6 @@
 
 using namespace z3;
 
-
 void digraph::solve_smt() {
     context c;
 
@@ -48,18 +47,21 @@ void digraph::solve_smt() {
     }
 
     /* NOTE: profile SMT solving time here */
-    std::cout << s.check() << '\n';
+    auto res = s.check();
 
-    model m = s.get_model();
+    if (res == sat) {
+        model m = s.get_model();
+#ifdef DEBUGPRINT
+        // traversing the model
+        for (unsigned i = 0; i < m.size(); i++) {
+            func_decl v = m[i];
+            // this problem contains only constants
+            assert(v.arity() == 0); 
+            std::cout << v.name() << " = " << m.get_const_interp(v) << "\n";
+        }
+#endif
+        _valid_WG_num += 1;
 
-    std::cout << m << "\n";
-
-    // traversing the model
-    for (unsigned i = 0; i < m.size(); i++) {
-        func_decl v = m[i];
-        // this problem contains only constants
-        assert(v.arity() == 0); 
-        std::cout << v.name() << " = " << m.get_const_interp(v) << "\n";
     }
 }
 

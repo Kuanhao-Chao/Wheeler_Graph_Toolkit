@@ -24,7 +24,7 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-p / --preprocess] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-a / --all_valid_WG] [-b / --benchmark]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-p / --permutation] [-w / --writeIOL] [-i / --print_invalid] [-a / --all_valid_WG] [-b / --benchmark]\n\n"
 
 using namespace std;
 
@@ -32,9 +32,8 @@ string outDir;
 bool valid_wg=true;
 bool debugMode=false;
 bool verbose=false;
-bool preprocess=false;
+bool permutation=false;
 bool writeIOL=false;
-bool writeRange=false;
 bool print_invalid=false;
 bool all_valid_WG=false;
 bool benchmark_mode=false;
@@ -60,7 +59,7 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;preprocess;writeIOL;writeRange;print_invalid;all_valid_WG;"
+	"debug;help;version;outDir=;verbose;permutation;writeIOL;print_invalid;all_valid_WG;"
     "exclude=hvpwriabx:n:j:s:D:G:C:S:l:m:o:j:c:f:p:g:P:M:Bb:A:E:F:T:");
 
 	processOptions(args);
@@ -147,13 +146,13 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    /* TODO: change this */
-    g.solve_smt();
-    if (!preprocess) {
+    if (permutation) {
         g.permutation_start(!all_valid_WG);
         // g.permutation_4_edge_group(g.get_first_edgeLabel(), !all_valid_WG, print_invalid);
-        g.WG_final_check();
+    } else {
+        g.solve_smt();
     }
+    g.WG_final_check();
     return valid_wg;
 }
 
@@ -191,23 +190,17 @@ void processOptions(GArgs& args) {
         args.printCmdLine(stderr);
     }
 
-    preprocess=(args.getOpt('p')!=NULL || args.getOpt("preprocess"));
+    permutation=(args.getOpt('p')!=NULL || args.getOpt("permutation"));
     writeIOL=(args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
-    writeRange=(args.getOpt('r')!=NULL || args.getOpt("writeRange"));
     print_invalid=(args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
     all_valid_WG=(args.getOpt('a')!=NULL || args.getOpt("all_valid_WG"));
     benchmark_mode=(args.getOpt('b')!=NULL || args.getOpt("benchmark"));
-
-    if (preprocess) {
-        writeRange=true;
-    }
 
 #ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;
     cout << "outDir: " << outDir << endl;
     cout << "verbose: " << verbose << endl;
     cout << "writeIOL: " << writeIOL << endl;
-    cout << "writeRange: " << writeRange << endl;
     cout << "print_invalid: " << print_invalid << endl;
     cout << "all_valid_WG: " << all_valid_WG << endl;
 #endif
