@@ -55,6 +55,12 @@ void digraph::solve_smt() {
     double elapsed = (double) (end-start) / CLOCKS_PER_SEC;
     cout << "SMT Setup: " << elapsed << " seconds\n";
 
+#ifdef DEBUGPRINT
+    ofstream out("tmp.smt2");
+    out << s.to_smt2();
+    out.close();
+#endif
+
     /* NOTE: profile SMT solving time here */
     start = clock();
     auto res = s.check();
@@ -74,7 +80,6 @@ void digraph::solve_smt() {
         }
 #endif
         _valid_WG_num += 1;
-
     }
 }
 
