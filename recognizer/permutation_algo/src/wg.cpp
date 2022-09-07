@@ -24,7 +24,7 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-p / --permutation] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-a / --all_valid_WG] [-b / --benchmark]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-a / --all_valid_WG] [-b / --benchmark]\n\n"
 
 using namespace std;
 
@@ -32,12 +32,13 @@ string outDir;
 bool valid_wg=true;
 bool debugMode=false;
 bool verbose=false;
-bool permutation=false;
+string solver="p"; // Default solver: p
 bool writeIOL=false;
 bool writeRange=false;
 bool print_invalid=false;
 bool all_valid_WG=false;
 bool benchmark_mode=false;
+int permutation_counter=0;
 clock_t c_start, c_end;
 double cpu_time_used;
 
@@ -60,8 +61,8 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;permutation;writeIOL;writeRange;print_invalid;all_valid_WG;"
-    "exclude=hvpwriabx:n:j:s:D:G:C:S:l:m:o:j:c:f:p:g:P:M:Bb:A:E:F:T:");
+	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;all_valid_WG;"
+    "exclude=hvpwriabs:");
 
 	processOptions(args);
     string file_extension = filesystem::path(argv[1]).extension();
@@ -147,9 +148,8 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    if (permutation) {
+    if (!solver.compare("p") && permutation_counter < 50) {
         g.permutation_start(!all_valid_WG);
-        // g.permutation_4_edge_group(g.get_first_edgeLabel(), !all_valid_WG, print_invalid);
     } else {
         g.solve_smt();
     }
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 
 void processOptions(GArgs& args) {
 
-	debugMode=(args.getOpt("debug")!=NULL || args.getOpt('D')!=NULL);
+	debugMode = (args.getOpt("debug")!=NULL || args.getOpt('D')!=NULL);
 
     char* s = args.getOpt("outDir");
     if (s == NULL) {
@@ -173,7 +173,6 @@ void processOptions(GArgs& args) {
             outDir += '/';
         }
     }
-
 
 	if (args.getOpt('h') || args.getOpt("help")) {
 		fprintf(stdout,"%s",USAGE);
@@ -190,13 +189,23 @@ void processOptions(GArgs& args) {
         fprintf(stderr, "Running recognizer " VERSION ". Command line:\n");
         args.printCmdLine(stderr);
     }
+    
+    s = args.getOpt("solver");
+    if (s == NULL) {
+        s = args.getOpt('s');
+    }
+    if (s == NULL) {
+        solver = "p";
+    } else {
+        if (strcmp(s, "smt")==0 || strcmp(s, "p")==0) solver = s;
+        else solver = "p";
+    }
 
-    permutation=(args.getOpt('p')!=NULL || args.getOpt("permutation"));
-    writeIOL=(args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
-    writeRange=(args.getOpt('r')!=NULL || args.getOpt("writeRange"));
-    print_invalid=(args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
-    all_valid_WG=(args.getOpt('a')!=NULL || args.getOpt("all_valid_WG"));
-    benchmark_mode=(args.getOpt('b')!=NULL || args.getOpt("benchmark"));
+    writeIOL = (args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
+    writeRange = (args.getOpt('r')!=NULL || args.getOpt("writeRange"));
+    print_invalid = (args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
+    all_valid_WG = (args.getOpt('a')!=NULL || args.getOpt("all_valid_WG"));
+    benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
 
 #ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;

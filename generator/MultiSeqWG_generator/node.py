@@ -23,3 +23,9 @@ class node:
 
     def set_nodeorder(self, nodeOrder):
         self.nodeorder = nodeOrder
+
+    def print_node(self):
+        if len(self.parents) == 0:
+            print("self.nodeid: ", self.nodeid, "; self.nodeorder: ", self.nodeorder, "self.in_edgelabel: None", "; self.out_edgelabel: ", self.out_edgelabel, "; self.nodecolid: ", self.nodecolid)
+        else: 
+            print("self.nodeid: ", self.nodeid, "; self.nodeorder: ", self.nodeorder, "self.in_edgelabel: ", self.parents[0].out_edgelabel, "; self.out_edgelabel: ", self.out_edgelabel, "; self.nodecolid: ", self.nodecolid)

@@ -1,4 +1,3 @@
-
 /**
  * @file print_func.cpp
  * @author Kuan-Hao Chao

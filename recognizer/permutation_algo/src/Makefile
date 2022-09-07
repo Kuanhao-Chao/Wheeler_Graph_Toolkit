@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS = -std=c++17 -lstdc++fs
+CFLAGS = -std=c++17 -lstdc++fs -pthread
 STATIC_LIB = libz3.a
 EXE = recognizer_p
 INCLUDE=-I /home/kh.chao/miniconda3/include/

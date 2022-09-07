@@ -1,3 +1,9 @@
+/**
+ * @file print_func.cpp
+ * @author Pei-Wei
+ * Contact: pwchen@berkeley.edu
+ */
+
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -6,6 +12,8 @@
 #include "graph.hpp"
 
 using namespace z3;
+
+extern bool benchmark_mode;
 
 void digraph::solve_smt() {
     clock_t start = clock();
@@ -53,7 +61,10 @@ void digraph::solve_smt() {
     }
     clock_t end = clock();
     double elapsed = (double) (end-start) / CLOCKS_PER_SEC;
-    cout << "SMT Setup: " << elapsed << " seconds\n";
+
+    if (!benchmark_mode) {
+        cout << "SMT Setup: " << elapsed << " seconds\n";
+    }
 
 #ifdef DEBUGPRINT
     ofstream out("tmp.smt2");
@@ -66,7 +77,10 @@ void digraph::solve_smt() {
     auto res = s.check();
     end = clock();
     elapsed = (double) (end-start) / CLOCKS_PER_SEC;
-    cout << "SMT Solve: " << elapsed << " seconds\n";
+
+    if (!benchmark_mode) {
+        cout << "SMT Solve: " << elapsed << " seconds\n";
+    }
 
     if (res == sat) {
         model m = s.get_model();
@@ -82,4 +96,3 @@ void digraph::solve_smt() {
         _valid_WG_num += 1;
     }
 }
-

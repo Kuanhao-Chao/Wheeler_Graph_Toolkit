@@ -34,6 +34,7 @@ extern bool benchmark_mode;
 extern clock_t c_start;
 extern clock_t c_end;
 extern double cpu_time_used;
+extern int permutation_counter;
 extern unordered_map<string,int> _nodeName_2_newNodeName;
 extern unordered_map<int,string> _newNodeName_2_nodeName;
 

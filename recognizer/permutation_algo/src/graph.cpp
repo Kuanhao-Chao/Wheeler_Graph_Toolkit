@@ -253,17 +253,21 @@ void digraph::innodelist_sort_relabel() {
         ofstream ofile_range;
         filesystem::create_directories(outDir);
         ofile_range.open(outDir+"__"+_path_name + "/range.txt");
-
+        
         int roots_size = _root.size();
         if (roots_size > 0) {
             range_pair = make_pair(0, roots_size);
             _node_ranges.push_back(make_pair( range_pair, _root ));
+            if (permutation_counter < 50) {
+                permutation_counter *= roots_size;
+            }
         }
         if (writeRange) {
             for (auto root : _root) {
                 ofile_range << get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl;   
             }
         }
+
         for (auto& [label, edges] : _edgeLabel_2_edge) {
             for (auto& edge : edges) {
     #ifdef DEBUGPRINT
@@ -282,6 +286,9 @@ void digraph::innodelist_sort_relabel() {
                         range_pair = make_pair(cur_min - 1, cur_max);
                         node_indices.assign(node_set.begin(), node_set.end());
                         _node_ranges.push_back(make_pair( range_pair, node_indices ));
+                        if (permutation_counter < 50) {
+                            permutation_counter *= (cur_max-cur_min);
+                        }
                     }
                     if (writeRange) {
                         for (auto node_string : node_set) {
@@ -306,6 +313,9 @@ void digraph::innodelist_sort_relabel() {
             range_pair = make_pair(cur_min - 1, cur_max);
             node_indices.assign(node_set.begin(), node_set.end());
             _node_ranges.push_back(make_pair( range_pair, node_indices ));
+            if (permutation_counter < 50) {
+                permutation_counter *= (cur_max-cur_min);
+            }
         }
         if (writeRange) {
             for (auto node_string : node_set) {
