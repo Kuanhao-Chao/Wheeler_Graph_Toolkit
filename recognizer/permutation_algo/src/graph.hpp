@@ -27,6 +27,7 @@ using namespace std;
 extern string outDir;
 extern bool verbose;
 extern bool writeIOL;
+extern bool writeRange;
 extern bool print_invalid;
 extern bool all_valid_WG;
 extern bool benchmark_mode;
