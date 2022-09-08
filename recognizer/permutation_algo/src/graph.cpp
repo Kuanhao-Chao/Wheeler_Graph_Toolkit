@@ -322,6 +322,9 @@ void digraph::innodelist_sort_relabel() {
             }
         }
         node_set.clear();
+#ifdef DEBUGPRINT
+        cout << "permutation_counter: " << permutation_counter << endl;
+#endif
     }
 }
 

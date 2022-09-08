@@ -38,7 +38,7 @@ bool writeRange=false;
 bool print_invalid=false;
 bool all_valid_WG=false;
 bool benchmark_mode=false;
-int permutation_counter=0;
+int permutation_counter=1;
 clock_t c_start, c_end;
 double cpu_time_used;
 
