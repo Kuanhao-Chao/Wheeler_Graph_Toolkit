@@ -138,13 +138,11 @@ void digraph::relabel_initialization() {
     cout << "** Relabelling initialization: " << endl;
     cout << "************************** " << endl; 
 #endif
-
     // Relabel roots
     for (auto& root_node : _root) {
         // Relabel roots with the biggest possible
-        this -> relabel_by_node_name(root_node, _root.size());
+        this -> relabel_init_root_by_node_name(root_node, _root.size());
     }
-
     // Relabel all edge group nodes
     int accum_label= _root.size();
     for (auto& [edgeLabel, edges] : _edgeLabel_2_edge) {
@@ -217,17 +215,15 @@ void digraph::innodelist_sort_relabel() {
         // Check if all the prelabels are fixed.
         prelabels_fixed = true;
         for (int i=0; i<_nodes_num; i++ ) {
+            if (_node_ptrs[i] != _prev_node_ptrs[i]) {
 #ifdef DEBUGPRINT
             // cout << "*_node_ptrs[i]: " << _node_ptrs[i] << endl;
             // cout << "*_prev_node_ptrs[i]: " << _prev_node_ptrs[i] << endl;
 #endif
-            if (_node_ptrs[i] != _prev_node_ptrs[i]) {
                 prelabels_fixed = false;
             }
         }
     }
-
-
 
     bool WG_valid = true;
     WG_valid = this -> WG_checker();
@@ -437,6 +433,10 @@ void digraph::relabel_by_node_name(int node_name, int new_val) {
     *_node_2_ptr_address[node_name] = new_val;
 }
 
+void digraph::relabel_init_root_by_node_name(int node_name, int new_val) {
+    *_prev_node_2_ptr_address[node_name] = new_val;
+    *_node_2_ptr_address[node_name] = new_val;
+}
 
 void digraph::relabel_node(int* node_add, int new_val) {
     *node_add = new_val;

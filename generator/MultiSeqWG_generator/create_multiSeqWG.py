@@ -39,10 +39,20 @@ def main():
     tmp_dict = {}
     prev_node = None
     curr_node = None
+
+
+
+
+    prev_node = n.node("S_$", -1, "$", -1)
+    # curr_node.add_parent(prev_node)
+    # prev_node.add_child(curr_node)
+    tmp_dict["$"] = prev_node
+
+
     for col_idx in range(alignment_len):
         seq = alignment[0][col_idx]
         if (seq != "-"):
-            curr_node = n.node("S"+str(col_idx), nodes_dict["S"+str(col_idx)], seq, col_idx)
+            curr_node = n.node("S_0_"+str(col_idx), nodes_dict["S_0_"+str(col_idx)], seq, col_idx)
             wg.col_initialize(col_idx)
             wg.add_node_firstSeq(prev_node, curr_node)
             # column_nodes[col_idx][curr_node.out_edgelabel].append(curr_node)
@@ -62,17 +72,17 @@ def main():
 
     wg.update_all_nodes()
 
-    curr_node = n.node("S$", -1, "$", col_idx+1)
+    curr_node = n.node("S_#", -2, "#", col_idx+1)
     curr_node.add_parent(prev_node)
     prev_node.add_child(curr_node)
-    tmp_dict["$"] = curr_node
+    tmp_dict["#"] = curr_node
 
     ##############################
     ## Traversing the graph now. (& relabelling nodes)
     ##############################
     print("Depth first search traversing the graph now.")
     visited = [] # List for visited nodes.
-    bfs(visited, tmp_dict[0])
+    bfs(visited, tmp_dict["$"])
 
 
 
@@ -86,15 +96,13 @@ def main():
 
     curr_node = None
     for row_idx in range(1, seq_number):
-
-        
         tail_seq = "-"
         tail_seq_idx = 0
         tail_node = None
 
         head_seq = "-"
         head_seq_idx = 0
-        head_node = None
+        head_node = None        
 
         for col_idx in range(alignment_len):
             ##########################
@@ -110,7 +118,7 @@ def main():
             #     # 3. The node doen't exist. Create a new one.
 
             #     # Modify
-            #     curr_node = n.node("S"+str(col_idx), 0, tail_seq, col_idx)
+            #     curr_node = n.node("S_"+str(col_idx), 0, tail_seq, col_idx)
             #     column_nodes[col_idx][curr_node.out_edgelabel].append(curr_node)
             # else:
             #     # column_nodes[col_idx].append(None)
@@ -154,7 +162,7 @@ def main():
                             print("wg.edgelabel_num: ", wg.edgelabel_num)
                             new_tail_order = 1
                             # print("new_tail_order: ", new_tail_order)
-                            tail_node = n.node("S"+str(row_idx)+str(tail_seq_idx), new_tail_order, tail_seq, tail_seq_idx)
+                            tail_node = n.node("S_"+str(row_idx)+"_"+str(tail_seq_idx), new_tail_order, tail_seq, tail_seq_idx)
                             
                             # update all the node with ordering bigger or equal to the 'new_tail_order'
                             wg.add_root_node(tail_node)
@@ -169,7 +177,9 @@ def main():
                             print("#############################")
                             tail_node = wg.column_nodes[tail_seq_idx][tail_seq][0]
                         print("tail_node: ", tail_node.out_edgelabel)
-                        wg.finding_head(row_idx, tail_node, tail_seq_idx, tail_seq, head_node, head_seq_idx, head_seq)
+
+
+                        tail_seq, tail_seq_idx, tail_node, head_seq, head_seq_idx, head_node = wg.finding_head(row_idx, tail_seq, tail_seq_idx, tail_node, head_seq, head_seq_idx, head_node)
 
 
                     # Not the first column. 
@@ -178,13 +188,17 @@ def main():
                         # Tail will be the previous head.
                         ##########################
                         # Tail node has already be decided while processing previous head node.
-                        wg.finding_head(row_idx, tail_node, tail_seq_idx, tail_seq, head_node, head_seq_idx, head_seq)
+                        tail_seq, tail_seq_idx, tail_node, head_seq, head_seq_idx, head_node = wg.finding_head(row_idx, tail_seq, tail_seq_idx, tail_node, head_seq, head_seq_idx, head_node)
 
+
+                    tail_node = head_node
                     # tail_node.print_node()
                     # head_node.print_node()
-                    tail_node = head_node
+
+                    # print("wg.edgelabel_num: ", wg.edgelabel_num)
                     # wg.print_all_nodes()
-                    print("wg.edgelabel_num: ", wg.edgelabel_num)
+
+                    print(">> Done one cycle!!!!")
 
 
 
@@ -193,8 +207,8 @@ def main():
 
             #     print(seq)
             #     print("(", row_idx, ", ", col_idx, ")")
-                # print(nodes_dict["S"+str(col_idx)])
-                # curr_node = n.node("S"+str(col_idx), nodes_dict["S"+str(col_idx)], i, col_idx)
+                # print(nodes_dict["S_"+str(col_idx)])
+                # curr_node = n.node("S_"+str(col_idx), nodes_dict["S_"+str(col_idx)], i, col_idx)
                 # if prev_node != None:
                 #     curr_node.add_parent(prev_node)
                 #     prev_node.add_child(curr_node)
@@ -206,6 +220,30 @@ def main():
 
     print("column_nodes: ", wg.column_nodes)
     print("edgelabel_num: ", wg.edgelabel_num)
+
+
+    ##############################
+    ## Writing out the graph into dot file
+    ##############################
+    relative_filename = os.path.relpath(sys.argv[1], "../../multiseq_alignment/")
+    dir_name = os.path.dirname(relative_filename)
+    file_basename = os.path.basename(relative_filename)
+    new_dir_name = os.path.join("../../graph/multiSeqWG/", dir_name)
+    os.makedirs(new_dir_name, exist_ok = True)
+    fw_name = os.path.join(new_dir_name, file_basename)
+    fw_name = fw_name.replace('.fasta', '.dot')
+    print("fw_name: ", fw_name)
+    try:    
+        os.remove(fw_name)
+    except OSError:
+        pass
+    fw = open(fw_name, "a")
+    fw.write("strict digraph  {\n")
+    visited = []
+    bfs_write(visited, wg.all_nodes[0], fw) #function for BFS
+    fw.write("}\n")
+    fw.close()
+
 
 # I need to number the node in this function
 def bfs(visited, node): #function for BFS
@@ -228,6 +266,26 @@ def bfs(visited, node): #function for BFS
                 queue.append(child)
                 # print("Appending into queue") 
 
+def bfs_write(visited, node, fw): #function for BFS
+    visited.append(node)
+    queue.append(node)
+    while queue:          # Creating loop to visit each node
+        # print("len(queue): ", len(queue))
+        m = queue.pop(0)
+        # print("Dequeue") 
+        # print("-"*m.nodecolid, m.nodelabel, "(", m.nodeid, ")") 
+        for m_child in m.children:
+            if m_child.out_edgelabel != "#":
+                fw.write("\t" + str(m.nodeid) + " -> " + str(m_child.nodeid) + " [ label = "+m_child.out_edgelabel+" ];\n")
+
+            # fw.write("S_" + str(m.nodeid) + " S" + str(m_child.nodeid) + " "+m_child.nodelabel+"\n")
+            # print(m.nodeid, " -> ", m_child.nodeid)
+
+        for child in m.children:
+            if child not in visited:
+                visited.append(child)
+                queue.append(child)
+                # print("Appending into queue") 
 # def finding_head(nodes, wg, row_idx, tail_node, tail_seq_idx, tail_seq, head_node, head_seq_idx, head_seq):
 
 

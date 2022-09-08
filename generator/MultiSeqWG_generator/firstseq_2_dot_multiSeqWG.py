@@ -27,7 +27,7 @@ def main():
     curr_node = None
     for i in alignment[0]:
         if (i is not "-"):
-            curr_node = n.node("S"+str(seq_idx), node_idx, i, seq_idx)
+            curr_node = n.node("S_0_"+str(seq_idx), node_idx, i, seq_idx)
             node_dict[node_idx] = curr_node
             if prev_node is not None:
                 curr_node.add_parent(prev_node)
@@ -37,7 +37,7 @@ def main():
             print(i)
         seq_idx += 1
 
-    curr_node = n.node("S$", -1, "$", seq_idx+1)
+    curr_node = n.node("S_$", -1, "$", seq_idx+1)
     curr_node.add_parent(prev_node)
     prev_node.add_child(curr_node)
     node_dict["$"] = curr_node
@@ -107,7 +107,6 @@ def bfs_write(visited, node, fw): #function for BFS
         for m_child in m.children:
             if m_child.nodeid != "S$":
                 fw.write("\t" + m.nodeid + " -> " + m_child.nodeid + " [ label = "+m.out_edgelabel+" ];\n")
-            # fw.write("S" + str(m.nodeid) + " S" + str(m_child.nodeid) + " "+m_child.nodelabel+"\n")
             # print(m.nodeid, " -> ", m_child.nodeid)
 
         for child in m.children:

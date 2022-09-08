@@ -105,6 +105,7 @@ class digraph {
         void relabel_reverse(vector<int> &repeat_vec, vector<int> &original_labels, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, vector<int> &prev_num_vec, int &index);
 
         void relabel_by_node_name(int node_name, int new_val);
+        void relabel_init_root_by_node_name(int node_name, int new_val);
         void relabel_node(int* node_add, int new_val);
 
         int  get_node_label(int node_name);
