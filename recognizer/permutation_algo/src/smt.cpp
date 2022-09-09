@@ -1,5 +1,5 @@
 /**
- * @file print_func.cpp
+ * @file smt.cpp
  * @author Pei-Wei
  * Contact: pwchen@berkeley.edu
  */
@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <cassert>
 #include "z3++.h"
 
 #include "graph.hpp"
@@ -26,21 +27,26 @@ void digraph::solve_smt() {
 
     solver s(c, "QF_IDL");
 
+    vector<int> fixed(_nodes_num, 0);
     /* Encode node ranges and distinct constraint */
     for (auto& [range_pair, node_indices] : _node_ranges) {
         int lb = range_pair.first;
         int ub = range_pair.second;
+        assert(node_indices.size() == ub - lb + 1);
         expr_vector distinct_nodes(c);
         for (int& idx : node_indices) {
             expr constr(c);
-            if (lb + 1 == ub)
+            if (lb == ub) {
                 constr = (xs[idx] == ub);
+                fixed[idx] = ub;
+            }
             else
-                constr = (xs[idx] > lb) && (xs[idx] <= ub);
+                constr = (xs[idx] >= lb) && (xs[idx] <= ub);
             s.add(constr);
             distinct_nodes.push_back(xs[idx]);
         }
-        s.add(distinct(distinct_nodes));
+        if (lb != ub)
+            s.add(distinct(distinct_nodes));
     }
 
     /* Encode edge relations within edge group */
@@ -53,9 +59,25 @@ void digraph::solve_smt() {
                 int vi = ei.get_head_name();
                 int uj = ej.get_tail_name();
                 int vj = ej.get_head_name();
-                expr constr1 = implies(xs[ui] < xs[uj], xs[vi] <= xs[vj]);
-                expr constr2 = implies(xs[ui] > xs[uj], xs[vi] >= xs[vj]);
-                s.add(constr1 && constr2);
+                if (fixed[ui] && fixed[uj] && fixed[vi] && fixed[vj])
+                    continue;
+                else if (fixed[ui] && fixed[uj]) {
+                    if (fixed[ui] < fixed[uj])
+                        s.add(xs[vi] <= xs[vj]);
+                    else if (fixed[ui] > fixed[uj])
+                        s.add(xs[vi] >= xs[vj]);
+                } 
+                else if (fixed[vi] && fixed[vj]) {
+                    if (fixed[vi] < fixed[vj])
+                        s.add(xs[ui] <= xs[uj]);
+                    else if (fixed[vi] > fixed[vj])
+                        s.add(xs[ui] >= xs[uj]);
+                }
+                else {
+                    expr constr1 = implies(xs[ui] < xs[uj], xs[vi] <= xs[vj]);
+                    expr constr2 = implies(xs[ui] > xs[uj], xs[vi] >= xs[vj]);
+                    s.add(constr1 && constr2);
+                }
             }
         }
     }
