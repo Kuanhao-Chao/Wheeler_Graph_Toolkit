@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    if (!solver.compare("p") && permutation_counter < PERMUTATION_CUTOFF) {
+    if (!solver.compare("p") || (!solver.compare("default") && permutation_counter < PERMUTATION_CUTOFF)) {
         g.permutation_start();
     } else {
         g.solve_smt();
@@ -195,10 +195,10 @@ void processOptions(GArgs& args) {
         s = args.getOpt('s');
     }
     if (s == NULL) {
-        solver = "p";
+        solver = "default";
     } else {
         if (strcmp(s, "smt")==0 || strcmp(s, "p")==0) solver = s;
-        else solver = "p";
+        else solver = "default";
     }
 
     writeIOL = (args.getOpt('w')!=NULL || args.getOpt("writeIOL"));

@@ -1,3 +1,4 @@
+from posixpath import basename
 import sys
 from matplotlib import pyplot as plt
 import itertools
@@ -12,9 +13,10 @@ for file in sys.argv[1:]:
         lines = f.readlines()
         nodes = [float(line.split()[1]) for line in lines]
         times = [float(line.split()[2]) for line in lines]
-    all_vars.append((nodes, times, file))
+    all_vars.append((nodes, times, basename(file)))
 
-gtype = os.path.basename(os.path.dirname(sys.argv[1]))
+# gtype = os.path.basename(os.path.dirname(sys.argv[1]))
+gtype = "smt__p_converged"
 
 # p = re.compile(sys.argv[1])
 result = re.search("test_grp[0-9]*", sys.argv[1])

@@ -8,11 +8,13 @@ do
     fbase="$(basename -- $target_dir)"
     echo $fbase
     for f in $target_dir*; do
-        if [[ $f == *"DeBruijn_k_4"* ]]; then
+        if [[ $f == *"DeBruijn_k_10"* ]]; then
             echo "$f"
             echo "Processing"
-            timeout 500s ../../../../bin/recognizer_p  $f >> ./results/"$fbase"_out.txt
-            echo $?
+            timeout 30s ../../../../bin/recognizer  $f -b -s p >> ./results/"$fbase"_out.txt
+            if [ $? -eq 124  ]; then
+                echo -e "-1\t0\t1000000000\t$f"
+            fi
         fi
     done
 done
