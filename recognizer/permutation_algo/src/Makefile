@@ -1,7 +1,7 @@
 CXX = g++
 CFLAGS = -std=c++17 -lstdc++fs -pthread -O3
 STATIC_LIB = libz3.a
-EXE = recognizer_p
+EXE = recognizer
 INCLUDE=-I /home/kh.chao/miniconda3/include/
 
 $(EXE): wg.o graph.o edge.o GBase.o GArgs.o print_func.o get_func.o smt.o

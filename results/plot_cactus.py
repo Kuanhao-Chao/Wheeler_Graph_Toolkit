@@ -20,12 +20,13 @@ for file in sys.argv[1:]:
 
     all_times.append((agg_times, file))
 
-gtype = os.path.basename(os.path.dirname(sys.argv[1]))
+gtype = "smt__p_converged"
+# os.path.basename(os.path.dirname(sys.argv[1]))
 
 # p = re.compile(sys.argv[1])
 result = re.search("test_grp[0-9]*", sys.argv[1])
 test_case = result.group()
-# print(result.group[0])
+print(test_case)
 plt.figure(figsize=(12, 6), dpi=300)
 
 plt.xlabel('# of instances')
