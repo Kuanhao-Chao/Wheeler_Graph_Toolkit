@@ -24,7 +24,7 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-a / --all_valid_WG] [-b / --benchmark]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-b / --benchmark]\n\n"
 
 using namespace std;
 
@@ -36,7 +36,6 @@ string solver="p"; // Default solver: p
 bool writeIOL=false;
 bool writeRange=false;
 bool print_invalid=false;
-bool all_valid_WG=false;
 bool benchmark_mode=false;
 int permutation_counter=1;
 clock_t c_start, c_end;
@@ -61,8 +60,8 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;all_valid_WG;"
-    "exclude=hvpwriabs:");
+	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;"
+    "exclude=hvpwribs:");
 
 	processOptions(args);
     string file_extension = filesystem::path(argv[1]).extension();
@@ -71,7 +70,6 @@ int main(int argc, char* argv[]) {
         cerr << "Your input is not a DOT file. " << endl;
         return 0;
     }
-
 
     ifstream ifile_dot(argv[1]);
     filesystem::path path_name(argv[1]);
@@ -149,7 +147,7 @@ int main(int argc, char* argv[]) {
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
     if (!solver.compare("p") && permutation_counter < 50) {
-        g.permutation_start(!all_valid_WG);
+        g.permutation_start();
     } else {
         g.solve_smt();
     }
@@ -204,16 +202,14 @@ void processOptions(GArgs& args) {
     writeIOL = (args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
     writeRange = (args.getOpt('r')!=NULL || args.getOpt("writeRange"));
     print_invalid = (args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
-    all_valid_WG = (args.getOpt('a')!=NULL || args.getOpt("all_valid_WG"));
     benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
 
-#ifdef DEBUGPRINT
+// #ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;
     cout << "outDir: " << outDir << endl;
     cout << "verbose: " << verbose << endl;
     cout << "writeIOL: " << writeIOL << endl;
     cout << "writeRange: " << writeRange << endl;
     cout << "print_invalid: " << print_invalid << endl;
-    cout << "all_valid_WG: " << all_valid_WG << endl;
-#endif
+// #endif
 }

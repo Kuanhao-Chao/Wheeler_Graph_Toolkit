@@ -247,8 +247,9 @@ void digraph::innodelist_sort_relabel() {
         vector<int> node_indices;
         
         ofstream ofile_range;
-        filesystem::create_directories(outDir);
-        ofile_range.open(outDir+"__"+_path_name + "/range.txt");
+        filesystem::create_directories(outDir+"out__"+_path_name);
+        cout << "_path_name : " << _path_name << endl;
+        ofile_range.open(outDir+"out__"+_path_name + "/range.txt");
         
         int roots_size = _root.size();
         if (roots_size > 0) {
@@ -629,7 +630,7 @@ void digraph::one_scan_through_wg_rg(string label) {
 #endif  
 }
 
-void digraph::permutation_start(bool early_stop) {
+void digraph::permutation_start() {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "****  `permutation_start` " << endl;
@@ -656,13 +657,13 @@ void digraph::permutation_start(bool early_stop) {
         }
         cout << endl;
 #endif
-        this -> permutation_4_edge_group(this -> get_first_edgeLabel(), early_stop);
+        this -> permutation_4_edge_group(this -> get_first_edgeLabel());
         // Relabel back before trying another permutation.
         this -> relabel_reverse_root(repeat_vec, original_labels);
     } while(std::next_permutation(repeat_vec.begin(), repeat_vec.end()));
 }
 
-void digraph::permutation_4_edge_group(string label, bool early_stop) {
+void digraph::permutation_4_edge_group(string label) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "****  `permutation_4_edge_group` " << endl;
@@ -738,11 +739,11 @@ void digraph::permutation_4_edge_group(string label, bool early_stop) {
     cout << ">>>>>>> prev_num_vec.size(): " << prev_num_vec.size() << endl;
     cout << ">>>>>>> accum_same_vec.size(): " << accum_same_vec.size() << endl;
 #endif
-    this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, 0, early_stop);
+    this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, 0);
 }
 
 
-void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop) {
+void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index) {
 #ifdef DEBUGPRINT
     cout << "***************************" << endl;
     cout << "****   Entry to  'permutation_4_sub_edge_group' !!!!!! " << endl;
@@ -785,7 +786,7 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             cout << "$$$$$ WG_valid : " << WG_valid << endl;
 #endif
             if (WG_valid) {
-                this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, index+1, early_stop);
+                this -> permutation_4_sub_edge_group(label, prev_num_vec, accum_same_vec, nodes_2_relabelled_nodes_vec, index+1);
             }
             // Relabel back before trying another permutation.
             this -> relabel_reverse(repeat_vec, original_labels, nodes_2_relabelled_nodes_vec, prev_num_vec, index);
@@ -801,7 +802,7 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             bool WG_valid = true;
             WG_valid = this -> WG_checker_in_edge_group(label, _edgeLabel_2_edge[label]);
             if (WG_valid) {
-                this -> permutation_4_edge_group(this -> get_next_edgeLabel(label), early_stop);            
+                this -> permutation_4_edge_group(this -> get_next_edgeLabel(label));            
             }
         } else if (this -> get_next_edgeLabel(label)  == ""  ) {
 #ifdef DEBUGPRINT
@@ -810,7 +811,7 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             bool WG_valid = true;
             WG_valid = this -> WG_checker();
             if (WG_valid) {
-                this -> valid_wheeler_graph(early_stop);
+                this -> valid_wheeler_graph();
             } else {
                 // Print the invalid graph!!!
                 this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
@@ -1292,7 +1293,7 @@ string digraph::get_decoded_nodeName(int node_name) {
 }
 
 
-void digraph::valid_wheeler_graph(bool early_stop) {
+void digraph::valid_wheeler_graph() {
     if (verbose && !benchmark_mode) {
         cout << endl << endl << endl;
         cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
@@ -1307,9 +1308,7 @@ void digraph::valid_wheeler_graph(bool early_stop) {
     if (writeIOL) {
         this -> output_wg_gagie();
     }
-    if (early_stop) {
-        this -> WG_final_check();
-    }
+    this -> WG_final_check();
 }
 
 
@@ -1354,12 +1353,14 @@ void digraph::exit_program(int return_val) {
 
 
 void digraph::output_wg_gagie() {
-    filesystem::create_directories(outDir+"__"+_path_name);
-    string outfile_O = outDir+"__"+_path_name + "/O.txt";
-    string outfile_I = outDir+"__"+_path_name + "/I.txt";
-    string outfile_L = outDir+"__"+_path_name + "/L.txt";
-    string outfile_DOT = outDir+"__"+_path_name + "/graph.dot";
-    string outfile_NC = outDir+"__"+_path_name + "/nodes.txt";
+    filesystem::create_directories(outDir+"out__"+_path_name);
+    string outfile_O = outDir+"out__"+_path_name + "/O.txt";
+    string outfile_I = outDir+"out__"+_path_name + "/I.txt";
+    string outfile_L = outDir+"out__"+_path_name + "/L.txt";
+    string outfile_DOT = outDir+"out__"+_path_name + "/graph.dot";
+    string outfile_NC = outDir+"out__"+_path_name + "/nodes.txt";
+
+    cout << "outfile_NC: " << outfile_NC << endl;
 
     ofstream ofile_O;
     ofstream ofile_I;

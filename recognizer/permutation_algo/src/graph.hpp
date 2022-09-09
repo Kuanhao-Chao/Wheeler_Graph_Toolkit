@@ -125,9 +125,9 @@ class digraph {
 
         void one_scan_through_wg_rg(string label);
 
-        void permutation_start(bool early_stop);
-        void permutation_4_edge_group(string label, bool early_stop);
-        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index, bool early_stop);
+        void permutation_start();
+        void permutation_4_edge_group(string label);
+        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index);
 
         // void in_edge_group_sort(vector<vector<int> > &edgegp_nodes_innodes, vector<int> &index);
         void in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index);
@@ -156,7 +156,7 @@ class digraph {
         string get_decoded_nodeName(int node_name);
 
 
-        void valid_wheeler_graph(bool early_stop);
+        void valid_wheeler_graph();
         void invalid_wheeler_graph(string msg, bool stop);
         void exit_program(int return_val);
         void output_wg_gagie();
