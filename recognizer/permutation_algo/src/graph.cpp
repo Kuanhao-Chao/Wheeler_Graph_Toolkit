@@ -246,19 +246,17 @@ void digraph::innodelist_sort_relabel() {
         set<int> node_set;
         pair<int, int> range_pair;
         vector<int> node_indices;
-        
-        ofstream ofile_range;
-        filesystem::create_directories(outDir+"out__"+_path_name);
-        cout << "_path_name : " << _path_name << endl;
-        ofile_range.open(outDir+"out__"+_path_name + "/range.txt");
+        ofstream ofile_range;        
+        if (writeRange) {
+            filesystem::create_directories(outDir+"out__"+_path_name);
+            ofile_range.open(outDir+"out__"+_path_name + "/range.txt");
+        }
         
         int roots_size = _root.size();
         if (roots_size > 0) {
             range_pair = make_pair(1, roots_size);
             _node_ranges.push_back(make_pair( range_pair, _root ));
-            if (permutation_counter < 50) {
-                permutation_counter *= roots_size;
-            }
+            this -> permutation_counter_check(roots_size);
         }
         if (writeRange) {
             for (auto root : _root) {
@@ -284,9 +282,7 @@ void digraph::innodelist_sort_relabel() {
                         range_pair = make_pair(cur_min, cur_max);
                         node_indices.assign(node_set.begin(), node_set.end());
                         _node_ranges.push_back(make_pair( range_pair, node_indices ));
-                        if (permutation_counter < 50) {
-                            permutation_counter *= (cur_max-cur_min+1);
-                        }
+                        this -> permutation_counter_check(cur_max-cur_min+1);
                     }
                     if (writeRange) {
                         for (auto node_string : node_set) {
@@ -311,9 +307,7 @@ void digraph::innodelist_sort_relabel() {
             range_pair = make_pair(cur_min, cur_max);
             node_indices.assign(node_set.begin(), node_set.end());
             _node_ranges.push_back(make_pair( range_pair, node_indices ));
-            if (permutation_counter < 50) {
-                permutation_counter *= (cur_max-cur_min+1);
-            }
+            this -> permutation_counter_check(cur_max-cur_min+1);
         }
         if (writeRange) {
             for (auto node_string : node_set) {
@@ -333,11 +327,17 @@ void digraph::innodelist_sort_relabel() {
     bool all_assigned_and_distinct = (_node_ranges.size() == _nodes_num);
     if (all_assigned_and_distinct) {
         _valid_WG_num += 1;
-        if (!benchmark_mode) {
-            cout << "(v) It is a wheeler graph!!" << endl;
-            cout << "(v) Decided after propagation" << endl;
-        }
-        this -> exit_program(1);
+        if (!benchmark_mode) cout << "(v) Decided after propagation" << endl;
+        this -> valid_wheeler_graph();
+    }
+}
+
+
+void digraph::permutation_counter_check(int range_size) {
+    if (permutation_counter > PERMUTATION_CUTOFF) return;
+    for (int c=range_size; c>=1; c--) {
+        permutation_counter *= c;
+        if (permutation_counter > PERMUTATION_CUTOFF) break;
     }
 }
 
@@ -823,9 +823,10 @@ void digraph::permutation_4_sub_edge_group(string &label, vector<int> &prev_num_
             bool WG_valid = true;
             WG_valid = this -> WG_checker();
             if (WG_valid) {
+                if (!benchmark_mode) cout << "(v) solved by permutation" << endl;
                 this -> valid_wheeler_graph();
             } else {
-                // Print the invalid graph!!!
+                // It should never enter here
                 this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
             }
         }
@@ -1371,9 +1372,6 @@ void digraph::output_wg_gagie() {
     string outfile_L = outDir+"out__"+_path_name + "/L.txt";
     string outfile_DOT = outDir+"out__"+_path_name + "/graph.dot";
     string outfile_NC = outDir+"out__"+_path_name + "/nodes.txt";
-
-    cout << "outfile_NC: " << outfile_NC << endl;
-
     ofstream ofile_O;
     ofstream ofile_I;
     ofstream ofile_L;

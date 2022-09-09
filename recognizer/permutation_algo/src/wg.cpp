@@ -29,6 +29,8 @@
 
 using namespace std;
 
+const int PERMUTATION_CUTOFF = 50;
+
 string outDir;
 bool valid_wg=true;
 bool debugMode=false;
@@ -147,12 +149,11 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    if (!solver.compare("p") && permutation_counter < 50) {
+    if (!solver.compare("p") && permutation_counter < PERMUTATION_CUTOFF) {
         g.permutation_start();
     } else {
         g.solve_smt();
     }
-    g.WG_final_check();
     return valid_wg;
 }
 
@@ -205,12 +206,12 @@ void processOptions(GArgs& args) {
     print_invalid = (args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
     benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
 
-// #ifdef DEBUGPRINT
+#ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;
     cout << "outDir: " << outDir << endl;
     cout << "verbose: " << verbose << endl;
     cout << "writeIOL: " << writeIOL << endl;
     cout << "writeRange: " << writeRange << endl;
     cout << "print_invalid: " << print_invalid << endl;
-// #endif
+#endif
 }

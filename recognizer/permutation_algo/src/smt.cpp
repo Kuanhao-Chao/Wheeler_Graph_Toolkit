@@ -116,5 +116,15 @@ void digraph::solve_smt() {
         }
 #endif
         _valid_WG_num += 1;
+
+        bool WG_valid = true;
+        WG_valid = this -> WG_checker();
+        if (WG_valid) {
+            if (!benchmark_mode) cout << "(v) solved by SMT" << endl;
+            this -> valid_wheeler_graph();
+        } else {
+            // It should never enter here
+            this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
+        }
     }
 }

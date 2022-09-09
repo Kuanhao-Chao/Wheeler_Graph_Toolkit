@@ -24,6 +24,7 @@
 using namespace std;
 
 // extern bool debugMode;
+extern const int PERMUTATION_CUTOFF;
 extern string outDir;
 extern bool verbose;
 extern bool writeIOL;
@@ -162,6 +163,7 @@ class digraph {
         void output_wg_gagie();
 
         void solve_smt();
+        void permutation_counter_check(int range_size);
 };
 
 #endif
