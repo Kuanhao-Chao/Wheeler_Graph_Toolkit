@@ -178,6 +178,7 @@ void digraph::innodelist_sort_relabel() {
     int accum_edgegp_size = 0;
 
     // To-do: maybe I can repeat the sorting & relabling until the node labels do not change.
+    int iter = 0;
     bool prelabels_fixed = false;
     while (!prelabels_fixed) {
         accum_edgegp_size = 0;
@@ -253,7 +254,7 @@ void digraph::innodelist_sort_relabel() {
         
         int roots_size = _root.size();
         if (roots_size > 0) {
-            range_pair = make_pair(0, roots_size);
+            range_pair = make_pair(1, roots_size);
             _node_ranges.push_back(make_pair( range_pair, _root ));
             if (permutation_counter < 50) {
                 permutation_counter *= roots_size;
@@ -280,11 +281,11 @@ void digraph::innodelist_sort_relabel() {
                     cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
 #endif
                     if (!node_set.empty()) {
-                        range_pair = make_pair(cur_min - 1, cur_max);
+                        range_pair = make_pair(cur_min, cur_max);
                         node_indices.assign(node_set.begin(), node_set.end());
                         _node_ranges.push_back(make_pair( range_pair, node_indices ));
                         if (permutation_counter < 50) {
-                            permutation_counter *= (cur_max-cur_min);
+                            permutation_counter *= (cur_max-cur_min+1);
                         }
                     }
                     if (writeRange) {
@@ -307,11 +308,11 @@ void digraph::innodelist_sort_relabel() {
         cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
 #endif
         if (!node_set.empty()) {
-            range_pair = make_pair(cur_min - 1, cur_max);
+            range_pair = make_pair(cur_min, cur_max);
             node_indices.assign(node_set.begin(), node_set.end());
             _node_ranges.push_back(make_pair( range_pair, node_indices ));
             if (permutation_counter < 50) {
-                permutation_counter *= (cur_max-cur_min);
+                permutation_counter *= (cur_max-cur_min+1);
             }
         }
         if (writeRange) {
@@ -326,6 +327,17 @@ void digraph::innodelist_sort_relabel() {
 #ifdef DEBUGPRINT
         cout << "permutation_counter: " << permutation_counter << endl;
 #endif
+    }
+
+    // Check if done
+    bool all_assigned_and_distinct = (_node_ranges.size() == _nodes_num);
+    if (all_assigned_and_distinct) {
+        _valid_WG_num += 1;
+        if (!benchmark_mode) {
+            cout << "(v) It is a wheeler graph!!" << endl;
+            cout << "(v) Decided after propagation" << endl;
+        }
+        this -> exit_program(1);
     }
 }
 

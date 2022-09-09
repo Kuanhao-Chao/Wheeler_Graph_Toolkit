@@ -10,13 +10,14 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <regex>
 #include <map>
 #include <unordered_map>
 #include <set>
 #include <new>
-#include <time.h>
+#include <ctime>
 // Change to chrono
 #include "GArgs.h"
 #include "edge.hpp"
