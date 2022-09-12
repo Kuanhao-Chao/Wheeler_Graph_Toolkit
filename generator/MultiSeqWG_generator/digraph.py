@@ -1,3 +1,4 @@
+from selectors import EpollSelector
 import node as n
 class digraph:
     def __init__(self, col_num):
@@ -94,9 +95,9 @@ class digraph:
         print("self.edgelabel_num: ", self.edgelabel_num)
 
     def finding_head(self, row_idx, tail_seq, tail_seq_idx, tail_node, head_seq, head_seq_idx, head_node):
-        print("\n\n >> Tail now!!!")
+        print("\n\n >> Tail now!!! ", tail_seq, tail_seq_idx)
         tail_node.print_node()
-        print(" >> Head now!!!")
+        print(" >> Head now!!! ", head_seq, head_seq_idx)
         if head_node != None:
             head_node.print_node()
         ##########################
@@ -137,21 +138,41 @@ class digraph:
             max_cmp_tail = max(cmp_tails)
 
             print("min_cmp_tail: ", min_cmp_tail, ";  max_cmp_tail: ", max_cmp_tail)
-            # I find a node! I can reuse the created node!!!
-            if cmp_node.nodecolid == head_seq_idx:
-                head_node = self.all_nodes[idx_s]
 
-            # I need to create a new node!!
-            else:
-                # cmp_tails
-                if tail_node.nodeorder <= min_cmp_tail:
-                    head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder, tail_seq, head_seq_idx)
+            # if cmp_node.out_edgelabel == self.all_nodes[idx_s].out_edgelabel:
+            #     head_node = self.all_nodes[idx_s]
+            # else:
+            #     if tail_node.nodeorder <= min_cmp_tail:
+            #         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder, tail_seq, head_seq_idx)
+            # #         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder, tail_seq, head_seq_idx)
+
+
+
+            # # I find a node! I can reuse the created node!!!
+            # if cmp_node.nodecolid == head_seq_idx and cmp_node.out_edgelabel == self.all_nodes[idx_s].out_edgelabel:
+            #     head_node = self.all_nodes[idx_s]
+
+            # # I need to create a new node!!
+            # else:
+            #     # cmp_tails
+
+            if tail_node.nodeorder <= min_cmp_tail:
+                if head_seq == cmp_node.out_edgelabel and head_seq_idx == cmp_node.nodecolid:
+                    head_node = self.all_nodes[idx_s]
+                else:
+                    head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder, head_seq, head_seq_idx)
                     self.add_head_node(tail_node, head_node)
-                elif tail_node.nodeorder > min_cmp_tail and tail_node.nodeorder < max_cmp_tail:
-                    print("NNNNNNNNNNNNNAAAAAAAAAAAA")
-                elif tail_node.nodeorder >= max_cmp_tail:
-                    head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder+1, tail_seq, head_seq_idx)
+            elif tail_node.nodeorder > min_cmp_tail and tail_node.nodeorder < max_cmp_tail:
+                print("NNNNNNNNNNNNNAAAAAAAAAAAA")
+            elif tail_node.nodeorder >= max_cmp_tail:
+                if head_seq == cmp_node.out_edgelabel and head_seq_idx == cmp_node.nodecolid:
+                    head_node = self.all_nodes[idx_s]
+                else:
+                    head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder+1, head_seq, head_seq_idx)
                     self.add_head_node(tail_node, head_node)
+
+                # head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), cmp_node.nodeorder+1, head_seq, head_seq_idx)
+                # self.add_head_node(tail_node, head_node)
 
         # The condition of more than 1 edges in that group!!
         else:
@@ -177,7 +198,7 @@ class digraph:
                 right_head_node.print_node()
 
                 if len(left_head_node.parents) == 0:
-                    left_cmp_tail = 0
+                    left_cmp_tails = [0]
                 else:
                     # left_cmp_tail = left_head_node.parents[0].nodeorder
                     left_cmp_tails = [parent.nodeorder for parent in left_head_node.parents]
@@ -185,7 +206,7 @@ class digraph:
                     left_cmp_tail = max(left_cmp_tails)
 
                 if len(right_head_node.parents) == 0:
-                    right_cmp_tail = 0
+                    right_cmp_tails = [0]
                 else:
                     # right_cmp_tail = right_head_node.parents[0].nodeorder
                     right_cmp_tails = [parent.nodeorder for parent in right_head_node.parents]
@@ -203,47 +224,99 @@ class digraph:
                 print("left_head_node colidx :", left_head_node.nodecolid, ";  \thead_node column: ", head_seq_idx, ";  \tright_head_node colidx : ", right_head_node.nodecolid)
                 print("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
-                if tail_node.nodeorder < left_cmp_tail:
-                    if left_head_node.nodecolid == head_seq_idx:
-                        head_node = self.all_nodes[left_head_idx]
-                        print("\t@@@ left node!! head ordering: ", head_node.nodeorder)
+                
+                if tail_node.nodeorder < min(left_cmp_tails):
+                    if head_seq == left_head_node.out_edgelabel and head_seq_idx == left_head_node.nodecolid:
+                        head_node = left_head_node
                     else:
-                        # Create a new node.
                         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), left_head_node.nodeorder, head_seq, head_seq_idx)
-                        # self.add_head_node(tail_node, head_node)
                         print("\t@@@ new node!! head ordering: ", head_node.nodeorder)
                         self.add_head_node(tail_node, head_node)
                     break
-                elif tail_node.nodeorder >= left_cmp_tail and tail_node.nodeorder <= right_cmp_tail:
-                    # I find a node! I can reuse the created node!!!
-                    if left_head_node.nodecolid == head_seq_idx:
-                        head_node = self.all_nodes[left_head_idx]
-                        print("\t@@@ left node!! head ordering: ", head_node.nodeorder)
-                        break
-                    # I find a node! I can reuse the created node!!!
-                    elif right_head_node.nodecolid == head_seq_idx:
-                        head_node = self.all_nodes[right_head_idx]
-                        print("\t@@@ right node!! head ordering: ", head_node.nodeorder)
-                        break
-
-                    # I need to create a new node!!
+                elif tail_node.nodeorder == min(left_cmp_tails):
+                    if head_seq == left_head_node.out_edgelabel and head_seq_idx == left_head_node.nodecolid:
+                        head_node = left_head_node
                     else:
-                        head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), right_head_node.nodeorder, head_seq, head_seq_idx)
-                        print("\t@@@ >> new node!! head ordering: ", right_head_node.nodeorder)
+                        head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), left_head_node.nodeorder+1, head_seq, head_seq_idx)
+                        print("\t@@@ new node!! head ordering: ", head_node.nodeorder)
                         self.add_head_node(tail_node, head_node)
-                        print("\t@@@ >> new node!! head ordering: ", head_node.nodeorder)
-                        break
-                elif tail_node.nodeorder > right_cmp_tail and left_head_idx == idx_e-2: 
-                    if right_head_node.nodecolid == head_seq_idx:
-                        head_node = self.all_nodes[right_head_idx]
-                        print("\t@@@ right node!! head ordering: ", head_node.nodeorder)
+                    break
+                elif max(left_cmp_tails) <= tail_node.nodeorder and tail_node.nodeorder <= min(right_cmp_tails):
+                    if head_seq == left_head_node.out_edgelabel and head_seq_idx == left_head_node.nodecolid:
+                        head_node = left_head_node
+                    elif head_seq == right_head_node.out_edgelabel and head_seq_idx == right_head_node.nodecolid:
+                        head_node = right_head_node
+                    else:
+                        head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), left_head_node.nodeorder+1, head_seq, head_seq_idx)
+                        print("\t@@@ new node!! head ordering: ", head_node.nodeorder)
+                        self.add_head_node(tail_node, head_node)
+                    break
+
+                elif tail_node.nodeorder == max(right_cmp_tails):
+                    if head_seq == right_head_node.out_edgelabel and head_seq_idx == right_head_node.nodecolid:
+                        head_node = right_head_node
                     else:
                         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), right_head_node.nodeorder+1, head_seq, head_seq_idx)
+                        print("\t@@@ new node!! head ordering: ", head_node.nodeorder)
                         self.add_head_node(tail_node, head_node)
-                        print("\t@@@ new node!! head ordering: ", head_node.nodeorder+1)
                     break
+
+
+                elif tail_node.nodeorder > max(right_cmp_tails) and left_head_idx == idx_e-2: 
+                    if head_seq == right_head_node.out_edgelabel and head_seq_idx == right_head_node.nodecolid:
+                        head_node = right_head_node
+                    else:
+                        head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), right_head_node.nodeorder+1, head_seq, head_seq_idx)
+                        print("\t@@@ new node!! head ordering: ", head_node.nodeorder)
+                        self.add_head_node(tail_node, head_node)
+                    break
+
                 else:
                     print("\t@@@ NANI!!!")
+                
+                
+                
+                # if tail_node.nodeorder < left_cmp_tail:
+                #     if left_head_node.nodecolid == head_seq_idx and left_head_node.out_edgelabel == self.all_nodes[left_head_idx].out_edgelabel:
+                #         head_node = self.all_nodes[left_head_idx]
+                #         print("\t@@@ left node!! head ordering: ", head_node.nodeorder)
+                #     else:
+                #         # Create a new node.
+                #         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), left_head_node.nodeorder, head_seq, head_seq_idx)
+                #         # self.add_head_node(tail_node, head_node)
+                #         print("\t@@@ new node!! head ordering: ", head_node.nodeorder)
+                #         self.add_head_node(tail_node, head_node)
+                #     break
+                # elif tail_node.nodeorder >= left_cmp_tail and tail_node.nodeorder <= right_cmp_tail:
+                #     # I find a node! I can reuse the created node!!!
+                #     if left_head_node.nodecolid == head_seq_idx and left_head_node.out_edgelabel == self.all_nodes[left_head_idx].out_edgelabel:
+                #         head_node = self.all_nodes[left_head_idx]
+                #         print("\t@@@ left node!! head ordering: ", head_node.nodeorder)
+                #         break
+                #     # I find a node! I can reuse the created node!!!
+                #     elif right_head_node.nodecolid == head_seq_idx and right_head_node.out_edgelabel == self.all_nodes[right_head_idx].out_edgelabel:
+                #         head_node = self.all_nodes[right_head_idx]
+                #         print("\t@@@ right node!! head ordering: ", head_node.nodeorder)
+                #         break
+
+                #     # I need to create a new node!!
+                #     else:
+                #         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), right_head_node.nodeorder, head_seq, head_seq_idx)
+                #         print("\t@@@ >> new node!! head ordering: ", right_head_node.nodeorder)
+                #         self.add_head_node(tail_node, head_node)
+                #         print("\t@@@ >> new node!! head ordering: ", head_node.nodeorder)
+                #         break
+                # elif tail_node.nodeorder > right_cmp_tail and left_head_idx == idx_e-2: 
+                #     if right_head_node.nodecolid == head_seq_idx and right_head_node.out_edgelabel == self.all_nodes[right_head_idx].out_edgelabel:
+                #         head_node = self.all_nodes[right_head_idx]
+                #         print("\t@@@ right node!! head ordering: ", head_node.nodeorder)
+                #     else:
+                #         head_node = n.node("S_"+str(row_idx)+"_"+str(head_seq_idx), right_head_node.nodeorder+1, head_seq, head_seq_idx)
+                #         self.add_head_node(tail_node, head_node)
+                #         print("\t@@@ new node!! head ordering: ", head_node.nodeorder+1)
+                #     break
+                # else:
+                #     print("\t@@@ NANI!!!")
                 print("\n\n")
             print("\n\n")
         self.print_all_nodes()

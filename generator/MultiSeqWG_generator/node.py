@@ -6,7 +6,7 @@ class node:
         self.nodecolid = nodeColid # The column ID where the node is at.
         self.parents = []
         self.children = []
-        print("Initializing a node: ", self.nodeid, self.nodeorder)
+        print("Initializing a node: ", self.nodeid, self.nodeorder, self.out_edgelabel)
     
     def add_parent(self, parent):
         if parent not in self.parents:

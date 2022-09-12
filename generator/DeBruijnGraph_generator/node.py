@@ -10,14 +10,14 @@ class node:
     def add_parent(self, parent):
         if parent not in self.parents:
             self.parents.append(parent)
-        else:
-            print("The parent was added before!")
+        # else:
+        #     print("The parent was added before!")
 
     def add_child(self, child):
         if child not in self.children:
             self.children.append(child)
-        else:
-            print("The child was added before!")
+        # else:
+        #     print("The child was added before!")
 
 
     def set_nodeid(self, nodeID):

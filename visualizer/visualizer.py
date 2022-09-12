@@ -1,4 +1,4 @@
-from turtle import color
+# from turtle import color
 import networkx as nx
 import matplotlib.pyplot as plt
 import getopt
@@ -6,6 +6,7 @@ import sys
 import random
 import os
 
+USAGE = '''usage: visualizer.py [-h] [-v] [-o / --ofile FILE] Valid WG DOT file'''
 random.seed(1)
 color_default = ["blue", "red", "green", "orange"]
 
@@ -32,48 +33,41 @@ def main(argv):
     ##############################
     ## Parsing arguments
     ##############################
-    inputfile = ""
-    outputfile = ""
-    inputfile_given = False
+    # Default parameters:
+    k = 3
+    verbose = False
+    outputdir = "./"
     try:
-        opts, args = getopt.getopt(argv,"hvi:o:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hvo:",["ofile="])
     except getopt.GetoptError:
-        print('isWheeler.py -i <inputfile> -o <outputfile> -v')
+        print(USAGE)
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('isWheeler.py -i <inputfile> -o <outputfile> -v')
+            print(USAGE)
             sys.exit()
         elif opt == '-v':
             verbose = True
-        elif opt in ("-i", "--ifile"):
-            inputfile = arg
-            inputfile_given = True
         elif opt in ("-o", "--ofile"):
-            outputfile = arg
-    if not inputfile_given:
-        print("-i / --ifile was not given")
-        print('isWheeler.py -i <inputfile> -o <outputfile> -v')
+            outputdir = arg
+    
+    if not os.path.exists(outputdir):
+        print("Output directory does not exist!")
+        outputdir = "./"
+        
+    if len(args) == 0:
+        print(USAGE)
+        print("Please input one valid WG in DOT file")
         sys.exit(2)
-    nodes, edges, edge_labels, has_incoming_edge = parse(inputfile)
 
+    nodes, edges, edge_labels, has_incoming_edge = parse(args[0])
+
+    print(">> Visualizing ...")
     node_num = len(nodes)
-    print(nodes)
-    print(edges)
-    print(edge_labels)
-    print(has_incoming_edge)
-
     figure_width = node_num*0.9
     f = plt.figure(figsize=(figure_width, 6), dpi=100)
     ax = f.add_subplot(1,1,1)
-
-    # fig, ax = plt.subplots()
-    # hex_number = "#"+str(hex(random.randint(0,16777215))[2:])
-    # print('A  Random Hex Color Code is :',hex_number)
-
-
     color_coding = {x: color_default[idx] if idx < 4 else "#"+str(hex(random.randint(0,16777215))[2:]) for idx, x in enumerate(edge_labels)}
-
     print("colors: ", color_coding)
     
     for label, color in color_coding.items():
@@ -85,13 +79,6 @@ def main(argv):
         G.add_node(str(node)+"_o",pos=(x_pos,1))
         G.add_node(str(node)+"_i",pos=(x_pos,0))
         x_pos += 1
-        # G.add_node(2,pos=(2,2))
-        # G.add_node(3,pos=(3,2))
-        # G.add_node(4,pos=(4,2))
-        # G.add_edge(1,2)
-        # G.add_edge(2,3)
-        # G.add_edge(3,4)
-
 
     options = {
         "node_size": 1200,
