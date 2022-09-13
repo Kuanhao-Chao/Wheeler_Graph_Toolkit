@@ -2,9 +2,6 @@ import sys
 import random
 import argparse
 
-root_size = 1
-A = 65
-
 def sample_with_dupl_in_range(lb, ub, num):
     return [random.randint(lb, ub) for i in range(num)]
 
@@ -32,8 +29,10 @@ def partition_in_nodes(lst, num_edges, num_labels):
 # For each partition, generate random sorted nodes from where directed edges originate
 def gen_out_nodes_grp(in_nodes_grps, num_nodes):
     out_nodes_grps = []
-    for grp in in_nodes_grps:
-        out_grp = sorted(sample_with_dupl_in_range(1, num_nodes, len(grp)))
+    for in_grp in in_nodes_grps:
+        grp_size = len(in_grp)
+        out_grp = sorted(random.sample(range(1, num_nodes+1), min(grp_size, num_nodes)) \
+                + sample_with_dupl_in_range(1, num_nodes, grp_size - num_nodes))
         out_nodes_grps.append(out_grp)
     return out_nodes_grps
 
@@ -50,7 +49,7 @@ def create_graph(names, edge_grps, filename):
             for edge in edge_grp:
                 out_node_name = names[edge[0] - 1]
                 in_node_name = names[edge[1] - 1]
-                f.write(f'\t{out_node_name} -> {in_node_name} [ label = {chr(A+i)} ];\n')
+                f.write(f'\t{out_node_name} -> {in_node_name} [ label = {"a"*(i+1)} ];\n')
         f.write('}')
 
 
@@ -59,12 +58,15 @@ def main():
     parser.add_argument('-n', '--nodes', type=int, help='Number of nodes', required=True)
     parser.add_argument('-e', '--edges', type=int, help='Number of edges', required=True)
     parser.add_argument('-l', '--labels', type=int, help='Number of edge labels', required=True)
-    parser.add_argument('-o', '--outfile', type=str, default='tmp.dot', help='Output DOT filename (default: tmp.dot)')
+    parser.add_argument('-r', '--root_size', type=int, default=1, help='Number of nodes without incoming edges (default: 1)')
+    parser.add_argument('-s', '--shuffle', action='store_true', help='Shuffle node names (default: False)')
+    parser.add_argument('-o', '--outfile', type=str, default='tmp.dot', help='Output DOT filename (default: ./tmp.dot)')
     args = parser.parse_args()
 
     num_nodes = args.nodes
     num_edges = args.edges
     num_labels = args.labels
+    root_size = args.root_size
     outfile_name = args.outfile
 
     # Sorted random nodes that directed edges are pointing to
@@ -77,7 +79,7 @@ def main():
     out_nodes_grps = gen_out_nodes_grp(in_nodes_grps, num_nodes)
     edge_grps = [list(zip(out_grp, in_grp)) for out_grp, in_grp in zip(out_nodes_grps, in_nodes_grps)]
 
-    node_names = get_names(num_nodes) #, shuffle=False)
+    node_names = get_names(num_nodes, shuffle=args.shuffle)
 
     create_graph(node_names, edge_grps, outfile_name)
 
