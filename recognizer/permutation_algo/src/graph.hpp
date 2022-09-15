@@ -146,7 +146,7 @@ class digraph {
 
         bool WG_checker_in_edge_group(string label, vector<edge> &edges);
         bool WG_checker();
-        void WG_final_check();
+        void SMT_WG_final_check();
         // Find the in degree == 0;
         void find_root_node();
         vector<int> get_root();

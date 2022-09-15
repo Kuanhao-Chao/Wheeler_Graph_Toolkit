@@ -101,9 +101,8 @@ int main(int argc, char* argv[]) {
                     node1_vec.push_back(node_1_name);
                     node2_vec.push_back(node_2_name);
                     node_names_set.insert(node_1_name);
-                    node_names_set.insert(node_2_name);
+                    node_names_set.insert(node_2_name); 
                     edgeLabels.push_back(match[3]);
-                    // cout << "match[3]: " << match[3] << endl;
                 }
             }
         }   

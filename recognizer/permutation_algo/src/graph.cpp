@@ -161,10 +161,8 @@ void digraph::relabel_initialization() {
     WG_valid = this -> WG_checker();
     if (!WG_valid) {
         // Invalid graph!!! Terminate the program.
-        if (!benchmark_mode) {
-            cout << "XX After initialization, it is not a wheeler graph." << endl;
-        }
-        this -> exit_program(-1);
+        if (!benchmark_mode) cout << "(X) After initialization, it is not a wheeler graph." << endl;
+        this -> invalid_wheeler_graph("", true);
     }
 }
 
@@ -232,11 +230,8 @@ void digraph::innodelist_sort_relabel() {
 
     if (!WG_valid) {
         // Invalid graph !! Terminate the program.
-        if (!benchmark_mode) {
-            cout << "XX After sorting by innode-list and relabelling, it is not a wheeler graph" << endl;
-        }
-        this -> WG_final_check();
-        this -> exit_program(-1);
+        if (!benchmark_mode) cout << "(X) After sorting by innode-list and relabelling, it is not a wheeler graph" << endl;
+        this -> invalid_wheeler_graph("", true);
     } else {
         int cur_min = 0;
         int cur_max = 0;
@@ -854,7 +849,8 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
         [&](const int& a, const int& b) {
             if (edgegp_node_2_innodes_vec[a] < edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[b].front() < edgegp_node_2_innodes_vec[a].back()) {
-                    this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
+                    if (!benchmark_mode) cout << "(X) WG violation during in-node list sorting.It is not a wheeler graph" << endl;
+                    this -> invalid_wheeler_graph("", true);
                 }
             } else if (edgegp_node_2_innodes_vec[a] > edgegp_node_2_innodes_vec[b]) {
                 if (edgegp_node_2_innodes_vec[a].front() < edgegp_node_2_innodes_vec[b].back()) {
@@ -876,7 +872,8 @@ void digraph::in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> >
                     }
                     cout << endl;
 #endif
-                    this -> invalid_wheeler_graph("'in_edge_group_sort'!!!", true);
+                    if (!benchmark_mode) cout << "(X) WG violation during in-node list sorting.It is not a wheeler graph" << endl;
+                    this -> invalid_wheeler_graph("", true);
                 }
             }
 #ifdef DEBUGPRINT
@@ -1174,20 +1171,25 @@ bool digraph::WG_checker() {
 }
 
 
-void digraph::WG_final_check() {
-    print_node_2_innodes_graph();
-    if (_valid_WG_num > 0) {
-        _is_wg = true;
-        if (!benchmark_mode) {
-            cout << "(v) It is a wheeler graph!!" << endl;
-        }
-        this -> exit_program(1);
+void digraph::SMT_WG_final_check() {
+    bool WG_valid = false;
+    // 1. Check if each node has a distinct node ordering.
+    set<int> nodes_order;
+    for (int i=0; i<_nodes_num; i++) {
+        nodes_order.insert(_node_ptrs[i]);
+    }
+    if (nodes_order.size() == _nodes_num) WG_valid = true;
+
+    // 2. Check three WG conditions again.
+    if (WG_valid) {
+        WG_valid = this->WG_checker();
+    }
+    if (WG_valid) {
+        if (!benchmark_mode) cout << "(v) solved by SMT" << endl;
+        this -> valid_wheeler_graph();
     } else {
-        _is_wg = false;
-        if (!benchmark_mode) {
-            cout << "(x) It is not a wheeler graph!!" << endl;
-        }
-        this -> exit_program(-1);
+        // It should never enter here
+        this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
     }
 }
 
@@ -1321,27 +1323,28 @@ void digraph::valid_wheeler_graph() {
     if (writeIOL) {
         this -> output_wg_gagie();
     }
-    this -> WG_final_check();
+    _is_wg = true;
+    if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
+    this -> exit_program(1);
 }
 
 
 void digraph::invalid_wheeler_graph(string msg, bool stop) {
     _invalid_stop_num += 1;
-    if (verbose) {
-        if (print_invalid && !benchmark_mode) {
-            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-            cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
-            cout << "XXXXX   " << msg << endl;
-            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-            this -> print_graph("XX");
-            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-            cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
-            cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
-            cout << "=================================================================" << endl;   
-        }
+    if (verbose && !benchmark_mode) {
+        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+        cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
+        cout << "XXXXX   " << msg << endl;
+        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+        this -> print_graph("XX");
+        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+        cout << "XXXXX Invalid WG !!!!!!!!!!!!!!!! XXXXX" << endl;
+        cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
+        cout << "=================================================================" << endl;   
     }
     if (stop) {
-        // cout << "(x) It is not a wheeler graph!!" << endl;
+        _is_wg = false;
+        if (!benchmark_mode) cout << "(x) It is not a wheeler graph!!" << endl;
         this -> exit_program(-1);
     }
 }

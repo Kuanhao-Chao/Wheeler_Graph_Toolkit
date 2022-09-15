@@ -148,7 +148,7 @@ def main():
 
 
                     # The first column. 
-                    if tail_seq_idx == 0:
+                    if  tail_seq_idx == 0:
                         ##########################
                         # The first column => Initialization, finding the first tail!!
                         ##########################

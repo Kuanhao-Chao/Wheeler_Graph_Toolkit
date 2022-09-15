@@ -115,16 +115,26 @@ void digraph::solve_smt() {
             std::cout << v.name() << " = " << m.get_const_interp(v) << "\n";
         }
 #endif
-        _valid_WG_num += 1;
 
-        bool WG_valid = true;
-        WG_valid = this -> WG_checker();
-        if (WG_valid) {
-            if (!benchmark_mode) cout << "(v) solved by SMT" << endl;
-            this -> valid_wheeler_graph();
-        } else {
-            // It should never enter here
-            this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
+#ifdef DEBUGPRINT
+        cout << "Before assigning SMT result" << endl;
+        for (auto& [nodename, ptr] : _node_2_ptr_address) {
+            cout << ">> Before: " << *ptr << endl;
         }
+#endif
+        for (unsigned i = 0; i < m.size(); i++) {
+            func_decl v = m[i];
+            string node_name = v.name().str();
+            int node_order = m.get_const_interp(v).get_numeral_int64();
+            *_node_2_ptr_address[_nodeName_2_newNodeName[node_name]] = node_order;
+        }  
+#ifdef DEBUGPRINT
+        cout << "After assigning SMT result" << endl;
+        for (auto& [nodename, ptr] : _node_2_ptr_address) {
+            cout << ">> Before: " << *ptr << endl;
+        }
+#endif
+        bool WG_valid = true;
+        this -> SMT_WG_final_check();
     }
 }
