@@ -18,7 +18,7 @@ unordered_map<int,int*> digraph::get_node_2_ptr_address() {
 }
 
 
-map<string, vector<edge> > digraph::get_edgeLabel_2_edge() {
+map<int, vector<edge> > digraph::get_edgeLabel_2_edge() {
     return _edgeLabel_2_edge;
 }
 

@@ -25,7 +25,7 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --print_invalid] [-b / --benchmark]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark]\n\n"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ bool verbose=false;
 string solver="p"; // Default solver: p
 bool writeIOL=false;
 bool writeRange=false;
-bool print_invalid=false;
+bool label_is_int = false;
 bool benchmark_mode=false;
 int permutation_counter=1;
 clock_t c_start, c_end;
@@ -81,7 +81,8 @@ int main(int argc, char* argv[]) {
     vector<string> node2_vec;
     vector<string> node_names;
     set<string> node_names_set;
-    vector<string> edgeLabels;
+    vector<string> edge_labels;
+    vector<int> new_edge_labels;
     unordered_map<int,int> node_2_ptr_idx;
 
     /********************************
@@ -98,11 +99,12 @@ int main(int argc, char* argv[]) {
                 if (regex_search(line, match, rgx)) {
                     string node_1_name = match[1];
                     string node_2_name = match[2];
+                    string label = match[3];
                     node1_vec.push_back(node_1_name);
                     node2_vec.push_back(node_2_name);
                     node_names_set.insert(node_1_name);
                     node_names_set.insert(node_2_name); 
-                    edgeLabels.push_back(match[3]);
+                    edge_labels.push_back(label);
                 }
             }
         }   
@@ -111,23 +113,39 @@ int main(int argc, char* argv[]) {
     node_names.assign(node_names_set.begin(), node_names_set.end());
 
     int nodes_num = node_names.size();
-    int edges_num = edgeLabels.size();
+    int edges_num = edge_labels.size();
 
     /********************************
     *** Initialize the graph. 
     ********************************/
     digraph g = digraph(node_names, nodes_num, edges_num, path_name.stem());
-    g.add_edges(node1_vec, node2_vec, edgeLabels);
-
-#ifdef DEBUGPRINT
-        string label = g.get_first_edgeLabel();
-        while(label != "" ) {
-            g.sort_edgeLabel_2_edge(label);
-            label = g.get_next_edgeLabel(label);
-        }
-        g.print_graph();
-#endif
-
+    
+    /********************************
+    *** Creating the label mapping
+    ********************************/
+    if (label_is_int) {
+        set<int> s;
+        for( unsigned i = 0; i < edge_labels.size(); i++ ) s.insert( stoi(edge_labels[i]) );
+        int new_label = 0;
+        for (auto itr : s) {
+            g.label_2_newLabel[to_string(itr)] = new_label;
+            g.newLabel_2_label[new_label] = to_string(itr);
+            new_label ++;
+        } 
+    } else {
+        set<string> s;
+        for( unsigned i = 0; i < edge_labels.size(); i++ ) s.insert( edge_labels[i] );
+        int new_label = 0;
+        for (auto itr : s) {
+            g.label_2_newLabel[itr] = new_label;
+            g.newLabel_2_label[new_label] = itr;
+            new_label ++;
+        } 
+    }
+    for (int i=0; i<edge_labels.size(); i++) {
+        new_edge_labels.push_back(g.label_2_newLabel[edge_labels[i]]);
+    }
+    g.add_edges(node1_vec, node2_vec, new_edge_labels);
 
     /********************************
     *** Step 1: If after initialization, it is not a WG => it is not a WG.
@@ -202,7 +220,7 @@ void processOptions(GArgs& args) {
 
     writeIOL = (args.getOpt('w')!=NULL || args.getOpt("writeIOL"));
     writeRange = (args.getOpt('r')!=NULL || args.getOpt("writeRange"));
-    print_invalid = (args.getOpt('i')!=NULL || args.getOpt("print_invalid"));
+    label_is_int = (args.getOpt('i')!=NULL || args.getOpt("label_is_int"));
     benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
 
 #ifdef DEBUGPRINT
@@ -211,6 +229,6 @@ void processOptions(GArgs& args) {
     cout << "verbose: " << verbose << endl;
     cout << "writeIOL: " << writeIOL << endl;
     cout << "writeRange: " << writeRange << endl;
-    cout << "print_invalid: " << print_invalid << endl;
+    cout << "label_is_int: " << label_is_int << endl;
 #endif
 }

@@ -29,7 +29,7 @@ extern string outDir;
 extern bool verbose;
 extern bool writeIOL;
 extern bool writeRange;
-extern bool print_invalid;
+extern bool label_is_int;
 extern bool all_valid_WG;
 extern bool benchmark_mode;
 extern clock_t c_start;
@@ -38,6 +38,8 @@ extern double cpu_time_used;
 extern int permutation_counter;
 extern unordered_map<string,int> _nodeName_2_newNodeName;
 extern unordered_map<int,string> _newNodeName_2_nodeName;
+// extern unordered_map<string,int> label_2_newLabel;
+// extern unordered_map<int,string> newLabel_2_label;
 
 /********************************
 *** When number of duplicates is large, faster to convert to set and 
@@ -53,6 +55,7 @@ class digraph {
         vector<int> _root;
         int _nodes_num;
         int _edges_num;
+        int _labels_num;
 
         int* _node_ptrs;
         int* _prev_node_ptrs;
@@ -65,24 +68,28 @@ class digraph {
 
         unordered_map<int,set<int> > _node_2_innodes;
         // Node -> edgeLabel -> outnodes
-        unordered_map<int, map<string, set<int> > > _node_2_edgeLabel_2_outnodes;
+        unordered_map<int, map<int, set<int> > > _node_2_edgeLabel_2_outnodes;
 
         // all edges
-        map<string, vector<edge> > _edgeLabel_2_edge;
+        map<int, vector<edge> > _edgeLabel_2_edge;
 
         // Flatten edges
         // This is only for printing & 
-        map<string, string> _edgeLabel_2_next_edgeLabel;
+        map<int, int> _edgeLabel_2_next_edgeLabel;
 
         // [ (lb, ub), [node_names] ]
         vector< pair< pair<int, int>, vector<int> > > _node_ranges;
 
+
     public:
+        unordered_map<string,int> label_2_newLabel;
+        unordered_map<int,string> newLabel_2_label;
+
         digraph(vector<string> node_names, int nodes_num, int edges_num, string path_name);
 
         ~digraph();
 
-        void add_edges(vector<string> node1_vec, vector<string> node2_vec, vector<string> edgeLabels);
+        void add_edges(vector<string> node1_vec, vector<string> node2_vec, vector<int> edgeLabels);
 
         void print_node(int node_name);
         void print_graph(string offset="");
@@ -113,38 +120,31 @@ class digraph {
         int* get_node_address(int node_name);
         unordered_map<int,int*> get_node_2_ptr_address();
 
-        map<string, vector<edge> > get_edgeLabel_2_edge();
+        map<int, vector<edge> > get_edgeLabel_2_edge();
         unordered_map<int,set<int> > get_node_2_innodes();
-        unordered_map<int, map<string, set<int> > > get_node_2_edgeLabel_2_outnodes();
+        unordered_map<int, map<int, set<int> > > get_node_2_edgeLabel_2_outnodes();
 
-
-        map<string, vector<int> > get_outnodes_labels(int node_name);
-        vector<int> get_innodes_labels(string edgeLabel, int node_name);
+        vector<int> get_innodes_labels(int edgeLabel, int node_name);
         int get_valid_WG_num();
         int get_invalid_stop_num();
         int get_valid_WG_num_2();
 
-        void one_scan_through_wg_rg(string label);
-
         void permutation_start();
-        void permutation_4_edge_group(string label);
-        void permutation_4_sub_edge_group(string &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index);
+        void permutation_4_edge_group(int label);
+        void permutation_4_sub_edge_group(int &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index);
 
         // void in_edge_group_sort(vector<vector<int> > &edgegp_nodes_innodes, vector<int> &index);
         void in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index);
-        void in_edge_group_pre_label(string label, vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, int &accum_edgegp_size);
+        void in_edge_group_pre_label(int label, vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, int &accum_edgegp_size);
 
-        void in_out_nodelist_repeat_node_sort(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index);
-        void in_out_nodelist_repeat_node_re_label(vector<int> &nodes_same_label_vec, vector<vector<int> > &nodes_2_innodes, vector<map<string, vector<int> > > &nodes_2_outnodes, vector<int> &index);
+        void sort_edgeLabel_2_edge(int &label);
+        void sort_edgeLabel_2_edge_by_tail(int &label);
 
-        void sort_edgeLabel_2_edge(string &label);
-        void sort_edgeLabel_2_edge_by_tail(string &label);
+        int get_first_edgeLabel();
+        int get_last_edgeLabel();
+        int get_next_edgeLabel(int label);
 
-        string get_first_edgeLabel();
-        string get_last_edgeLabel();
-        string get_next_edgeLabel(string label);
-
-        bool WG_checker_in_edge_group(string label, vector<edge> &edges);
+        bool WG_checker_in_edge_group(int label, vector<edge> &edges);
         bool WG_checker();
         void SMT_WG_final_check();
         // Find the in degree == 0;
@@ -156,6 +156,8 @@ class digraph {
         int get_encoded_nodeName(string line);
         string get_decoded_nodeName(int node_name);
 
+        int get_encoded_label(string label);
+        string get_decoded_label(int new_label);
 
         void valid_wheeler_graph();
         void invalid_wheeler_graph(string msg, bool stop);

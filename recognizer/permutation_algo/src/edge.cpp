@@ -10,7 +10,7 @@
 
 using namespace std;
 
-edge::edge(string label, int node_1_name, int* node_1, int node_2_name, int* node_2) {
+edge::edge(int label, int node_1_name, int* node_1, int node_2_name, int* node_2) {
     _label = label;
     _tail_name = node_1_name;
     _tail = node_1;
@@ -28,7 +28,7 @@ edge::edge(string label, int node_1_name, int* node_1, int node_2_name, int* nod
 }
 
 edge::edge() {
-    _label = "";
+    _label = 0;
     _tail_name = 0;
     _tail = &_tail_name;
     _head_name = 0;
@@ -47,7 +47,7 @@ void edge::set_node(int a, int b) {
     *_head = b;
 }
 
-string edge::get_label() {
+int edge::get_label() {
     return _label;
 }
 
