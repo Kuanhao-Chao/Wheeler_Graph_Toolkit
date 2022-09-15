@@ -54,7 +54,7 @@ def create_graph(names, edges, filename):
             out_node_name = names[e[0] - 1]
             in_node_name = names[e[1] - 1]
             label = e[2]
-            f.write(f'\t{out_node_name} -> {in_node_name} [ label = {"a"*(label+1)} ];\n')
+            f.write(f'\t{out_node_name} -> {in_node_name} [ label = {label} ];\n')
         f.write('}')
         
 
@@ -77,6 +77,9 @@ def main():
     outfile_name = args.outfile
     
     max_num_edge = num_nodes * num_labels + num_nodes - num_labels - root_size
+    if args.complete:
+        print(f'> -c specified. Generate complete WG with # of edge = {max_num_edge}')
+        num_edges = max_num_edge
     assert num_edges <= max_num_edge, f'Impossible to generate WG: max # of edges = {max_num_edge}'
     assert num_edges >= num_nodes - root_size, f'Impossible to generate WG: min # of edges = {num_nodes - root_size}'
 
