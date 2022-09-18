@@ -27,6 +27,7 @@ def partition_in_nodes(lst, num_edges, num_labels):
     return in_nodes_grps
 
 # For each partition, generate random sorted nodes from where directed edges originate
+# If grp_size < num_nodes, then each node will have at most an edge that is labeled l
 def gen_out_nodes_grp(in_nodes_grps, num_nodes):
     out_nodes_grps = []
     for in_grp in in_nodes_grps:
@@ -49,12 +50,12 @@ def create_graph(names, edge_grps, filename):
             for edge in edge_grp:
                 out_node_name = names[edge[0] - 1]
                 in_node_name = names[edge[1] - 1]
-                f.write(f'\t{out_node_name} -> {in_node_name} [ label = {"a"*(i+1)} ];\n')
+                f.write(f'\t{out_node_name} -> {in_node_name} [ label = {i} ];\n')
         f.write('}')
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate Random Wheeler Graphs')
+    parser = argparse.ArgumentParser(description='Generate Random De-Bruijn-ish Wheeler Graphs')
     parser.add_argument('-n', '--nodes', type=int, help='Number of nodes', required=True)
     parser.add_argument('-e', '--edges', type=int, help='Number of edges', required=True)
     parser.add_argument('-l', '--labels', type=int, help='Number of edge labels', required=True)
