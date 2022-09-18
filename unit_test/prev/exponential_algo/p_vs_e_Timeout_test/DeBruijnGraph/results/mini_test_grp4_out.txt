@@ -1,0 +1,3 @@
+0	2	630	"../../../../graph/DeBruijnGraph/mini_test_grp4/DeBruijn_k_4_a1.dot"
+0	5	494630	"../../../../graph/DeBruijnGraph/mini_test_grp4/DeBruijn_k_4_a2.dot"
+0	6	4.55158e+08	"../../../../graph/DeBruijnGraph/mini_test_grp4/DeBruijn_k_4_a3.dot"

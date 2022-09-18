@@ -5,7 +5,7 @@ class node:
         self.nodecolid = nodeColid
         self.parents = []
         self.children = []
-        print("Initializing a node: ", self.nodeid, self.nodelabel)
+        # print("Initializing a node: ", self.nodeid, self.nodelabel)
     
     def add_parent(self, parent):
         if parent not in self.parents:

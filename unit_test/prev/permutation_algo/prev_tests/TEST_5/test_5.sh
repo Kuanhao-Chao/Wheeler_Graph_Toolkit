@@ -1,0 +1,2 @@
+python3 ../../../generator/generate_bad_WG_samples_vary_nodes.py ../../../graph/testing/TEST_5 50 20 80 5
+python3 ../unit_tests/valid_testing.py ../../../graph/testing/TEST_5 ../../../results/TEST_5/data.csv ../../../results/TEST_5/data.txt

@@ -1,2 +1,0 @@
-0	2	647	"../../../../graph/RevDetGraph/mini_test_grp4/RevDet_a1.dot"
-0	4	19147	"../../../../graph/RevDetGraph/mini_test_grp4/RevDet_a2.dot"
