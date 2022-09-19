@@ -1,3 +1,5 @@
+mkdir -p ./results
+
 # exp1
 for f in $(find ../../../../graph/Random/controlled_random/exp1 -name '*.dot'); do
     echo Running $f
