@@ -6,7 +6,7 @@ import getopt
 import os
 
 queue = []     #Initialize a queue
-USAGE = '''usage: DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-k / --kmer kmer_int] sequence FATA file'''
+USAGE = '''usage: DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] sequence FATA file'''
 
 def main(argv):
     ##############################
@@ -15,27 +15,27 @@ def main(argv):
     # Default parameters:
     k = 3
     verbose = False
-    outputdir = "./"
+    outfile = "tmp.dot"
+    seqLen = -1
     try:
-        opts, args = getopt.getopt(argv,"hvo:k:",["ofile=", "kmer="])
+        opts, args = getopt.getopt(argv,"hvo:k:l:",["ofile=", "kmer=", "seqLen"])
     except getopt.GetoptError:
         print(USAGE)
         sys.exit(2)
     for opt, arg in opts:
+        print(opt)
         if opt == '-h':
             print(USAGE)
             sys.exit()
         elif opt == '-v':
             verbose = True
         elif opt in ("-o", "--ofile"):
-            outputdir = arg
+            outfile = arg
         elif opt in ("-k", "--kmer"):
-            k = arg
-    
-    if not os.path.exists(outputdir):
-        print("Output directory does not exist!")
-        outputdir = "./"
-        
+            k = int(arg)
+        elif opt in ("-l", "--seqLen"):
+            seqLen = int(arg)
+
     if len(args) == 0:
         print(USAGE)
         print("Please input one FASTA file")
@@ -43,8 +43,9 @@ def main(argv):
 
     fasta_file = args[0]
     print("Input alignment fasta file: ", fasta_file)
-    print("Output dot file: ", outputdir)
+    print("Output dot file: ", outfile)
     print("De Bruijn graph k = ", k)
+    print("Sequence Length l = ", seqLen)
     alignment = AlignIO.read(fasta_file, "fasta")
     print("alignment", alignment)
     alignment_len = alignment.get_alignment_length()
@@ -54,10 +55,12 @@ def main(argv):
     kmer_set = set()
 
     for row_idx in range(0, seq_number, 1):
-        row_seq = str(alignment[row_idx].seq)+"$"
+        row_seq = str(alignment[row_idx].seq)
         row_seq_parsed = row_seq.replace("-", "")
-
-        for i in range(0, len(row_seq_parsed)):
+        if seqLen == -1 or seqLen > len(row_seq_parsed):
+            seqLen = len(row_seq_parsed)
+        row_seq_parsed = row_seq_parsed[:seqLen]+"$"
+        for i in range(0, seqLen+1):
             node_kmer = row_seq_parsed[i:i+k]
             kmer_set.add(node_kmer)
 
@@ -70,11 +73,14 @@ def main(argv):
     
     # Contructing the graph.
     for row_idx in range(0, seq_number, 1):
-        row_seq = str(alignment[row_idx].seq)+"$"
+        row_seq = str(alignment[row_idx].seq)
         row_seq_parsed = row_seq.replace("-", "")
         curr_node = ""
         prev_node = ""
-        for i in range(0, len(row_seq_parsed)):
+        if seqLen == -1 or seqLen > len(row_seq_parsed):
+            seqLen = len(row_seq_parsed)
+        row_seq_parsed = row_seq_parsed[:seqLen]+"$"
+        for i in range(0, seqLen+1):
             node_kmer = row_seq_parsed[i:i+k]
             curr_node = kmer_dic[node_kmer]
             # Link current node to prev_node
@@ -94,19 +100,19 @@ def main(argv):
     ##############################
     ## Writing out the graph into dot file
     ##############################
-    relative_filename = os.path.relpath(fasta_file, "../../multiseq_alignment/")
-    dir_name = os.path.dirname(relative_filename)
-    file_basename = os.path.basename(relative_filename)
-    new_dir_name = os.path.join(outputdir, dir_name)
-    os.makedirs(new_dir_name, exist_ok = True)
-    fw_name = os.path.join(new_dir_name, "DeBruijn_k_"+str(k) + "_" + file_basename)
-    fw_name = fw_name.replace('.fasta', '.dot')
-    print("fw_name: ", fw_name)
+    # relative_filename = os.path.relpath(fasta_file, "../../multiseq_alignment/")
+    # dir_name = os.path.dirname(relative_filename)
+    # file_basename = os.path.basename(relative_filename)
+    # new_dir_name = os.path.join(outfile, dir_name)
+    # os.makedirs(new_dir_name, exist_ok = True)
+    # fw_name = os.path.join(new_dir_name, "DeBruijn_k_"+str(k) + "_" + file_basename)
+    # fw_name = fw_name.replace('.fasta', '.dot')
+    print("outfile: ", outfile)
     try:    
-        os.remove(fw_name)
+        os.remove(outfile)
     except OSError:
         pass
-    fw = open(fw_name, "a")
+    fw = open(outfile, "a")
     fw.write("strict digraph  {\n")
     bfs(visited, kmer_dic["$"])
     visited = []
@@ -122,7 +128,7 @@ def bfs(visited, node):
     while queue:          # Creating loop to visit each node
         m = queue.pop(0)
         m.set_nodeid(nodeID_counter)
-        print("-"*m.nodecolid, m.nodelabel, "(", m.nodeid, ")") 
+        # print("-"*m.nodecolid, m.nodelabel, "(", m.nodeid, ")") 
         nodeID_counter += 1
         for child in m.children:
             if child not in visited:

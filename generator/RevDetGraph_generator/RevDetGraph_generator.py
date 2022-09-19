@@ -20,7 +20,7 @@ def main(argv):
     # Default parameters:
     k = 3
     verbose = False
-    outputdir = "./"
+    outfile = "./"
     try:
         opts, args = getopt.getopt(argv,"hvo:",["ofile="])
     except getopt.GetoptError:
@@ -33,10 +33,10 @@ def main(argv):
         elif opt == '-v':
             verbose = True
         elif opt in ("-o", "--ofile"):
-            outputdir = arg
-    if not os.path.exists(outputdir):
+            outfile = arg
+    if not os.path.exists(outfile):
         print("Output directory does not exist!")
-        outputdir = "./"
+        outfile = "./"
     
     if len(args) == 0:
         print(USAGE)
@@ -217,19 +217,18 @@ def main(argv):
     ##############################
     ## Writing out the graph into dot file
     ##############################
-    relative_filename = os.path.relpath(args[0], "../../multiseq_alignment/")
-    dir_name = os.path.dirname(relative_filename)
-    file_basename = os.path.basename(relative_filename)
-    new_dir_name = os.path.join(outputdir, dir_name)
-    os.makedirs(new_dir_name, exist_ok = True)
-    fw_name = os.path.join(new_dir_name, "RevDet_" + file_basename)
-    fw_name = fw_name.replace('.fasta', '.dot')
-    print("fw_name: ", fw_name)
+    # relative_filename = os.path.relpath(args[0], "../../multiseq_alignment/")
+    # dir_name = os.path.dirname(relative_filename)
+    # file_basename = os.path.basename(relative_filename)
+    # new_dir_name = os.path.join(outfile, dir_name)
+    # os.makedirs(new_dir_name, exist_ok = True)
+    # fw_name = os.path.join(new_dir_name, "RevDet_" + file_basename)
+    # fw_name = fw_name.replace('.fasta', '.dot')
     try:    
-        os.remove(fw_name)
+        os.remove(outfile)
     except OSError:
         pass
-    fw = open(fw_name, "a")
+    fw = open(outfile, "a")
     fw.write("strict digraph  {\n")
     bfs(visited, source)
     visited = []
@@ -245,7 +244,7 @@ def bfs(visited, node): #function for BFS
     while queue:          # Creating loop to visit each node
         m = queue.pop(0)
         m.set_nodeid(nodeID_counter)
-        print("-"*m.nodecolid, m.nodelabel, "(", m.nodeid, ")") 
+        # print("-"*m.nodecolid, m.nodelabel, "(", m.nodeid, ")") 
         nodeID_counter += 1
         for child in m.children:
             if child not in visited:

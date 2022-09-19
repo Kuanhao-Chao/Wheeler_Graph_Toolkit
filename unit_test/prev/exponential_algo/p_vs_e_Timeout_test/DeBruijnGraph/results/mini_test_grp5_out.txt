@@ -1,0 +1,1 @@
+0	3	1267	"../../../../graph/DeBruijnGraph/mini_test_grp5/DeBruijn_k_4_a1.dot"
