@@ -34,9 +34,9 @@ def main(argv):
             verbose = True
         elif opt in ("-o", "--ofile"):
             outfile = arg
-    if not os.path.exists(outfile):
-        print("Output directory does not exist!")
-        outfile = "./"
+    # if not os.path.exists(outfile):
+    #     print("Output directory does not exist!")
+    #     outfile = "./"
     
     if len(args) == 0:
         print(USAGE)
@@ -44,6 +44,7 @@ def main(argv):
         sys.exit(2)
 
     alignment = AlignIO.read(args[0], "fasta")
+    print("outfile: ", outfile)
     print("alignment\n", alignment)
     alignment_len = alignment.get_alignment_length()
     seq_number = len(alignment)

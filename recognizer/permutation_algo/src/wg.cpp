@@ -32,6 +32,7 @@ using namespace std;
 const int PERMUTATION_CUTOFF = 50;
 
 string outDir;
+string dot_full_name;
 bool valid_wg=true;
 bool debugMode=false;
 bool verbose=false;
@@ -76,7 +77,6 @@ int main(int argc, char* argv[]) {
 
     ifstream ifile_dot(argv[1]);
     filesystem::path path_name(argv[1]);
-
     vector<string> node1_vec;
     vector<string> node2_vec;
     vector<string> node_names;
@@ -84,6 +84,7 @@ int main(int argc, char* argv[]) {
     vector<string> edge_labels;
     vector<int> new_edge_labels;
     unordered_map<int,int> node_2_ptr_idx;
+    dot_full_name = argv[1];
 
     /********************************
     *** Reading & Parsing DOT
@@ -230,5 +231,6 @@ void processOptions(GArgs& args) {
     cout << "writeIOL: " << writeIOL << endl;
     cout << "writeRange: " << writeRange << endl;
     cout << "label_is_int: " << label_is_int << endl;
+    cout << "solver: " << solver << endl;
 #endif
 }

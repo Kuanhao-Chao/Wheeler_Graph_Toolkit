@@ -443,17 +443,25 @@ vector<int> digraph::get_innodes_labels(int edgeLabel, int node_name) {
                 cout << "edge.get_tail(): " << edge.get_tail() << endl; 
 #endif
                 innodes_address_set.insert(edge.get_tail());
-                // innodes_label_ls.push_back(edge.get_tail_label());
-                if (innodes_label_uniq_ls.size() == 0) {
-                    innodes_label_uniq_ls.push_back(edge.get_tail_label());
-                } else {
-                    if (edge.get_tail_label() != innodes_label_uniq_ls.back()) {
-                        innodes_label_uniq_ls.push_back(edge.get_tail_label());
-                    }
-                }
+                innodes_label_uniq_ls.push_back(edge.get_tail_label());
             }
         }
     }
+    // Making the innode list sorted & unique
+    sort( innodes_label_uniq_ls.begin(), innodes_label_uniq_ls.end() );
+    innodes_label_uniq_ls.erase( unique( innodes_label_uniq_ls.begin(), innodes_label_uniq_ls.end() ), innodes_label_uniq_ls.end() );
+    //             innodes_address_set.insert(edge.get_tail());
+    //             // innodes_label_ls.push_back(edge.get_tail_label());
+    //             if (innodes_label_uniq_ls.size() == 0) {
+    //                 innodes_label_uniq_ls.push_back(edge.get_tail_label());
+    //             } else {
+    //                 if (edge.get_tail_label() != innodes_label_uniq_ls.back()) {
+    //                     innodes_label_uniq_ls.push_back(edge.get_tail_label());
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 #ifdef DEBUGPRINT
     cout << "*********************************" << endl;
     cout << "Starting of in_node_list: " ;
@@ -1222,7 +1230,7 @@ void digraph::exit_program(int return_val) {
     cpu_time_used = ((double) (c_end - c_start));
 
     if (benchmark_mode) {
-        cout << return_val << "\t" << to_string(_nodes_num) << "\t" << cpu_time_used << "\t" << _path_name << endl;
+        cout << return_val << "\t" << to_string(_nodes_num) << "\t" << cpu_time_used << "\t" << dot_full_name << endl;
     } else {
         cout << "Runtime : " << cpu_time_used << " microseconds" << endl;
     }
