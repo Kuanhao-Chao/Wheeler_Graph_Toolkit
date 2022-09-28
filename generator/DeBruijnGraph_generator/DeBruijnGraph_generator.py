@@ -6,7 +6,7 @@ import getopt
 import os
 
 queue = []     #Initialize a queue
-USAGE = '''usage: DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] sequence FATA file'''
+USAGE = '''usage: DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
 
 def main(argv):
     ##############################
@@ -17,8 +17,9 @@ def main(argv):
     verbose = False
     outfile = "tmp.dot"
     seqLen = -1
+    alnNum = 3
     try:
-        opts, args = getopt.getopt(argv,"hvo:k:l:",["ofile=", "kmer=", "seqLen"])
+        opts, args = getopt.getopt(argv,"hvo:k:l:a:",["ofile=", "kmer=", "seqLen=", "alnNum="])
     except getopt.GetoptError:
         print(USAGE)
         sys.exit(2)
@@ -35,6 +36,8 @@ def main(argv):
             k = int(arg)
         elif opt in ("-l", "--seqLen"):
             seqLen = int(arg)
+        elif opt in ("-a", "--alnNum"):
+            alnNum = int(arg)
 
     if len(args) == 0:
         print(USAGE)
@@ -46,7 +49,9 @@ def main(argv):
     print("Output dot file: ", outfile)
     print("De Bruijn graph k = ", k)
     print("Sequence Length l = ", seqLen)
+    print("Alignment number a = ", alnNum)
     alignment = AlignIO.read(fasta_file, "fasta")
+    alignment = alignment[:alnNum]
     print("alignment", alignment)
     alignment_len = alignment.get_alignment_length()
     seq_number = len(alignment)

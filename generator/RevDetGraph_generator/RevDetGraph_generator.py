@@ -11,7 +11,7 @@ import node as n
 import sys
 import os
 queue = []     #Initialize a queue
-USAGE = '''usage: RevDetGraph.py [-h] [-v] [-o / --ofile FILE] multilple sequence alignments (MSA) FASTA file'''
+USAGE = '''usage: RevDetGraph.py [-h] [-v] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file'''
 
 def main(argv):
     ##############################
@@ -21,8 +21,10 @@ def main(argv):
     k = 3
     verbose = False
     outfile = "./"
+    seqLen = -1
+    alnNum = 3
     try:
-        opts, args = getopt.getopt(argv,"hvo:",["ofile="])
+        opts, args = getopt.getopt(argv,"hvo:l:a:",["ofile=", "seqLen=", "alnNum="])
     except getopt.GetoptError:
         print(USAGE)
         sys.exit(2)
@@ -34,6 +36,11 @@ def main(argv):
             verbose = True
         elif opt in ("-o", "--ofile"):
             outfile = arg
+        elif opt in ("-l", "--seqLen"):
+            seqLen = int(arg)
+        elif opt in ("-a", "--alnNum"):
+            alnNum = int(arg)
+
     # if not os.path.exists(outfile):
     #     print("Output directory does not exist!")
     #     outfile = "./"
@@ -44,6 +51,7 @@ def main(argv):
         sys.exit(2)
 
     alignment = AlignIO.read(args[0], "fasta")
+    alignment = alignment[:alnNum]
     print("outfile: ", outfile)
     print("alignment\n", alignment)
     alignment_len = alignment.get_alignment_length()
@@ -57,6 +65,7 @@ def main(argv):
     preceding_nodes = {}
     preceding_nodes_pos = {}
     first_nongap_nodes = {}
+    seqLen_counter = 0
 
     for col_idx in range(alignment_len-1, -1, -1):
         uniq_nodes = set(sorted(alignment[:,col_idx]))
@@ -67,7 +76,9 @@ def main(argv):
             if uniq_node != "-":
                 new_node = n.node(nodeID, uniq_node, col_idx)
                 curr_nodes[(col_idx, uniq_node)] = new_node
-
+        # print("curr_nodes: ", curr_nodes)
+        if len(curr_nodes) >= 1:
+            seqLen_counter += 1
         # Iterating the row.
         for row_idx in range(0, seq_number, 1):
             #############################
@@ -110,7 +121,7 @@ def main(argv):
                     mid_prev_node.add_parent(mid_curr_node)
 
                 # Adding source as the parent.
-                if col_idx == 0:
+                if col_idx == 0 or seqLen_counter == seqLen-1:
                     if verbose:
                         print("\tAdding source as parent")
                     source.add_child(mid_curr_node)
@@ -208,6 +219,9 @@ def main(argv):
             print("\t>> After update preceding_nodes: ", preceding_nodes)
             print("\t>> Before update preceding_nodes_pos: ", preceding_nodes_pos)
         nodeID += 1
+
+        if seqLen_counter == seqLen-1:
+            break
 
     ##############################
     ## Traversing the graph now. (& relabelling nodes)

@@ -65,7 +65,7 @@ def main(argv):
     print(">> Visualizing ...")
     node_num = len(nodes)
     figure_width = node_num*0.9
-    f = plt.figure(figsize=(figure_width, 6), dpi=100)
+    f = plt.figure(figsize=(figure_width, 6), dpi=300)
     ax = f.add_subplot(1,1,1)
     color_coding = {x: color_default[idx] if idx < 4 else "#"+str(hex(random.randint(0,16777215))[2:]) for idx, x in enumerate(edge_labels)}
     print("colors: ", color_coding)
@@ -101,12 +101,13 @@ def main(argv):
 
     plt.legend(fontsize="x-large")
     f.tight_layout()
-    plt.show()
+    # plt.show()
     # if outputfile == "":
     #     defualt_outfile=os.path.splitext(inputfile[4:])[0]+".png"
     #     plt.savefig(defualt_outfile, format="PNG")
     # else:
-    #     plt.savefig(outputfile, format="PNG")
+    outputfile = "Human_STAU2_orthologues_DNA_k_2_l_4_a_4.png"
+    plt.savefig(outputfile, format="PNG")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

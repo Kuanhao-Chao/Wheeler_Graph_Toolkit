@@ -25,7 +25,7 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark] [-e / --exhaustive_search]\n\n"
 
 using namespace std;
 
@@ -33,15 +33,16 @@ const int PERMUTATION_CUTOFF = 50;
 
 string outDir;
 string dot_full_name;
-bool valid_wg=true;
-bool debugMode=false;
-bool verbose=false;
-string solver="p"; // Default solver: p
-bool writeIOL=false;
-bool writeRange=false;
+bool valid_wg = true;
+bool debugMode = false;
+bool verbose = false;
+string solver = "p"; // Default solver: p
+bool writeIOL = false;
+bool writeRange = false;
 bool label_is_int = false;
-bool benchmark_mode=false;
-int permutation_counter=1;
+bool benchmark_mode = false;
+bool exhaustive_search = false;
+int permutation_counter = 1;
 clock_t c_start, c_end;
 double cpu_time_used;
 
@@ -64,8 +65,8 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;"
-    "exclude=hvpwribs:");
+	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;"
+    "exclude=hvpwriebs:");
 
 	processOptions(args);
     string file_extension = filesystem::path(argv[1]).extension();
@@ -167,8 +168,12 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    if (!solver.compare("p") || (!solver.compare("default") && permutation_counter < PERMUTATION_CUTOFF)) {
+    if (!solver.compare("p") || (!solver.compare("default") && permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
         g.permutation_start();
+        if (exhaustive_search) {
+            if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
+            g.exit_program(1);
+        }
     } else {
         g.solve_smt();
     }
@@ -207,7 +212,7 @@ void processOptions(GArgs& args) {
         fprintf(stderr, "Running recognizer " VERSION ". Command line:\n");
         args.printCmdLine(stderr);
     }
-    
+
     s = args.getOpt("solver");
     if (s == NULL) {
         s = args.getOpt('s');
@@ -223,6 +228,7 @@ void processOptions(GArgs& args) {
     writeRange = (args.getOpt('r')!=NULL || args.getOpt("writeRange"));
     label_is_int = (args.getOpt('i')!=NULL || args.getOpt("label_is_int"));
     benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
+    exhaustive_search = (args.getOpt('e')!=NULL || args.getOpt("exhaustive_search"));
 
 #ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;
@@ -231,6 +237,7 @@ void processOptions(GArgs& args) {
     cout << "writeIOL: " << writeIOL << endl;
     cout << "writeRange: " << writeRange << endl;
     cout << "label_is_int: " << label_is_int << endl;
+    cout << "exhaustive_search: " << exhaustive_search << endl;
     cout << "solver: " << solver << endl;
 #endif
 }
