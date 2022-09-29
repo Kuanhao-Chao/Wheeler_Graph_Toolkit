@@ -44,6 +44,7 @@ def main(argv):
         print("Please input one FASTA file")
         sys.exit(2)
 
+    k = k -1
     fasta_file = args[0]
     print("Input alignment fasta file: ", fasta_file)
     print("Output dot file: ", outfile)

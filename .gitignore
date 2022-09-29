@@ -10,3 +10,4 @@ graph/
 multiseq_alignment/original_betterconcat.fasta
 multiseq_alignment/original_betterconcat/
 recognizer/permutation_algo/src/libz3.a
+multiseq_alignment/prev/Homo_sapiens.GRCh38.107.gff3
