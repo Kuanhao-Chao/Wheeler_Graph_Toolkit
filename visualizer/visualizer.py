@@ -64,7 +64,7 @@ def main(argv):
 
     print(">> Visualizing ...")
     node_num = len(nodes)
-    figure_width = node_num*0.9
+    figure_width = node_num*1.3
     f = plt.figure(figsize=(figure_width, 6), dpi=300)
     ax = f.add_subplot(1,1,1)
     color_coding = {x: color_default[idx] if idx < 4 else "#"+str(hex(random.randint(0,16777215))[2:]) for idx, x in enumerate(edge_labels)}
