@@ -6,7 +6,10 @@ import getopt
 import os
 
 queue = []     #Initialize a queue
-USAGE = '''usage: DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
+USAGE = '''usage: trie_generator.py [-h] [-v] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
+
+alignment_len = -1
+node_idx = 0
 
 def main(argv):
     ##############################
@@ -44,7 +47,6 @@ def main(argv):
     fasta_file = args[0]
     print("Input alignment fasta file: ", fasta_file)
     print("Output dot file: ", outfile)
-    print("De Bruijn graph k = ", k)
     print("Sequence Length l = ", seqLen)
     print("Alignment number a = ", alnNum)
     alignment = AlignIO.read(fasta_file, "fasta")
@@ -53,37 +55,25 @@ def main(argv):
     alignment_len = alignment.get_alignment_length()
     seq_number = len(alignment)
 
+    row_seq_parsed_ls = []
+    max_len = 0
+
+
+
+    level_dict = {}
+    root = n.node(node_idx, "*", alignment_len)
+
     for row_idx in range(0, seq_number, 1):
         row_seq = str(alignment[row_idx].seq)
         row_seq_parsed = row_seq.replace("-", "")
         if seqLen == -1 or seqLen > len(row_seq_parsed):
             seqLen = len(row_seq_parsed)
         row_seq_parsed = row_seq_parsed[:seqLen]+"$"
-        for i in range(0, seqLen+1):
-            node_kmer = row_seq_parsed[i:i+k]
-
-    # Constructing all the nodes.
-    node_idx = 0
-    
-    # Contructing the graph.
-    for row_idx in range(0, seq_number, 1):
-        row_seq = str(alignment[row_idx].seq)
-        row_seq_parsed = row_seq.replace("-", "")
-        curr_node = ""
-        prev_node = ""
-        if seqLen == -1 or seqLen > len(row_seq_parsed):
-            seqLen = len(row_seq_parsed)
-        row_seq_parsed = row_seq_parsed[:seqLen]+"$"
-        for i in range(0, seqLen+1):
-            node_kmer = row_seq_parsed[i:i+k]
-            curr_node = kmer_dic[node_kmer]
-            # Link current node to prev_node
-            if prev_node != "":
-                curr_node.add_child(prev_node)
-                prev_node.add_parent(curr_node)
-            prev_node = curr_node
-
-
+        print(row_seq_parsed)
+        insert(root, row_seq_parsed)
+        
+    # print("root: ", root)
+    # print_trie('', root, 0)
 
     ##############################
     ## Traversing the graph now. (& relabelling nodes)
@@ -108,9 +98,9 @@ def main(argv):
         pass
     fw = open(outfile, "a")
     fw.write("strict digraph  {\n")
-    bfs(visited, kmer_dic["$"])
+    bfs(visited, root)
     visited = []
-    bfs_write(visited, kmer_dic["$"], fw) #function for BFS
+    bfs_write(visited, root, fw) #function for BFS
     fw.write("}\n")
     fw.close()
 
@@ -135,12 +125,47 @@ def bfs_write(visited, node, fw):
     while queue:          # Creating loop to visit each node
         m = queue.pop(0)
         for m_child in m.children:
-            fw.write("\tS" + str(m.nodeid) + " -> S" + str(m_child.nodeid) + " [ label = "+m_child.nodelabel[0]+" ];\n")
+            if m_child.nodelabel != "$":
+                fw.write("\tS" + str(m.nodeid) + " -> S" + str(m_child.nodeid) + " [ label = "+m_child.nodelabel+" ];\n")
 
         for child in m.children:
             if child not in visited:
                 visited.append(child)
                 queue.append(child)
+
+
+def print_trie(prefix, trie, depth):
+    depth += 1
+    if depth <= 1:
+        print('\n>> Printing Trie...')
+    else:
+        # print("trie.nodelabel: ", trie.nodelabel)
+        prefix += trie.nodelabel
+        print(depth*' ',prefix[depth-2])
+
+    if len(trie.children) == 0:
+        return
+
+    for node in trie.children:
+        print_trie(prefix, node, depth)
+
+    return None
+
+def insert(root, seq):
+    print(">> inserting root")
+    node = root
+    for s in seq:
+        # print("s: ", s)
+        # if len(node.children) > 0:
+        for child in node.children:
+            if s == child.nodelabel:
+                node = child
+                break
+        else:
+            new_node = n.node(node_idx, s, alignment_len)
+            # print("new_node: ", new_node)
+            node.children.append(new_node)
+            node = new_node
 
 if __name__ == "__main__":
     main(sys.argv[1:])
