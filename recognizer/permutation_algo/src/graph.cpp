@@ -690,7 +690,7 @@ void digraph::permutation_4_sub_edge_group(int &label, vector<int> &prev_num_vec
         } while(std::next_permutation(repeat_vec.begin(), repeat_vec.end()));
     } else {
 #ifdef DEBUGPRINT
-        cout << "There is no more permutation in 'permutation_4_edge_group' label " << this->get_decoded_label(label) << endl;
+        cout << "There are no more permutations in 'permutation_4_edge_group' label " << this->get_decoded_label(label) << endl;
 #endif
         if (this -> get_next_edgeLabel(label)  != -1 ) {
 #ifdef DEBUGPRINT
@@ -1179,23 +1179,25 @@ string digraph::get_decoded_label(int new_label) {
 
 
 void digraph::valid_wheeler_graph() {
-    if (verbose && !benchmark_mode) {
-        cout << endl << endl << endl;
-        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-        cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
-        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-        this -> print_graph("%%");
-        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-        cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
-        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    if (!exhaustive_search) {
+        if (verbose && !benchmark_mode) {
+            cout << endl << endl << endl;
+            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+            cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
+            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+            this -> print_graph("%%");
+            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+            cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
+            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        }
+        _valid_WG_num += 1;
+        if (writeIOL) {
+            this -> output_wg_gagie();
+        }
+        _is_wg = true;
+        if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
+        this -> exit_program(1);
     }
-    _valid_WG_num += 1;
-    if (writeIOL) {
-        this -> output_wg_gagie();
-    }
-    _is_wg = true;
-    if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
-    this -> exit_program(1);
 }
 
 

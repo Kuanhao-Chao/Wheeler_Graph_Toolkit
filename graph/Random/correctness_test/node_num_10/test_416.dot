@@ -1,8 +1,0 @@
-strict digraph  {
-0;
-1;
-2;
-10;
-0 -> 10  [label=c];
-1 -> 2  [label=a];
-}
