@@ -29,7 +29,7 @@ def main():
 
 
     f, ax = plt.subplots(figsize=(6, 6), dpi=300)
-    labels = ["DNA De Bruijn WGs", "Protein De Bruijn WGs", "DNA Reverse Deterministic Graphs", "Protein Reverse Deterministic Graphs", "Random WGs"]
+    labels = ["De Bruijn WGs (DNA)", "De Bruijn WGs (Protein)", "Trie WGs (DNA)", "Trie WGs (Protein)", "Reverse Deterministic Graphs (DNA)", "Reverse Deterministic Graphs (Protein)", "Random WGs"]
     idx = 0
     for arg in sys.argv[1:]:
         xs = []

@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
     GArgs args(argc, argv,
 	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;"
-    "exclude=hvpwriebs:");
+    "exclude=hvpwriebs:o:");
 
 	processOptions(args);
     string file_extension = filesystem::path(argv[1]).extension();
