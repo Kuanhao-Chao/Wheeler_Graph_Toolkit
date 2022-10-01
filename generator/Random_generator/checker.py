@@ -17,8 +17,10 @@ def sort(edges):
     return sorted(edges, key=lambda tup: (tup[2], tup[0], tup[1]))
 
 def check_WG(filename):
+    print(f'Checking {filename}...')
     edges = parse_file(filename)
-
+    max_node = max([e[0] for e in edges] + [e[1] for e in edges])
+    has_in = [0] * (max_node + 1)
     # fw = open("tmp.dot", "a")
     # fw.write("strict digraph {\n")
     # for e in edges:
@@ -31,6 +33,8 @@ def check_WG(filename):
             e_pair_str = f'{e1}, {e2}'
             u1, v1, l1 = e1
             u2, v2, l2 = e2
+            has_in[v1] = 1
+            has_in[v2] = 1
             if l1 < l2:
                 assert v1 < v2, e_pair_str
             elif l2 < l1:
@@ -40,6 +44,10 @@ def check_WG(filename):
                     assert v1 <= v2, e_pair_str
                 elif u2 < u1:
                     assert v2 <= v1, e_pair_str
+
+    for i in range(2, len(has_in)):
+        if has_in[i] == 0:
+            assert False, f'{i} does not have incoming edge'
 
     print(f'{filename} pass!')
     
