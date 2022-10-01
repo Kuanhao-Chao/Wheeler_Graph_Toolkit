@@ -25,7 +25,7 @@
 
 #define VERSION "0.1.0"
 #define USAGE "  usage:\n\n\
-\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark] [-e / --exhaustive_search]\n\n"
+\trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark] [-e / --exhaustive_search] [-f / --full_range_search] \n\n"
 
 using namespace std;
 
@@ -42,6 +42,7 @@ bool writeRange = false;
 bool label_is_int = false;
 bool benchmark_mode = false;
 bool exhaustive_search = false;
+bool full_range_search = false;
 int permutation_counter = 1;
 clock_t c_start, c_end;
 double cpu_time_used;
@@ -65,8 +66,8 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;"
-    "exclude=hvpwriebs:o:");
+	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;full_range_search;"
+    "exclude=hvpwriebfs:o:");
 
 	processOptions(args);
     string file_extension = filesystem::path(argv[1]).extension();
@@ -168,14 +169,18 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
-    if (!solver.compare("p") || (!solver.compare("default") && permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
-        g.permutation_start();
-        if (exhaustive_search) {
-            if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
-            g.exit_program(1);
-        }
-    } else {
+    if (full_range_search) {
         g.solve_smt();
+    } else {
+        if (!solver.compare("p") || (!solver.compare("default") && permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
+            g.permutation_start();
+            if (exhaustive_search) {
+                if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
+                g.exit_program(1);
+            }
+        } else {
+            g.solve_smt();
+        }
     }
     return valid_wg;
 }
@@ -229,8 +234,9 @@ void processOptions(GArgs& args) {
     label_is_int = (args.getOpt('i')!=NULL || args.getOpt("label_is_int"));
     benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
     exhaustive_search = (args.getOpt('e')!=NULL || args.getOpt("exhaustive_search"));
+    full_range_search = (args.getOpt('f')!=NULL || args.getOpt("full_range_search"));
 
-#ifdef DEBUGPRINT
+// #ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;
     cout << "outDir: " << outDir << endl;
     cout << "verbose: " << verbose << endl;
@@ -238,6 +244,7 @@ void processOptions(GArgs& args) {
     cout << "writeRange: " << writeRange << endl;
     cout << "label_is_int: " << label_is_int << endl;
     cout << "exhaustive_search: " << exhaustive_search << endl;
+    cout << "full_range_search: " << full_range_search << endl;
     cout << "solver: " << solver << endl;
-#endif
+// #endif
 }

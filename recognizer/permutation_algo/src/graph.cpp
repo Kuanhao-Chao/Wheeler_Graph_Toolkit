@@ -115,7 +115,12 @@ void digraph::relabel_initialization() {
     // Relabel roots
     for (auto& root_node : _root) {
         // Relabel roots with the biggest possible
-        this -> relabel_init_root_by_node_name(root_node, _root.size());
+        if (!full_range_search) {
+            this -> relabel_init_root_by_node_name(root_node, _root.size());
+        } else {
+            this -> relabel_init_root_by_node_name(root_node, this -> _nodes_num);
+        }
+
     }
     // Relabel all edge group nodes
     int accum_label= _root.size();
@@ -127,12 +132,17 @@ void digraph::relabel_initialization() {
         // Relabel the node with the largest possible value in the edge group.
         accum_label = accum_label + edgenodes_set.size();
         for (auto& edge: edges) {
-            this -> relabel_node(edge.get_head(), accum_label);
+            if (!full_range_search) {
+                this -> relabel_node(edge.get_head(), accum_label);
+            } else {
+                this -> relabel_node(edge.get_head(), this -> _nodes_num);
+            }
         }
     }
 
     bool WG_valid = true;
     WG_valid = this -> WG_checker();
+    if (full_range_search) WG_valid = true;
     if (!WG_valid) {
         // Invalid graph!!! Terminate the program.
         if (!benchmark_mode) cout << "(X) After initialization, it is not a wheeler graph." << endl;
@@ -171,19 +181,25 @@ void digraph::innodelist_sort_relabel() {
                     edgegp_node_2_innodes_vec.push_back(this->get_innodes_labels(label, edge.get_head_name()));
                 }
             }
+            if (!full_range_search) {
+                /********************************
+                *** Sorting nodes by in-node list (sort `edgegp_node_2_innodes` map by values).
+                ********************************/
+                vector<int> index(edgegp_nodes.size(), 0);
+                this->in_edge_group_sort(edgegp_nodes, edgegp_node_2_innodes_vec, index);
 
-            /********************************
-            *** Sorting nodes by in-node list (sort `edgegp_node_2_innodes` map by values).
-            ********************************/
-            vector<int> index(edgegp_nodes.size(), 0);
-            this->in_edge_group_sort(edgegp_nodes, edgegp_node_2_innodes_vec, index);
-
-            /********************************
-            *** Get the new pre-label list
-            ***      When there is a tie, label nodes with the **smallest**.
-            ********************************/
-            this->in_edge_group_pre_label(label, edgegp_nodes, edgegp_node_2_innodes_vec, index, accum_edgegp_size);
-            accum_edgegp_size += edgegp_nodes.size();
+                /********************************
+                *** Get the new pre-label list
+                ***      When there is a tie, label nodes with the **smallest**.
+                ********************************/
+                this->in_edge_group_pre_label(label, edgegp_nodes, edgegp_node_2_innodes_vec, index, accum_edgegp_size);
+                accum_edgegp_size += edgegp_nodes.size();
+            } else {
+                accum_edgegp_size = this -> _nodes_num;
+                for (auto& n : edgegp_nodes) {
+                    this -> relabel_by_node_name(n, accum_edgegp_size);
+                }
+            }
         }
         // Check if all the prelabels are fixed.
         prelabels_fixed = true;
@@ -200,6 +216,7 @@ void digraph::innodelist_sort_relabel() {
 
     bool WG_valid = true;
     WG_valid = this -> WG_checker();
+    if (full_range_search) WG_valid=true;
 
 
     if (!WG_valid) {
@@ -221,80 +238,111 @@ void digraph::innodelist_sort_relabel() {
             ofile_range.open(outDir+"out__"+_path_name + "/range.txt");
         }
         
-        int roots_size = _root.size();
-        if (roots_size > 0) {
-            range_pair = make_pair(1, roots_size);
-            _node_ranges.push_back(make_pair( range_pair, _root ));
-            this -> permutation_counter_check(roots_size);
-        }
-        if (writeRange) {
-            for (auto root : _root) {
-                ofile_range << get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl;   
-            }
-        }
 
-        for (auto& [label, edges] : _edgeLabel_2_edge) {
-            for (auto& edge : edges) {
-    #ifdef DEBUGPRINT
-                edge.print_edge();
-    #endif
-                curr_val = edge.get_head_label();
-                if (curr_val == prev_val) {
-                    // 'cur_min' remain the same
-                } else if (curr_val != prev_val) {
-                    cur_min = cur_max + 1;
-                    cur_max = curr_val - 1;
-#ifdef DEBUGPRINT
-                    cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
-#endif
-                    if (!node_set.empty()) {
-                        range_pair = make_pair(cur_min, cur_max);
-                        node_indices.assign(node_set.begin(), node_set.end());
-                        _node_ranges.push_back(make_pair( range_pair, node_indices ));
-                        this -> permutation_counter_check(cur_max-cur_min+1);
-                    }
-                    if (writeRange) {
-                        for (auto node_string : node_set) {
-#ifdef DEBUGPRINT
-                            cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl;
-#endif
-                            ofile_range << node_string << " " << cur_min << " " << cur_max << endl;
-                        }
-                    }
-                    node_set.clear();
+        if (!full_range_search) {
+            int roots_size = _root.size();
+            if (roots_size > 0) {
+                range_pair = make_pair(1, roots_size);
+                _node_ranges.push_back(make_pair( range_pair, _root ));
+                this -> permutation_counter_check(roots_size);
+            }
+            if (writeRange) {
+                for (auto root : _root) {
+                    ofile_range << get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl;   
                 }
-                node_set.insert(edge.get_head_name());
-                prev_val = curr_val;
             }
-        }
-        cur_min = cur_max + 1;
-        cur_max = _nodes_num;
-#ifdef DEBUGPRINT
-        cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
-#endif
-        if (!node_set.empty()) {
-            range_pair = make_pair(cur_min, cur_max);
-            node_indices.assign(node_set.begin(), node_set.end());
-            _node_ranges.push_back(make_pair( range_pair, node_indices ));
-            this -> permutation_counter_check(cur_max-cur_min+1);
-        }
-        if (writeRange) {
-            for (auto node_string : node_set) {
-#ifdef DEBUGPRINT
-                cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl;
-#endif
-                ofile_range << node_string << " " << cur_min << " " << cur_max << endl;
-            }
-        }
-        node_set.clear();
-#ifdef DEBUGPRINT
-        cout << "permutation_counter: " << permutation_counter << endl;
-#endif
-    }
 
+            for (auto& [label, edges] : _edgeLabel_2_edge) {
+                for (auto& edge : edges) {
+        #ifdef DEBUGPRINT
+                    edge.print_edge();
+        #endif
+                    curr_val = edge.get_head_label();
+                    if (curr_val == prev_val) {
+                        // 'cur_min' remain the same
+                    } else if (curr_val != prev_val) {
+                        cur_min = cur_max + 1;
+                        cur_max = curr_val - 1;
+    #ifdef DEBUGPRINT
+                        cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
+    #endif
+                        if (!node_set.empty()) {
+                            range_pair = make_pair(cur_min, cur_max);
+                            node_indices.assign(node_set.begin(), node_set.end());
+                            _node_ranges.push_back(make_pair( range_pair, node_indices ));
+                            this -> permutation_counter_check(cur_max-cur_min+1);
+                        }
+                        if (writeRange) {
+                            for (auto node_string : node_set) {
+    #ifdef DEBUGPRINT
+                                cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl;
+    #endif
+                                ofile_range << node_string << " " << cur_min << " " << cur_max << endl;
+                            }
+                        }
+                        node_set.clear();
+                    }
+                    node_set.insert(edge.get_head_name());
+                    prev_val = curr_val;
+                }
+            }
+            cur_min = cur_max + 1;
+            cur_max = _nodes_num;
+    #ifdef DEBUGPRINT
+            cout << "~~ edge: " << "curr_val: " << curr_val << "; prev_val: " << prev_val << "; cur_min: " << cur_min << "; cur_max: " << cur_max << endl;
+    #endif
+            if (!node_set.empty()) {
+                range_pair = make_pair(cur_min, cur_max);
+                node_indices.assign(node_set.begin(), node_set.end());
+                _node_ranges.push_back(make_pair( range_pair, node_indices ));
+                this -> permutation_counter_check(cur_max-cur_min+1);
+            }
+            if (writeRange) {
+                for (auto node_string : node_set) {
+    #ifdef DEBUGPRINT
+                    cout << "&&&& " << node_string << ": " << cur_min << " - " << cur_max << endl;
+    #endif
+                    ofile_range << this->get_decoded_nodeName(node_string) << " " << cur_min << " " << cur_max << endl;
+                }
+            }
+            node_set.clear();
+    #ifdef DEBUGPRINT
+            cout << "permutation_counter: " << permutation_counter << endl;
+    #endif
+        } else {
+            // Full range search => must be solved by SMT solver.
+            int roots_size = _root.size();
+            if (roots_size > 0) {
+                range_pair = make_pair(1, roots_size);
+                _node_ranges.push_back(make_pair( range_pair, _root ));
+            }
+            if (writeRange) {
+                for (auto root : _root) {
+                    ofile_range << this->get_decoded_nodeName(root) << " " << 1 << " " << roots_size << endl;   
+                }
+            }
+
+            cur_min = roots_size+1;
+            cur_max = this->_nodes_num;
+            for (auto& [label, edges] : _edgeLabel_2_edge) {
+                for (auto& edge : edges) {
+                    node_set.insert(edge.get_head_name());
+                }
+            }
+            range_pair = make_pair(cur_min, cur_max);   
+            node_indices.assign(node_set.begin(), node_set.end()); 
+            _node_ranges.push_back(make_pair( range_pair, node_indices ));
+
+            if (writeRange) {
+                for (auto node_string : node_set) {
+                    ofile_range << this->get_decoded_nodeName(node_string) << " " << cur_min << " " << cur_max << endl;
+                }
+            }
+        }
+    }
     // Check if done
     bool all_assigned_and_distinct = (_node_ranges.size() == _nodes_num);
-    if (all_assigned_and_distinct) {
+    if (all_assigned_and_distinct && !full_range_search) {
         _valid_WG_num += 1;
         if (!benchmark_mode) cout << "(v) Decided after propagation" << endl;
         this -> valid_wheeler_graph();
