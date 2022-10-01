@@ -11,15 +11,19 @@ def parse_file(filename):
         lines = f.readlines()[1:-1]
     lines = [line.split() for line in lines]
     edges = [(int(line[0][1:]), int(line[2][1:]), int(line[-2])) for line in lines]
-
     return sort(edges)
-
 
 def sort(edges):
     return sorted(edges, key=lambda tup: (tup[2], tup[0], tup[1]))
 
 def check_WG(filename):
     edges = parse_file(filename)
+
+    # fw = open("tmp.dot", "a")
+    # fw.write("strict digraph {\n")
+    # for e in edges:
+    #     fw.write("\t"+str(e[0])+" -> " + str(e[1]) + " [ label = " + str(e[2]) + " ];\n")
+    # fw.write("}")
 
     for e1 in edges:
         for e2 in edges:

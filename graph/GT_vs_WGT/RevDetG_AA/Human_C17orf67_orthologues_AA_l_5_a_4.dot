@@ -1,0 +1,6 @@
+strict digraph  {
+	S0 -> S1 [ label = V ];
+	S1 -> S2 [ label = H ];
+	S2 -> S3 [ label = P ];
+	S3 -> S4 [ label = V ];
+}

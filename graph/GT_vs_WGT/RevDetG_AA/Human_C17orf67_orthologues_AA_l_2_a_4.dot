@@ -1,0 +1,3 @@
+strict digraph  {
+	S0 -> S1 [ label = V ];
+}
