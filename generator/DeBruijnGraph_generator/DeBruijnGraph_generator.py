@@ -24,7 +24,6 @@ def main(argv):
         print(USAGE)
         sys.exit(2)
     for opt, arg in opts:
-        print(opt)
         if opt == '-h':
             print(USAGE)
             sys.exit()
@@ -46,14 +45,14 @@ def main(argv):
 
     k = k -1
     fasta_file = args[0]
-    print("Input alignment fasta file: ", fasta_file)
-    print("Output dot file: ", outfile)
-    print("De Bruijn graph k = ", k)
-    print("Sequence Length l = ", seqLen)
-    print("Alignment number a = ", alnNum)
+    # print("Input alignment fasta file: ", fasta_file)
+    # print("Output dot file: ", outfile)
+    # print("De Bruijn graph k = ", k)
+    # print("Sequence Length l = ", seqLen)
+    # print("Alignment number a = ", alnNum)
     alignment = AlignIO.read(fasta_file, "fasta")
     alignment = alignment[:alnNum]
-    print("alignment", alignment)
+    # print("alignment", alignment)
     alignment_len = alignment.get_alignment_length()
     seq_number = len(alignment)
 
@@ -64,67 +63,73 @@ def main(argv):
         row_seq = str(alignment[row_idx].seq)
         row_seq_parsed = row_seq.replace("-", "")
         if seqLen == -1 or seqLen > len(row_seq_parsed):
-            seqLen = len(row_seq_parsed)
-        row_seq_parsed = row_seq_parsed[:seqLen]+"$"
-        for i in range(0, seqLen+1):
+            lcl_seqLen = len(row_seq_parsed)
+        else:
+            lcl_seqLen = seqLen
+        row_seq_parsed = row_seq_parsed[:lcl_seqLen]+"$"
+
+        print(len(row_seq_parsed))
+        for i in range(0, lcl_seqLen+1):
             node_kmer = row_seq_parsed[i:i+k]
             kmer_set.add(node_kmer)
 
-    # Constructing all the nodes.
-    node_idx = 0
-    for node in kmer_set:
-        new_node = n.node(node_idx, node, alignment_len)
-        node_idx += 1
-        kmer_dic[node] = new_node
+    # # Constructing all the nodes.
+    # node_idx = 0
+    # for node in kmer_set:
+    #     new_node = n.node(node_idx, node, alignment_len)
+    #     node_idx += 1
+    #     kmer_dic[node] = new_node
     
-    # Contructing the graph.
-    for row_idx in range(0, seq_number, 1):
-        row_seq = str(alignment[row_idx].seq)
-        row_seq_parsed = row_seq.replace("-", "")
-        curr_node = ""
-        prev_node = ""
-        if seqLen == -1 or seqLen > len(row_seq_parsed):
-            seqLen = len(row_seq_parsed)
-        row_seq_parsed = row_seq_parsed[:seqLen]+"$"
-        for i in range(0, seqLen+1):
-            node_kmer = row_seq_parsed[i:i+k]
-            curr_node = kmer_dic[node_kmer]
-            # Link current node to prev_node
-            if prev_node != "":
-                curr_node.add_child(prev_node)
-                prev_node.add_parent(curr_node)
-            prev_node = curr_node
+    # # Contructing the graph.
+    # for row_idx in range(0, seq_number, 1):
+    #     row_seq = str(alignment[row_idx].seq)
+    #     row_seq_parsed = row_seq.replace("-", "")
+    #     curr_node = ""
+    #     prev_node = ""
+    #     if seqLen == -1 or seqLen > len(row_seq_parsed):
+    #         lcl_seqLen = len(row_seq_parsed)
+    #     else:
+    #         lcl_seqLen = seqLen
+    #     row_seq_parsed = row_seq_parsed[:lcl_seqLen]+"$"
+    #     for i in range(0, lcl_seqLen+1):
+    #         node_kmer = row_seq_parsed[i:i+k]
+    #         curr_node = kmer_dic[node_kmer]
+    #         # Link current node to prev_node
+    #         if prev_node != "":
+    #             curr_node.add_child(prev_node)
+    #             prev_node.add_parent(curr_node)
+    #         prev_node = curr_node
 
 
 
-    ##############################
-    ## Traversing the graph now. (& relabelling nodes)
-    ##############################
-    print("Depth first search traversing the graph now.")
-    visited = [] # List for visited nodes.
+    # ##############################
+    # ## Traversing the graph now. (& relabelling nodes)
+    # ##############################
+    # print("Depth first search traversing the graph now.")
+    # visited = [] # List for visited nodes.
 
-    ##############################
-    ## Writing out the graph into dot file
-    ##############################
-    # relative_filename = os.path.relpath(fasta_file, "../../multiseq_alignment/")
-    # dir_name = os.path.dirname(relative_filename)
-    # file_basename = os.path.basename(relative_filename)
-    # new_dir_name = os.path.join(outfile, dir_name)
-    # os.makedirs(new_dir_name, exist_ok = True)
-    # fw_name = os.path.join(new_dir_name, "DeBruijn_k_"+str(k) + "_" + file_basename)
-    # fw_name = fw_name.replace('.fasta', '.dot')
-    print("outfile: ", outfile)
-    try:    
-        os.remove(outfile)
-    except OSError:
-        pass
-    fw = open(outfile, "a")
-    fw.write("strict digraph  {\n")
-    bfs(visited, kmer_dic["$"])
-    visited = []
-    bfs_write(visited, kmer_dic["$"], fw) #function for BFS
-    fw.write("}\n")
-    fw.close()
+    # ##############################
+    # ## Writing out the graph into dot file
+    # ##############################
+    # # relative_filename = os.path.relpath(fasta_file, "../../multiseq_alignment/")
+    # # dir_name = os.path.dirname(relative_filename)
+    # # file_basename = os.path.basename(relative_filename)
+    # # new_dir_name = os.path.join(outfile, dir_name)
+    # # os.makedirs(new_dir_name, exist_ok = True)
+    # # fw_name = os.path.join(new_dir_name, "DeBruijn_k_"+str(k) + "_" + file_basename)
+    # # fw_name = fw_name.replace('.fasta', '.dot')
+    # print("outfile: ", outfile)
+    # try:    
+    #     os.remove(outfile)
+    # except OSError:
+    #     pass
+    # fw = open(outfile, "a")
+    # fw.write("strict digraph  {\n")
+    # bfs(visited, kmer_dic["$"])
+    # visited = []
+    # bfs_write(visited, kmer_dic["$"], fw) #function for BFS
+    # fw.write("}\n")
+    # fw.close()
 
 # Number the node in this function
 def bfs(visited, node):
