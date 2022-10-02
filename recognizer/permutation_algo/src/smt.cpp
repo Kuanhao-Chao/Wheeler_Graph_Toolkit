@@ -69,7 +69,6 @@ void digraph::solve_smt() {
                         } else assert(false);
                     }
                 }
-                
             }
         }
     }
@@ -113,11 +112,11 @@ void digraph::solve_smt() {
         cout << "SMT Setup: " << elapsed << " seconds\n";
     }
 
-/* #ifdef DEBUGPRINT */
+#ifdef DEBUGPRINT
     ofstream out("tmp.smt2");
     out << s.to_smt2();
     out.close();
-/* #endif */
+#endif
 
     /* NOTE: profile SMT solving time here */
     start = clock();
