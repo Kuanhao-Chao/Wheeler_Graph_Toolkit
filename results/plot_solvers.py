@@ -4,6 +4,7 @@ import itertools
 import os
 import re
 import math
+import numpy as np
 
 def add_identity(ax=None, ls='--', *args, **kwargs):
     # see: https://stackoverflow.com/q/22104256/3986320
@@ -36,14 +37,17 @@ def main():
         ys = []
         with open(arg+"/GT_out.txt", 'r') as f:
             lines = f.readlines()
-            xs = [float(line.split()[2]) for line in lines]
+            xs = np.array([float(line.split()[2]) for line in lines])
 
         with open(arg+"/WGT_out.txt", 'r') as f:
             lines = f.readlines()
-            ys = [float(line.split()[2]) for line in lines]
+            ys = np.array([float(line.split()[2]) for line in lines])
 
-        log_xs = [math.log10(x) for x in xs]
-        log_ys = [math.log10(y) for y in ys]
+        print(xs)
+        xs_filter = xs[xs < 60000000]
+        ys_filter = ys[xs < 60000000]
+        log_xs = [math.log10(x) for x in xs_filter]
+        log_ys = [math.log10(y) for y in ys_filter]
         print(log_xs)
         print(log_ys)
 
@@ -55,9 +59,9 @@ def main():
         idx += 1
 
     add_identity(ax, color='r', ls='--')
-    ax.set_aspect('equal', adjustable='box')
+    # ax.set_aspect('equal', adjustable='box')
     xlim = ax.get_xlim()
-    plt.setp(ax, xlim=xlim, ylim=xlim)
+    # plt.setp(ax, xlim=xlim, ylim=xlim)
     plt.legend()
     # plt.show()
 

@@ -236,7 +236,7 @@ void processOptions(GArgs& args) {
     exhaustive_search = (args.getOpt('e')!=NULL || args.getOpt("exhaustive_search"));
     full_range_search = (args.getOpt('f')!=NULL || args.getOpt("full_range_search"));
 
-// #ifdef DEBUGPRINT
+#ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;
     cout << "outDir: " << outDir << endl;
     cout << "verbose: " << verbose << endl;
@@ -246,5 +246,5 @@ void processOptions(GArgs& args) {
     cout << "exhaustive_search: " << exhaustive_search << endl;
     cout << "full_range_search: " << full_range_search << endl;
     cout << "solver: " << solver << endl;
-// #endif
+#endif
 }
