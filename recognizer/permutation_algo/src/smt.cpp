@@ -49,6 +49,31 @@ void digraph::solve_smt() {
             s.add(distinct(distinct_nodes));
     }
 
+    if (full_range_search) {
+        for (auto it1 = _edgeLabel_2_edge.begin(); it1 != _edgeLabel_2_edge.end(); ++it1) {
+            for (auto it2 = next(it1); it2 != _edgeLabel_2_edge.end(); ++it2) {
+                int l1 = (*it1).first;
+                int l2 = (*it2).first;
+                vector<edge>& edges1 = (*it1).second;
+                vector<edge>& edges2 = (*it2).second;
+
+                for (auto& e1 : edges1) {
+                    for (auto& e2 : edges2) {
+                        int v1 = e1.get_head_name();
+                        int v2 = e2.get_head_name();
+
+                        if (l1 < l2) {
+                            s.add(xs[v1] < xs[v2]);
+                        } else if (l2 < l1) {
+                            s.add(xs[v2] < xs[v1]);
+                        } else assert(false);
+                    }
+                }
+                
+            }
+        }
+    }
+
     /* Encode edge relations within edge group */
     for (auto& [label, edges] : _edgeLabel_2_edge) {
         for (size_t i = 0; i < edges.size() - 1; ++i) {
@@ -88,11 +113,11 @@ void digraph::solve_smt() {
         cout << "SMT Setup: " << elapsed << " seconds\n";
     }
 
-#ifdef DEBUGPRINT
+/* #ifdef DEBUGPRINT */
     ofstream out("tmp.smt2");
     out << s.to_smt2();
     out.close();
-#endif
+/* #endif */
 
     /* NOTE: profile SMT solving time here */
     start = clock();
