@@ -2,72 +2,56 @@ import sys
 import random
 import argparse
 
-def sample_with_dupl_in_range(lb, ub, num):
-    return [random.randint(lb, ub) for i in range(num)]
+def gen_in_node_range(num_nodes, num_labels, root_size):
+    grp_size = (num_nodes - root_size) / num_labels
+    start = root_size + 1
+    ranges = []
+    for i in range(num_labels-1):
+        # gap = int(grp_size * (1 + random.uniform(-0.05, 0.05))) - 1
+        gap = int(grp_size) - 1
+        ranges.append((start, start + gap))
+        start += gap + 1
+    ranges.append((start, num_nodes))
+    return ranges
 
-def find_closest_breakpoint(lst, b):
-    for i in range(len(lst)):
-        if lst[b] != lst[b+i]:
-            return b+i
-        if lst[b] != lst[b-i]:
-            return b-i+1
-        
-# Find closest index to partition
-def partition_in_nodes(lst, num_edges, num_labels):
-    in_nodes_grps = []
-    group_size = num_edges // num_labels
-    last_b = 0
+def split_int(total, group):
+    arr = [total // group for i in range(group)]
+    arr[-1] += total - sum(arr)
+    return arr
 
-    for i in range(1, num_labels):
-        b = find_closest_breakpoint(lst, group_size * i)
-        in_nodes_grps.append(lst[last_b:b])
-        last_b = b
+def gen_down(up, start, end, num_node):
+    down = [start]
+    split_indices = []
+    prev = up[0]
 
-    in_nodes_grps.append(lst[last_b:])
-    return in_nodes_grps
+    for i, elem in enumerate(up[1:]):
+        if elem != prev:
+            down.append(down[-1])
+            split_indices.append(i + 1)
+        else: # elem == prev
+            down.append(down[-1] + 1)
+        prev = elem
 
-# For each partition, generate random sorted nodes from where directed edges originate
-# If grp_size < num_nodes, then each node will have at most an edge that is labeled l
-def gen_out_nodes_grp(in_nodes_grps, num_nodes, dnfa=1):
-    assert dnfa > 0
-    out_nodes_grps = []
-    # rge = list(range(1, num_nodes+1)) * dnfa
-    rge = list(range(1, num_nodes+1)) 
-    for in_grp in in_nodes_grps:
-        sample_rge = rge + [random.randint(1, num_nodes)] * (dnfa-1) * 3
-        grp_size = len(in_grp)
-        out_grp = sorted(random.sample(sample_rge, min(grp_size, num_nodes)) \
-                + sample_with_dupl_in_range(1, num_nodes, grp_size - num_nodes))
-        out_nodes_grps.append(out_grp)
-    return out_nodes_grps
+    assert down[-1] <= end
 
-# remove edges that violates dNFA rule
-def maintain_dNFA(edges, d):
-    new_edges = [edges[0]]
-    node_cnt = 1
-    for e in edges[1:]:
-        if e[0] == new_edges[-1][0] and e[2] == new_edges[-1][2]:
-            node_cnt += 1
-            if node_cnt <= d:
-                new_edges.append(e)
-        else:
-            node_cnt = 1
-            new_edges.append(e)
-    return new_edges
-        
+    sample_size = end - down[-1]
+    sample_index = random.sample(split_indices, sample_size)
+    sample_index = sorted(sample_index)
 
-def get_cand_edges(edges):
-    edges = list(set(edges))
-    edges = sorted(edges, key=lambda tup: (tup[2], tup[0], tup[1]))
-    cand_edges = []
-    for e1, e2 in zip(edges[:-1], edges[1:]):
-        if e1[2] == e2[2]:
-            if e1[1] != e2[1] and e1[0] != e2[0]:
-                cand_edges.append((e1[0], e2[1], e1[2]))
-            elif e1[1] == e2[1] and e2[0] - e1[0] > 1:
-                cand_edges.extend([(u, e2[1], e1[2]) for u in range(e1[0] + 1, e2[0])])
-    return cand_edges
+    increm = 0
+    it = 0
+    for i in range(len(down)):
+        if it < len(sample_index) and i == sample_index[it]:
+            increm += 1
+            it += 1
+        down[i] += increm
 
+    assert down[-1] == end
+
+    return down
+
+def sum_to(n):
+    return sum(list(range(n+1)))
 
 def get_names(num_nodes, shuffle=True):
     names = [f'S{i}' for i in range(1, num_nodes+1)]
@@ -84,27 +68,21 @@ def create_graph(names, edges, filename):
             label = e[2]
             f.write(f'\t{out_node_name} -> {in_node_name} [ label = {label} ];\n')
         f.write('}')
-
-def check_graph(edges, num_nodes, num_labels, d):
-    label_out_edge_cnt = [[0] * (num_nodes + 1) for i in range(num_labels)]
-    for e in edges:
-        u = e[0]
-        l = e[2]
-        label_out_edge_cnt[l][u] += 1
-        # if label_out_edge_cnt[l][u] > n:
-        #     print(sorted(edges))
-        #     return False
-    maxx = 0
-    for cnt_lst in label_out_edge_cnt:
-        for cnt in cnt_lst:
-            maxx = max(cnt, maxx)
-    return maxx
-
+        
 def uniquify(edges):
     return list(set(edges))
 
 def sort(edges):
     return sorted(edges, key=lambda tup: (tup[2], tup[0], tup[1]))
+
+def check(up):
+    s = set(up)
+    d = {i : 0 for i in s}
+
+    for elem in up:
+        d[elem] += 1
+    print(d)
+
 
 def main():
     parser = argparse.ArgumentParser(description='Generate Random De-Bruijn-ish Wheeler Graphs')
@@ -112,7 +90,7 @@ def main():
     parser.add_argument('-e', '--edges', type=int, help='Number of edges', required=True)
     parser.add_argument('-l', '--labels', type=int, help='Number of edge labels', required=True)
     parser.add_argument('-r', '--root_size', type=int, default=1, help='Number of nodes without incoming edges (default: 1)')
-    parser.add_argument('-dnfa', '--dnfa', type=int, default=100000, help='d-NFA (default: 100000)')
+    parser.add_argument('-d', '--dnfa', type=int, default=100000, help='d-NFA (default: 100000)')
     parser.add_argument('-s', '--shuffle', action='store_true', help='Shuffle node names (default: False)')
     parser.add_argument('-o', '--outfile', type=str, default='tmp.dot', help='Output DOT filename (default: ./tmp.dot)')
     args = parser.parse_args()
@@ -127,40 +105,75 @@ def main():
     max_num_edge = num_nodes * num_labels + num_nodes - num_labels - root_size
     assert num_edges <= max_num_edge, f'Impossible to generate WG: max # of edges = {max_num_edge}'
     assert num_edges >= num_nodes - root_size, f'Impossible to generate WG: min # of edges = {num_nodes - root_size}'
+    assert d is None or d > 0
 
-    # Sorted random nodes that directed edges are pointing to
-    # Make sure the only the root nodes has zero incoming edges
-    rand_in_nodes = list(range(root_size + 1, num_nodes + 1)) + \
-            sample_with_dupl_in_range(root_size + 1, num_nodes, num_edges - (num_nodes - root_size))
-    rand_in_nodes = sorted(rand_in_nodes)
-
-    in_nodes_grps = partition_in_nodes(rand_in_nodes, num_edges, num_labels)
-    out_nodes_grps = gen_out_nodes_grp(in_nodes_grps, num_nodes, d)
+    nodes = list(range(1, num_nodes+1))
     edges = []
-    for l, (out_grp, in_grp) in enumerate(zip(out_nodes_grps, in_nodes_grps)):
-        edges.extend([(out_n, in_n, l) for out_n, in_n in zip(out_grp, in_grp)])
-    # edge_grps = [list(zip(out_grp, in_grp)) for out_grp, in_grp in zip(out_nodes_grps, in_nodes_grps)]
-    # print(edges)
-    print(len(edges))
-    edges = uniquify(edges)
-    print(len(edges))
-    edges = sort(edges)
 
-    edges = maintain_dNFA(edges, d)
-    result_n = check_graph(edges, num_nodes, num_labels, d)
-    print(f'Graph is {result_n}-NFA')
-    cand_edges = get_cand_edges(edges)
-    edges.extend(random.sample(cand_edges, min(num_edges - len(edges), len(cand_edges))))
-    print(len(edges))
+    in_node_ranges = gen_in_node_range(num_nodes, num_labels, root_size)
+
+    num_edges_per_label = split_int(num_edges, num_labels)
+    # print(in_node_ranges)
+    # print(num_edges_per_label)
+
+    for l, (in_node_range, num_edge) in enumerate(zip(in_node_ranges, num_edges_per_label)):
+        start, end = in_node_range 
+        num_node = end - start + 1
+        assert num_edge >= num_node
+
+        num_node_per_d = [-1] * d
+
+        bound1 = num_edge / sum_to(d)
+        bound2 = (num_node - 1) / sum_to(d - 1) if d > 1 else 1
+        # print(bound1, bound2)
+
+        if bound1 < bound2:
+            num_node_per_d = [int(bound1)] * d
+            num_node_per_d[-1] += num_edge - int(bound1) * sum_to(d)
+        elif bound2 < bound1:
+            num_node_per_d = [int(bound2)] * (d - 1)
+            num_node_per_d.append( num_edge - int(bound2) * (sum_to(d) - 1) )
+        assert bound1 != bound2
+
+        # print(num_node_per_d)
+
+        num_out_nodes = sum(num_node_per_d)
+        assert num_out_nodes <= num_nodes
+
+        # Generate up
+        up = []
+        a1 = random.sample(nodes, num_out_nodes)
+        # print(f'a1 : {a1}')
+        
+        for i, num in enumerate(num_node_per_d):
+            a2 = random.sample(a1, num)
+            # print(a2)
+            up += a2 * (d - i)
+            for elem in a2:
+                a1.remove(elem)
+        
+        up = sorted(up)
+        # check(up)
+
+        # print(up)
+        # print()
+
+        down = gen_down(up, start, end, num_node)
+        # print(len(down))
+        # print(up)
+        # print(down)
+        # print()
+
+        edges += [(a, b, l) for a, b in zip(up, down)]
+
+    # print(len(edges))
+    edges = uniquify(edges)
+    # print(len(edges))
+    edges = sort(edges)
 
     node_names = get_names(num_nodes, shuffle=args.shuffle)
 
-    edges = sort(edges)
     create_graph(node_names, edges, outfile_name)
-
-    result_n = check_graph(edges, num_nodes, num_labels, d)
-    print(f'Graph is {result_n}-NFA')
-    assert result_n <= d, f'Graph is {result_n}-NFA (want {d}-NFA)'
 
 if __name__ == '__main__':
     main()
