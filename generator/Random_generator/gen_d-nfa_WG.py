@@ -75,17 +75,9 @@ def uniquify(edges):
 def sort(edges):
     return sorted(edges, key=lambda tup: (tup[2], tup[0], tup[1]))
 
-def check(up):
-    s = set(up)
-    d = {i : 0 for i in s}
-
-    for elem in up:
-        d[elem] += 1
-    print(d)
-
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate Random De-Bruijn-ish Wheeler Graphs')
+    parser = argparse.ArgumentParser(description='Generate Random d-NFA Wheeler Graphs')
     parser.add_argument('-n', '--nodes', type=int, help='Number of nodes', required=True)
     parser.add_argument('-e', '--edges', type=int, help='Number of edges', required=True)
     parser.add_argument('-l', '--labels', type=int, help='Number of edge labels', required=True)
@@ -113,8 +105,6 @@ def main():
     in_node_ranges = gen_in_node_range(num_nodes, num_labels, root_size)
 
     num_edges_per_label = split_int(num_edges, num_labels)
-    # print(in_node_ranges)
-    # print(num_edges_per_label)
 
     for l, (in_node_range, num_edge) in enumerate(zip(in_node_ranges, num_edges_per_label)):
         start, end = in_node_range 
@@ -125,7 +115,6 @@ def main():
 
         bound1 = num_edge / sum_to(d)
         bound2 = (num_node - 1) / sum_to(d - 1) if d > 1 else 1
-        # print(bound1, bound2)
 
         if bound1 < bound2:
             num_node_per_d = [int(bound1)] * d
@@ -135,40 +124,25 @@ def main():
             num_node_per_d.append( num_edge - int(bound2) * (sum_to(d) - 1) )
         assert bound1 != bound2
 
-        # print(num_node_per_d)
-
         num_out_nodes = sum(num_node_per_d)
         assert num_out_nodes <= num_nodes
 
         # Generate up
         up = []
         a1 = random.sample(nodes, num_out_nodes)
-        # print(f'a1 : {a1}')
         
         for i, num in enumerate(num_node_per_d):
             a2 = random.sample(a1, num)
-            # print(a2)
             up += a2 * (d - i)
             for elem in a2:
                 a1.remove(elem)
         
         up = sorted(up)
-        # check(up)
-
-        # print(up)
-        # print()
-
         down = gen_down(up, start, end, num_node)
-        # print(len(down))
-        # print(up)
-        # print(down)
-        # print()
 
         edges += [(a, b, l) for a, b in zip(up, down)]
 
-    # print(len(edges))
     edges = uniquify(edges)
-    # print(len(edges))
     edges = sort(edges)
 
     node_names = get_names(num_nodes, shuffle=args.shuffle)
