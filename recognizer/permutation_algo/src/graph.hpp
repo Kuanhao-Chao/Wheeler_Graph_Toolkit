@@ -35,6 +35,7 @@ extern bool all_valid_WG;
 extern bool benchmark_mode;
 extern bool exhaustive_search;
 extern bool full_range_search;
+extern bool valid_wg;
 extern clock_t c_start;
 extern clock_t c_end;
 extern double cpu_time_used;

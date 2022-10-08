@@ -1120,7 +1120,7 @@ void digraph::SMT_WG_final_check() {
         this -> valid_wheeler_graph();
     } else {
         // It should never enter here
-        this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", false);
+        this -> invalid_wheeler_graph("After final check, it is an invalid wheeler graph", true);
     }
 }
 

@@ -53,10 +53,15 @@ def main(argv):
     alignment = AlignIO.read(args[0], "fasta")
     alignment = alignment[:alnNum]
     print("outfile: ", outfile)
+    print("seqLen: ", seqLen)
     print("alignment\n", alignment)
     alignment_len = alignment.get_alignment_length()
+    if seqLen > alignment_len:
+        seqLen = alignment_len
+    print("seqLen: ", seqLen)
     seq_number = len(alignment)
     source = n.node(sys.maxsize, "#", 0)
+    mid_curr_node = None
     sink = n.node(0, "$", alignment_len)
 
     nodeID = 1
@@ -119,16 +124,6 @@ def main(argv):
                         print("\t\t>> mid_prev_node: ", mid_prev_node.nodelabel)
                     mid_curr_node.add_child(mid_prev_node)
                     mid_prev_node.add_parent(mid_curr_node)
-
-                # Adding source as the parent.
-                if col_idx == 0 or seqLen_counter == seqLen-1:
-                    if verbose:
-                        print("\tAdding source as parent")
-                    source.add_child(mid_curr_node)
-                    if verbose:
-                        print("\t\tsource: ", source.nodelabel)
-                        print("\t\tmid_curr_node: ", mid_curr_node.nodelabel)
-                    mid_curr_node.add_parent(source)
 
 
                 #############################
@@ -222,6 +217,16 @@ def main(argv):
 
         if seqLen_counter == seqLen-1:
             break
+
+    # Adding source as the parent.
+    if verbose:
+        print("\tAdding source as parent")
+    source.add_child(mid_curr_node)
+    if verbose:
+        print("\t\tsource: ", source.nodelabel)
+        print("\t\tmid_curr_node: ", mid_curr_node.nodelabel)
+    mid_curr_node.add_parent(source)
+
 
     ##############################
     ## Traversing the graph now. (& relabelling nodes)

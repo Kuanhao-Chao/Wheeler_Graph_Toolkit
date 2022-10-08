@@ -158,7 +158,9 @@ void digraph::solve_smt() {
             cout << ">> Before: " << *ptr << endl;
         }
 #endif
-        bool WG_valid = true;
-        this -> SMT_WG_final_check();
+        valid_wg = true;
+    } else {
+        valid_wg = false;
     }
+    this -> SMT_WG_final_check();
 }

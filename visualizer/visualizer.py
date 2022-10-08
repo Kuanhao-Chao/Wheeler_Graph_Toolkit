@@ -64,7 +64,7 @@ def main(argv):
 
     print(">> Visualizing ...")
     node_num = len(nodes)
-    figure_width = node_num*1.3
+    figure_width = node_num*1.1
     f = plt.figure(figsize=(figure_width, 6))
     ax = f.add_subplot(1,1,1)
     color_coding = {x: color_default[idx] if idx < 4 else "#"+str(hex(random.randint(0,16777215))[2:]) for idx, x in enumerate(edge_labels)}
@@ -81,7 +81,7 @@ def main(argv):
         x_pos += 1
 
     options = {
-        "node_size": 1200,
+        # "node_size": 1200,
         "node_color": "#b9ddeb",
         "width": 2,
         "font_weight": "bold",
@@ -94,20 +94,21 @@ def main(argv):
     pos=nx.get_node_attributes(G,'pos')
     edge_colors = nx.get_edge_attributes(G,'color').values()
 
-    nx.draw(G,pos, edge_color=edge_colors, **options)
-    # Setting it to how it was looking before.
     plt.axis('off')
     f.set_facecolor('w')
 
     plt.legend(fontsize="x-large")
     f.tight_layout()
-    plt.show()
+    
+    nx.draw(G,pos, edge_color=edge_colors, **options)
+    # Setting it to how it was looking before.
+    # plt.show()
     # if outputfile == "":
     #     defualt_outfile=os.path.splitext(inputfile[4:])[0]+".png"
     #     plt.savefig(defualt_outfile, format="PNG")
     # else:
-    outputfile = "Human_STAU2_orthologues_DNA_k_2_l_4_a_4.png"
-    # plt.savefig(outputfile, format="PNG")
+    outputfile = "4-NFA.png"
+    plt.savefig(outputfile, format="PNG")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
