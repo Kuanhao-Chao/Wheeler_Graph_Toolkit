@@ -59,7 +59,7 @@ The recognizer_p takes any DOT file as the input and test whether at least one s
 Take `./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot` DOT file as an example. It is a random valid WG outputted by the generator, and recognizer takes it as the input.
 
 ```
-DOT file path:  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
+DOT file path:  ./graph/example.dot
 
    strict digraph  {
    S1;
@@ -80,15 +80,16 @@ DOT file path:  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
 Run the following command:
 
 ```
-	./bin/recognizer_p  ./graph/generator_DOT/node_num_5/after_shuffle/test_1.dot
+	./bin/recognizer  ./graph/example.dot
 ```
 
 This is what you will see in the terminal:
 ```
-	(v) It is a wheeler graph!!
-	Runtime : 1708 microseconds
+(v) solved by permutation
+(v) It is a wheeler graph!!
+Runtime : 964 microseconds
 ```
-
+<!-- 
 You will get the following five output files:
 
 	1. ***I.txt***:
@@ -209,4 +210,4 @@ This is what you will see in the terminal:
 	Iterating through 3 bit arrays:
 	Runtime : 3042 microseconds
 ```
-
+ -->
