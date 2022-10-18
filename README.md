@@ -45,7 +45,7 @@ Options:
    
    writeIOL          : Output the I, O, L three-bitarray data structure proposed by Gagie et al. 
    
-   writeRange        : Output the range information produce by the renaming heuristic. 
+   writeRange        : Output the range information produced by the renaming heuristic. 
    
    label_is_int      : Specifiy if the edge labels of your input graph are integer. The edge labels are treated as strings by default.
    
