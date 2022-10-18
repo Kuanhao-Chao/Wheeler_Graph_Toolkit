@@ -17,3 +17,5 @@ recognizer/permutation_fix/
 visualizer/*.png
 visualizer/out__*
 visualizer/*.dot
+generator/MultiSeqWG_generator/
+generator/PrefixSortedGraph/
