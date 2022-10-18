@@ -40,7 +40,7 @@ for file in sys.argv[1:]:
 
 
 
-font = {'size'   : 8}
+font = {'size'   : 13}
 matplotlib.rc('font', **font)
 
 fig, axs = plt.subplot_mosaic([['A'],['A_2']], constrained_layout=True, figsize=(12, 6), dpi=300, gridspec_kw={'height_ratios': [4.5, 1]})
@@ -56,8 +56,8 @@ ax_counter = 0
 #                 fontsize=30, va='bottom', fontfamily='serif', fontweight='bold')
 #     ax_counter += 1
 
-axis_fontsize=11
-axs['A'].set_ylabel(r'Recognizing time ($\mu s$)', labelpad=26, fontsize=axis_fontsize)
+axis_fontsize=12
+axs['A'].set_ylabel(r'recognition time ($\mu s$)', labelpad=26, fontsize=axis_fontsize)
 axs['A_2'].set_ylabel(r'Timeout count', labelpad=28, fontsize=axis_fontsize)
 counter = 0
 timeout_line_handle = None
@@ -98,13 +98,14 @@ for idx, (ans, times, ns, es, ls, densities, ds) in enumerate(all_vars):
     # , color=colors[idx])
 
     axs['A_2'].bar_label(bars, fontsize=9)
-    axs['A_2'].margins(y=0.2)
+    axs['A_2'].margins(y=0.3)
     axs['A_2'].set_xlabel(r'$d$', labelpad=15, fontsize=axis_fontsize)
-    axs['A'].set_title(r'Fix $n = 1000$, $e = 3000, \sigma = 4$', pad = 25, fontsize=axis_fontsize, loc='left')
+    # axs['A'].set_title(r'', pad = 50, fontsize=axis_fontsize, loc='left')
+    axs['A'].set_title(r'Fix $n = 1000$, $e = 3000, \sigma = 4$', pad = 50, fontsize=axis_fontsize, loc='left')
 handles, labels = axs['A'].get_legend_handles_labels()
 print("handles: ", handles)
 handles.append(timeout_line_handle)
-fig.legend(handles, ['Wheelie-SMT', 'Wheelie-SMT median line', 'Wheelie-Pr', 'Wheelie-Pr median line', '1000-second timeout line'], loc='upper right', bbox_to_anchor=(1, 1.0057), ncol=3)
+fig.legend(handles, ['Wheelie-SMT', 'Wheelie-SMT median', 'Wheelie-Pr', 'Wheelie-Pr median', '1000-second timeout line'], loc='upper right', bbox_to_anchor=(1, 1.0097), ncol=3)
 
 # plt.show()
 plt.savefig(os.path.join("Figure_4.png"), format="PNG")

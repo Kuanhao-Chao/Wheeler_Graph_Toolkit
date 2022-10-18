@@ -40,7 +40,9 @@ for file in sys.argv[1:]:
 # print(test_case)
 # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(23, 6), dpi=300)
 
-fig, axs = plt.subplot_mosaic([['A', 'B']], constrained_layout=True, figsize=(18, 6), dpi=300)
+fig, axs = plt.subplot_mosaic([['A', 'B']], constrained_layout=True, figsize=(20, 6), dpi=300)
+
+fig.subplots_adjust(left=0.05, right=0.88) # or whatever
 
 for label, ax in axs.items():
     # label physical distance to the left and up:
@@ -50,8 +52,8 @@ for label, ax in axs.items():
             fontsize=30, va='bottom', fontfamily='serif', fontweight='bold')
 
 # axs['A'].set_xlabel('Label group density')
-axs['A'].set_ylabel(r'Accumulated recognizing time ($\mu s$)', labelpad=12, fontsize=15)
-# axs['B'].set_ylabel(r'Accumulated recognizing time ($\mu s$)', labelpad=12, fontsize=15)
+axs['A'].set_ylabel(r'Accumulated recognition time ($\mu s$)', labelpad=12, fontsize=15)
+axs['B'].set_ylabel(r'Accumulated recognition time ($\mu s$)', labelpad=12, fontsize=15)
 # ax[1].set_xlabel('Label group density')
 # ax[1].set_ylabel(r'Timeout case count', labelpad=18, fontsize=axis_fontsize)
 counter = 0
@@ -96,7 +98,8 @@ for agg_times, times, label in all_times:
 handles, labels = axs['A'].get_legend_handles_labels()
 print("handles: ", handles)
 # handles.append(timeout_line_handle)
-fig.legend(handles, ["Wheelie-SMT", "Pure SMT"], loc='upper right', bbox_to_anchor=(0.99,1), prop={'size': 12})
+fig.legend(handles, ["Wheelie-SMT", "Pure SMT"], loc='center right', prop={'size': 15}, ncol=1)
+# , bbox_to_anchor=(0.99,1)
 plt.savefig(os.path.join("Figure_6.png"), format="PNG")
 
 #python plot_cactus.py ../../unit_test/SMT_vs_RHSMT/Timeout_test/DeBruijnG_AA/results/30_DB_AA_restrict_out.txt ../../unit_test/SMT_vs_RHSMT/Timeout_test/DeBruijnG_AA/results/30_DB_AA_full_out.txt ../../unit_test/SMT_vs_RHSMT/Timeout_test/RevDetG_AA/results/30_RD_AA_restrict_out.txt  ../../unit_test/SMT_vs_RHSMT/Timeout_test/RevDetG_AA/results/30_RD_AA_full_out.txt

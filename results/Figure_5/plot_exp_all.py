@@ -29,9 +29,9 @@ for file in sys.argv[1:]:
         all_vars.append((times, ns, es, ls, densities))
 
 bar_font = 7
-axis_fontsize = 13
+axis_fontsize = 14
 top_padding = 20
-font = {'size'   : 8}
+font = {'size'   : 14}
 matplotlib.rc('font', **font)
 # fig, axs = plt.subplots(figsize=(8, 6), dpi=300)
 
@@ -49,7 +49,7 @@ for label, ax in axs.items():
 
 # fig, axs = plt.subplots(nrows=2, ncols=3, figsize=(22, 6), dpi=300, gridspec_kw={'height_ratios': [4.5, 1]}, sharey='row')
 
-axs['A'].set_ylabel(r'Recognizing time ($\mu s$)', labelpad=26, fontsize=axis_fontsize)
+axs['A'].set_ylabel(r'recognition time ($\mu s$)', labelpad=26, fontsize=axis_fontsize)
 axs['A_2'].set_ylabel(r'Timeout count', labelpad=28, fontsize=axis_fontsize)
 counter = 0
 
@@ -69,7 +69,7 @@ for times, ns, es, ls, densities in all_vars:
         w = 130
         bars = axs['A_2'].bar(df['ns_uniq']+w*(counter-idx*2)-w/2, df['timeout'], label=next(labels), width = w)
         axs['A_2'].bar_label(bars, fontsize=bar_font)
-        axs['A_2'].margins(y=0.2)
+        axs['A_2'].margins(y=0.25)
         axs['A_2'].set_xlabel(r'Number of nodes', labelpad=18, fontsize=axis_fontsize)
         axs['A'].set_title(r'Fix $e = 8000$, $\sigma = 4$', pad = top_padding, fontsize=axis_fontsize)
     elif idx == 1:
@@ -82,9 +82,9 @@ for times, ns, es, ls, densities in all_vars:
         df['densities_uniq'] = np.unique(densities)
         print(df)
         w = 60
-        bars = axs['B_2'].bar(df['densities_uniq']+w*counter-w/2, df['timeout'], label=next(labels), width = w)
+        bars = axs['B_2'].bar(df['densities_uniq']+w*(counter-idx*2)-w/2, df['timeout'], label=next(labels), width = w)
         axs['B_2'].bar_label(bars, fontsize=bar_font)
-        axs['B_2'].margins(y=0.2)
+        axs['B_2'].margins(y=0.25)
         axs['B_2'].set_xlabel(r'Label Density ($e / \sigma$)', labelpad=18, fontsize=axis_fontsize)
         axs['B'].set_title(r'Fix $n = 4000$, $e = 20000$', pad = top_padding, fontsize=axis_fontsize)
     elif idx == 2:
@@ -105,7 +105,7 @@ for times, ns, es, ls, densities in all_vars:
         bars = axs['C_2'].bar(df['es_ratio_uniq']+w*(counter-idx*2)-w/2, df['timeout'], label=next(labels), width = w)
 
         axs['C_2'].bar_label(bars, fontsize=bar_font)
-        axs['C_2'].margins(y=0.2)
+        axs['C_2'].margins(y=0.25)
         axs['C_2'].set_xlabel(r'$\sigma / \sigma_{min} ratio$', labelpad=18, fontsize=axis_fontsize)
         axs['C'].set_title(r'Fix $n = 2000$, $e / \sigma = 2000$', pad = top_padding, fontsize=axis_fontsize)
 
@@ -116,7 +116,7 @@ for times, ns, es, ls, densities in all_vars:
 handles, labels = axs['A'].get_legend_handles_labels()
 print("handles: ", handles)
 handles.append(timeout_line_handle)
-fig.legend(handles, ["Wheelie-SMT", "Wheelie-Pr", "Timeout line"], loc='upper right', bbox_to_anchor=(1,0.99))
+fig.legend(handles, ["Wheelie-SMT", "Wheelie-Pr", "Timeout line"], loc='center right', bbox_to_anchor=(0.995,0.7), ncol=1)
 # fig.text(0.5, 0.04, 'common xlabel', ha='center', va='center')
 plt.savefig(os.path.join("Figure_5.png"), format="PNG")
 

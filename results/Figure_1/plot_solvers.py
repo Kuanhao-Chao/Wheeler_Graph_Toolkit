@@ -65,8 +65,8 @@ def main():
 
 
 
-        ax.set_xlabel(r'G & T recognizing time ($\log_{10} \mu s$)')
-        ax.set_ylabel(r'Wheelie-Pr exhaustive search recognizing time ($\log_{10} \mu s$)')
+        ax.set_xlabel(r'G & T algorithm recognition time ($\log_{10} \mu s$)')
+        ax.set_ylabel(r'Wheelie-Pr exhaustive search recognition time ($\log_{10} \mu s$)')
         ax.scatter(log_xs, log_ys, alpha=0.5, label=labels[idx])
         # ax.scatter(xs_filter, ys_filter, alpha=0.5, label=labels[idx])
         idx += 1
@@ -84,7 +84,7 @@ def main():
     print("handles: ", handles)
     handles.append(timeout_line_handle)
     labels.append("30-second timeout line")
-    ax.legend(handles, labels, loc='upper right', bbox_to_anchor=[0.5, 0.93],prop={'size': 8})
+    ax.legend(handles, labels, loc='upper right', bbox_to_anchor=[0.56, 0.93],prop={'size': 9})
 
     # plt.legend()
     # plt.show()
