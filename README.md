@@ -29,19 +29,31 @@ make
 ```
 Usage:
 
-	recognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-i / --print_invalid] [-a / --all_valid_WG]
-
+	recognizer_p <in.dot> [--version] [-h / --help] [-v / --verbose] [-o / --outDir] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark] [-e / --exhaustive_search] [-f / --full_range_search]
+	
 Options:
 
-   version        : print out the current version (0.1.0)
+   version           : print out the current version (0.1.0)
   
-   help           : print out the usage message.
+   help              : print out the usage message.
    
-   verbose	  : run in the verbose mode.
+   verbose	     : run in the verbose mode.
                          
-   print_invalid  : print out the invalid wheeler graph log during node labels permutation.
+   outDir            : The directory for the files to be outputed.
                           
-   all_valid_WG   : finding all possible WG node labels. The default mode finds 1 set of node labels and stops.
+   solver            : Specify which solver the user would like to run with. Default is `SMT`, and you can input either `SMT` or `p`.
+   
+   writeIOL          : Output the I, O, L three-bitarray data structure proposed by Gagie et al. 
+   
+   writeRange        : Output the range information produce by the renaming heuristic. 
+   
+   label_is_int      : Specifiy if the edge labels of your input graph are integer. The edge labels are treated as strings by default.
+   
+   benchmark         : Run the recognizer in `benchmark mode`.  Four columns are outputed which are 'if the input graph is Wheeler', 'number of nodes', 'runtime in microseconds', and 'path to the input graph'
+   
+   exhaustive_search : Run the recongizer in `exhaustive search mode`. The solver is set to `p` when this option is provided.
+   
+   full_range_search : Run the recognizer in `full range search mode`. The renaming heuristic is skipped, and the recognizer searches the whole search space using the solver (`SMT` or `p`) the user specified.
 ```
 
 #### 2.1 Inputs and outputs:
