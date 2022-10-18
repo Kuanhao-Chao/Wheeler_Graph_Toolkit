@@ -1,9 +1,0 @@
-strict digraph  {
-	S0 -> S1 [ label = F ];
-	S1 -> S2 [ label = F ];
-	S1 -> S3 [ label = L ];
-	S2 -> S4 [ label = V ];
-	S2 -> S5 [ label = L ];
-	S2 -> S6 [ label = M ];
-	S3 -> S6 [ label = M ];
-}

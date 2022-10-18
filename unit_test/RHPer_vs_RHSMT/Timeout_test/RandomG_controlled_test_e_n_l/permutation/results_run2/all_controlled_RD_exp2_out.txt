@@ -1,5 +1,0 @@
-1	2000	1.47435e+08	../../../../graph/Random/controlled_random/exp2/2000_8000_4/1.dot
-1	2000	1.29406e+08	../../../../graph/Random/controlled_random/exp2/2000_8000_4/5.dot
-1	2000	5.49636e+08	../../../../graph/Random/controlled_random/exp2/2000_8000_4/2.dot
-1	2000	8.0458e+08	../../../../graph/Random/controlled_random/exp2/2000_8000_4/3.dot
-1	2000	5.039e+07	../../../../graph/Random/controlled_random/exp2/2000_8000_4/4.dot

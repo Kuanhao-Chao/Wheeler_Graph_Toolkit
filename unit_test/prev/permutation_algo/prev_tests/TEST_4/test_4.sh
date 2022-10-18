@@ -1,2 +1,0 @@
-python3 ../../../generator/generate_bad_WG_samples_by_partitions.py ../../../graph/testing/TEST_4 50 70 10
-python3 ../unit_tests/invalid_testing.py ../../../graph/testing/TEST_4 ../../../results/TEST_4/partition_testing.csv ../../../results/TEST_4/partition_testing.txt

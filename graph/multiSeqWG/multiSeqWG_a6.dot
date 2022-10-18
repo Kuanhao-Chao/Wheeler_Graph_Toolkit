@@ -1,5 +1,0 @@
-strict digraph  {
-	S_0_0 -> S_0_2 [ label = A ];
-	S_0_2 -> S_0_7 [ label = C ];
-	S_0_7 -> S_$ [ label = A ];
-}
