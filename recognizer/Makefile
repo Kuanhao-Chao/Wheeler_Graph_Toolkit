@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS = -std=c++17 -lstdc++fs -pthread -O3
+CFLAGS = -std=c++17 -pthread -O3
 SRCDIR = ./src
 Z3DIR = ./z3
 SRC = $(shell find $(SRCDIR) -name '*.cpp')
@@ -13,8 +13,8 @@ EXE = recognizer
 $(EXE): $(OBJ)
 	@echo "> Compiling $(EXE)"
 	@$(CXX) $^ -o $(EXE) $(CFLAGS) $(STATIC_LIB) $(INCLUDE) -w
-	@mkdir -p ../bin; cp $(EXE) ../bin
-	@echo $(EXE) copied to ../bin
+	@mkdir -p ./bin; cp $(EXE) ./bin
+	@echo $(EXE) copied to ./bin
 
 %.o: %.cpp
 	@echo "> Compiling $^"
