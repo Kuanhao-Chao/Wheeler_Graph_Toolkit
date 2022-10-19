@@ -1,0 +1,3 @@
+[submodule "recognizer/z3"]
+	path = recognizer/z3
+	url = https://github.com/Z3Prover/z3

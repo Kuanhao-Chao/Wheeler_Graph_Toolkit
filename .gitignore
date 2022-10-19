@@ -3,6 +3,7 @@
 __pycache__/
 g.smt2
 *.smt2
+*.o
 slides/
 **/prev/
 multiseq_alignment/original_betterconcat.fasta
