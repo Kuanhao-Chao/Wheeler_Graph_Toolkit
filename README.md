@@ -5,11 +5,18 @@
 
 WGT is the first open source Wheeler Graph suite for generating, recognizing, and visualizing Wheeler graphs. Central to WGT is "Wheelie", a fast Wheeler graph recognition algorithm that we proposed, which can recognize a graph with 1,000s of nodes in seconds.
 
+
 <br>
 
 ## What is a Wheeler graph?
 
-A Wheeler graph is a class of directed, edge-labeled graph that is particularly easy to index and query. It is a generalization of the Burrows-Wheeler-Transform-based FM Index [1, 2], and partly forms the basis for existing pangenome alignment tools such as vg [3, 4]. 
+A Wheeler graph is a class of directed, edge-labeled graph that is particularly easy to index and query. It is a generalization of the Burrows-Wheeler-Transform-based FM Index [1, 2], and partly forms the basis for existing pangenome alignment tools such as vg [3, 4]. Given an edge-labeled, directed graph. It is a Wheeler graph if and only if there exists a total ordering over its nodes such that:
+* 0-indegree nodes come before all other nodes in the ordering
+* For all pairs of edges $(u, v)$ and $(u', v')$ labeled $a$ and $a'$ respectively:
+  * $a \prec a' \rightarrow v < v'$
+  * $a = a' \land u < u' \rightarrow v \leq v'$ 
+
+$\ast$ Fun fact: the logo of WGT is a Wheeler Graph (assuming the labels of blue edges are lexicographically smaller than labels of red edges.)!
 
 <br>
 
