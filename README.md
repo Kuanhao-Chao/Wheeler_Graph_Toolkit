@@ -16,7 +16,7 @@ A Wheeler graph is a class of directed, edge-labeled graph that is particularly 
   * $a \prec a' \rightarrow v < v'$
   * $a = a' \land u < u' \rightarrow v \leq v'$ 
 
-$\ast$ Fun fact: the logo of WGT is a Wheeler Graph (assuming the labels of blue edges are lexicographically smaller than labels of red edges.)!
+$\ast$ Fun fact: the logo of WGT is a Wheeler Graph! Try it out! (assuming the labels of blue edges are lexicographically smaller than labels of red edges.)
 
 <br>
 
