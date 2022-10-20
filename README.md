@@ -5,13 +5,13 @@
 
 WGT is the first open source Wheeler Graph suite for generating, recognizing, and visualizing Wheeler graphs. Central to WGT is "Wheelie", a fast Wheeler graph recognition algorithm that we proposed, which can recognize a graph with 1,000s of nodes in seconds.
 
----
+<br>
 
 ## What is a Wheeler graph?
 
 A Wheeler graph is a class of directed, edge-labeled graph that is particularly easy to index and query. It is a generalization of the Burrows-Wheeler-Transform-based FM Index [1, 2], and partly forms the basis for existing pangenome alignment tools such as vg [3, 4]. 
 
----
+<br>
 
 ## How is this repo organized?
 
@@ -21,7 +21,8 @@ There are three modules in WGT which are (1) a recognizer, (2) a visualizer, and
 
 `benchmark/` stores the benchmark results. We also implemented Gibney & Thankachan's exponential algorithm [5] to the point of 3-bitarray enumaration and put the source code here.
 
---- 
+<br>
+
 ## Citation
 
 WGT is on *bioRxiv* now. If you use WGT in your published work, please cite
@@ -29,8 +30,7 @@ WGT is on *bioRxiv* now. If you use WGT in your published work, please cite
 
 > <b>Kuan-Hao Chao*&dagger;, Pei-Wei Chen*, Sanjit A. Seshia, Ben Langmead&dagger;, "WGT: Tools and algorithms for recognizing, visualizing and generating Wheeler graphs" in [*bioRxiv*](https://doi.org/10.1101/2022.10.15.512390), 2022</b>
 
-
----
+<br>
 
 ## Reference
 
