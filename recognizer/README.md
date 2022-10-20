@@ -16,7 +16,7 @@ Then, type `make z3` to compile Z3 and create static library and include files.
 ```
 make z3
 ```
-Root password will be requested to perform a sudo command (`sudo make install` in the `./z3`) to create the static library and include files in `./z3`.
+Root password will be requested to perform a sudo command (`sudo make install` in `./z3`) to create the static library and include files in `./z3`.
 
 Finally, enter `make` to compile the recognizer code.
 ```
