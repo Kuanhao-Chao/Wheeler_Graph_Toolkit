@@ -1,4 +1,7 @@
-# WGT: Wheeler Graph Toolkit
+# WGT: Wheeler Graph Toolkit &nbsp; <img src="https://i.imgur.com/549HyyN.png" width="80"/> 
+
+
+
 
 WGT is the first open source Wheeler Graph suite for generating, recognizing, and visualizing Wheeler graphs. Central to WGT is "Wheelie", a fast Wheeler graph recognition algorithm that we proposed, which can recognize a graph with 1,000s of nodes in seconds.
 
