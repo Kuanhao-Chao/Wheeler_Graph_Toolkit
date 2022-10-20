@@ -15,15 +15,11 @@
 #include <unordered_map>
 #include <set>
 #include <new>
-// #include <chrono>
 #include <time.h>
 #include "edge.hpp"
 
-// #define DEBUGPRINT
-
 using namespace std;
 
-// extern bool debugMode;
 extern const int PERMUTATION_CUTOFF;
 extern string dot_full_name;
 extern string outDir;
@@ -42,8 +38,6 @@ extern double cpu_time_used;
 extern int permutation_counter;
 extern unordered_map<string,int> _nodeName_2_newNodeName;
 extern unordered_map<int,string> _newNodeName_2_nodeName;
-// extern unordered_map<string,int> label_2_newLabel;
-// extern unordered_map<int,string> newLabel_2_label;
 
 /********************************
 *** When number of duplicates is large, faster to convert to set and 
@@ -137,7 +131,6 @@ class digraph {
         void permutation_4_edge_group(int label);
         void permutation_4_sub_edge_group(int &label, vector<int> &prev_num_vec, vector<int> &accum_same_vec, map<int, vector<int*> > &nodes_2_relabelled_nodes_vec, int index);
 
-        // void in_edge_group_sort(vector<vector<int> > &edgegp_nodes_innodes, vector<int> &index);
         void in_edge_group_sort(vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index);
         void in_edge_group_pre_label(int label, vector<int> &edgegp_nodes, vector<vector<int> > &edgegp_node_2_innodes_vec, vector<int> &index, int &accum_edgegp_size);
 

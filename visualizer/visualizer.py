@@ -1,4 +1,3 @@
-# from turtle import color
 import networkx as nx
 import matplotlib.pyplot as plt
 import getopt
@@ -6,7 +5,7 @@ import sys
 import random
 import os
 
-USAGE = '''usage: visualizer.py [-h] [-v] [-o / --ofile FILE] Valid WG DOT file'''
+USAGE = '''usage: visualizer.py [-h] [-o / --ofile FILE] Valid WG DOT file'''
 random.seed(1)
 color_default = ["blue", "red", "green", "orange"]
 
@@ -23,7 +22,6 @@ def parse(inputfile):
 
     edge_labels= list(set(list(zip(*edges))[2]))
     edge_labels.sort()
-    # edges = sorted(edges, key = lambda x: (x[2], x[0], x[1]))
 
     for (u, v, l) in edges:
         has_incoming_edge.update([v])
@@ -34,9 +32,7 @@ def main(argv):
     ## Parsing arguments
     ##############################
     # Default parameters:
-    k = 3
-    verbose = False
-    outputdir = "./"
+    ofile = None
     try:
         opts, args = getopt.getopt(argv,"hvo:",["ofile="])
     except getopt.GetoptError:
@@ -45,20 +41,18 @@ def main(argv):
     for opt, arg in opts:
         if opt == '-h':
             print(USAGE)
-            sys.exit()
-        elif opt == '-v':
-            verbose = True
+            sys.exit(1)
         elif opt in ("-o", "--ofile"):
-            outputdir = arg
+            ofile = arg
     
-    if not os.path.exists(outputdir):
-        print("Output directory does not exist!")
-        outputdir = "./"
+    if not os.path.exists(os.path.dirname(ofile)):
+        print("The directory where the specified output directory is does not exist!")
+        sys.exit(-1)
         
     if len(args) == 0:
         print(USAGE)
         print("Please input one valid WG in DOT file")
-        sys.exit(2)
+        sys.exit(-1)
 
     nodes, edges, edge_labels, has_incoming_edge = parse(args[0])
 
@@ -68,7 +62,6 @@ def main(argv):
     f = plt.figure(figsize=(figure_width, 6))
     ax = f.add_subplot(1,1,1)
     color_coding = {x: color_default[idx] if idx < 4 else "#"+str(hex(random.randint(0,16777215))[2:]) for idx, x in enumerate(edge_labels)}
-    print("colors: ", color_coding)
     
     for label, color in color_coding.items():
         ax.plot([0],[0],color=color,label=label)
@@ -81,7 +74,6 @@ def main(argv):
         x_pos += 1
 
     options = {
-        # "node_size": 1200,
         "node_color": "#b9ddeb",
         "width": 2,
         "font_weight": "bold",
@@ -93,22 +85,17 @@ def main(argv):
 
     pos=nx.get_node_attributes(G,'pos')
     edge_colors = nx.get_edge_attributes(G,'color').values()
-
     plt.axis('off')
     f.set_facecolor('w')
-
     plt.legend(fontsize="x-large")
     f.tight_layout()
     
     nx.draw(G,pos, edge_color=edge_colors, **options)
     # Setting it to how it was looking before.
-    # plt.show()
-    # if outputfile == "":
-    #     defualt_outfile=os.path.splitext(inputfile[4:])[0]+".png"
-    #     plt.savefig(defualt_outfile, format="PNG")
-    # else:
-    outputfile = "4-NFA.png"
-    plt.savefig(outputfile, format="PNG")
+    if ofile == None:
+        plt.show()
+    else:
+        plt.savefig(ofile, format="PNG")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

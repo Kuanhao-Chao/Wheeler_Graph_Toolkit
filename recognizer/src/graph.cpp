@@ -88,6 +88,20 @@ void digraph::add_edges(vector<string> node1_vec, vector<string> node2_vec, vect
         } else {
             _node_2_innodes[node_2_name].insert(node_1_name);
         }
+        /***********************************************
+        ***  Constructing the outnode dictionary.
+        ************************************************/
+        if (_node_2_edgelabel_2_outnodes.find(node_1_name) == _node_2_edgelabel_2_outnodes.end()) {
+            // Not found the node key.
+            map<string, set<int> > edgelabel_2_outnodes;
+            _node_2_edgelabel_2_outnodes[node_1_name] = edgelabel_2_outnodes; 
+            for (auto& edge_label : edge_labels) {
+                set<int> outnodes{};
+                _node_2_edgelabel_2_outnodes[node_1_name][edge_label] = outnodes;
+            }
+        } 
+        _node_2_edgelabel_2_outnodes[node_1_name][edge_labels[i]].insert(node_2_name);
+
         edge e = edge(edgeLabels[i], node_1_name, this->get_node_address(node_1_name), node_2_name, this->get_node_address(node_2_name));
 
         /***********************************************
@@ -1310,16 +1324,12 @@ void digraph::output_wg_gagie() {
     **** Processing _root
     *****************************************/
     for (auto& root_node : _root) {
-        int outnodes_size = 0;
-        for (auto& [edgelabel, outnodes] : _node_2_edgeLabel_2_outnodes[root_node]) {
-            outnodes_size += outnodes.size();
-        }
         ostringstream repeated_I;
         ostringstream repeated_O;
         string repeated_L;
         // Output Travis data structure
         fill_n(ostream_iterator<string>(repeated_I), _node_2_innodes[root_node].size(), string("0"));
-        fill_n(ostream_iterator<string>(repeated_O), outnodes_size, string("0"));
+        fill_n(ostream_iterator<string>(repeated_O), _node_2_outnodes[root_node].size(), string("0"));
         // Bit array I
         ofile_I << repeated_I.str()+"1";
 #ifdef DEBUGPRINT
@@ -1397,7 +1407,6 @@ void digraph::output_wg_gagie() {
                 cout << "repeated_L: " << repeated_L << endl;
                 cout << endl;
 #endif
-
                 // Output nodes conversion
                 ofile_NC << this -> get_decoded_nodeName(edge.get_head_name()) << "\t" << to_string(this -> get_node_label(edge.get_head_name())) << endl;
             }
