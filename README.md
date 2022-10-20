@@ -21,7 +21,7 @@ $\ast$ Fun fact: the logo of WGT is a Wheeler Graph! Try it out! (assuming edges
 <details>
   <summary><b>Answer</b></summary>
   
-<img src="https://i.imgur.com/vvCCVZz.png" width="380"/> 
+<img src="https://i.imgur.com/76KHLme.png" width="380"/> 
 </details>
 
 <br>
