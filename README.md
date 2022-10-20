@@ -3,7 +3,7 @@
 
 
 
-WGT is the first open source Wheeler Graph suite for generating, recognizing, and visualizing Wheeler graphs. Central to WGT is "Wheelie", a fast Wheeler graph recognition algorithm that we proposed, which can recognize a graph with 1,000s of nodes in seconds.
+WGT is the first open source Wheeler Graph suite for generating, recognizing, and visualizing Wheeler graphs. Central to WGT is "***Wheelie***", a fast Wheeler graph recognition algorithm that we proposed, which can recognize a graph with 1,000s of nodes in seconds.
 
 
 <br>
@@ -17,6 +17,12 @@ A Wheeler graph is a class of directed, edge-labeled graph that is particularly 
   * $a = a' \land u < u' \rightarrow v \leq v'$ 
 
 $\ast$ Fun fact: the logo of WGT is a Wheeler Graph! Try it out! (assuming the labels of blue edges are lexicographically smaller than labels of red edges.)
+
+<details>
+  <summary><b>Answer</b></summary>
+  
+<img src="https://i.imgur.com/vvCCVZz.png" width="380"/> 
+</details>
 
 <br>
 
