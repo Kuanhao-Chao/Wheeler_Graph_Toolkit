@@ -44,10 +44,11 @@ def main(argv):
             sys.exit(1)
         elif opt in ("-o", "--ofile"):
             ofile = arg
+            if not os.path.exists(os.path.dirname(ofile)):
+                print("The directory where the specified output directory is does not exist!")
+                sys.exit(-1)
     
-    if not os.path.exists(os.path.dirname(ofile)):
-        print("The directory where the specified output directory is does not exist!")
-        sys.exit(-1)
+
         
     if len(args) == 0:
         print(USAGE)

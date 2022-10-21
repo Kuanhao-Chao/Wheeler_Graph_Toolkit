@@ -14,6 +14,7 @@ $(EXE): $(OBJ)
 	@echo "> Compiling $(EXE)"
 	@$(CXX) $^ -o $(EXE) $(CFLAGS) $(STATIC_LIB) $(INCLUDE) -w
 	@mkdir -p ./bin; cp $(EXE) ./bin
+	@rm $(EXE)
 	@echo $(EXE) copied to ./bin
 
 %.o: %.cpp
@@ -25,5 +26,5 @@ z3:
 	@cd $(Z3DIR)/build; make -j4; sudo make install
 
 clean:
-	@rm $(EXE) $(OBJ)
+	@rm ./bin/$(EXE) $(OBJ)
 
