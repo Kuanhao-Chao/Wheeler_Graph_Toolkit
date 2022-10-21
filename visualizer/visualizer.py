@@ -5,7 +5,7 @@ import sys
 import random
 import os
 
-USAGE = '''usage: visualizer.py [-h] [-o / --ofile FILE] Valid WG DOT file'''
+USAGE = '''usage: visualizer.py [-h] [-o / --ofile FILE] <Wheeler graph in DOT format outputted by recognizer'''
 random.seed(1)
 color_default = ["blue", "red", "green", "orange"]
 
@@ -17,7 +17,7 @@ def parse(inputfile):
     global G
     G = nx.DiGraph(nx.nx_pydot.read_dot(inputfile))
     nodes= set(int(node) for node in list(G.nodes()) if node != '\\n')
-    edges = [(int(u), int(v), attr['label']) 
+    edges = [(int(u), int(v), attr['label'])
             for (u, v, attr) in G.edges(data=True)]
 
     edge_labels= list(set(list(zip(*edges))[2]))
@@ -47,9 +47,9 @@ def main(argv):
             if not os.path.exists(os.path.dirname(ofile)):
                 print("The directory where the specified output directory is does not exist!")
                 sys.exit(-1)
-    
 
-        
+
+
     if len(args) == 0:
         print(USAGE)
         print("Please input one valid WG in DOT file")
@@ -63,7 +63,7 @@ def main(argv):
     f = plt.figure(figsize=(figure_width, 6))
     ax = f.add_subplot(1,1,1)
     color_coding = {x: color_default[idx] if idx < 4 else "#"+str(hex(random.randint(0,16777215))[2:]) for idx, x in enumerate(edge_labels)}
-    
+
     for label, color in color_coding.items():
         ax.plot([0],[0],color=color,label=label)
 
@@ -90,7 +90,7 @@ def main(argv):
     f.set_facecolor('w')
     plt.legend(fontsize="x-large")
     f.tight_layout()
-    
+
     nx.draw(G,pos, edge_color=edge_colors, **options)
     # Setting it to how it was looking before.
     if ofile == None:
