@@ -1,4 +1,5 @@
-# WGT: Wheeler Graph Toolkit &nbsp; <img src="https://i.imgur.com/549HyyN.png" width="80"/> 
+# WGT: Wheeler Graph Toolkit &nbsp; <img src="https://i.imgur.com/5ou7Zu0.png" width="250"/>
+
 
 
 
