@@ -1,33 +1,73 @@
-## De Bruijn Graph Generator
+## De Bruijn graph generator
 
 To generate a De Bruijn graph (in DOT format) from a FASTA file, run `DeBruijnGraph_generator.py` in the `./DeBruijnGraph_generator` directory.
 
 ```
 usage: 
 
-    DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file
+    DeBruijnGraph_generator.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file
 ```
 
 
 ```
 Optional arguments
 
-    -h / --help    :    print the usage of "DeBruijnGraph_generator.py"
-    -v / --version :    print the version of the program
+    -h / --help    :    print the usage of "DeBruijnGraph_generator.py".
+    -v / --version :    print the version of the program.
     -o / --ofile   :    the name of the output file. Default is "tmp.dot"
-    -k / --kmer    :    the k-mer length.
-    -l / --seqLen  :    Maximum sequence length for each entry in the FASTA file.
-    -a / --alnNum  :    The number of alignments (sequences) used for creating the De Bruijn graph.
-    
+    -k / --kmer    :    the k-mer length. Default is "3".
+    -l / --seqLen  :    Maximum sequence length for each entry in the FASTA file. Default is the full sequence length.
+    -a / --alnNum  :    The number of alignments (sequences) used for creating the De Bruijn graph. Default is "3".
+```
+---
+
+## Reverse deterministic graph generator
+
+To generate a reverse deterministic graph (in DOT format) from a FASTA file, run `RevDetGraph_generator.py` in the `./RevDetGraph_generator` directory.
+
+```
+usage: 
+
+    RevDetGraph.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file```
 ```
 
 
+```
+Optional arguments
 
-## Reverse Deterministic Graph Generator
+    -h / --help    :    print the usage of "DeBruijnGraph_generator.py".
+    -v / --version :    print the version of the program.
+    -o / --ofile   :    the name of the output file. Default is "tmp.dot"
+    -l / --seqLen  :    Maximum sequence length for each entry in the FASTA file. Default is the full sequence length.
+    -a / --alnNum  :    The number of alignments (sequences) used for creating the De Bruijn graph. Default is "3".
+```
 
-## Trie Generator
+---
 
-## Random Generators
+## Trie generator
+
+To generate a trie (in DOT format) from a FASTA file, run `Trie_generator.py` in the `./Trie_generator` directory.
+
+```
+usage: 
+
+    RevDetGraph.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file```
+
+
+```
+Optional arguments
+
+    -h / --help    :    print the usage of "DeBruijnGraph_generator.py".
+    -v / --version :    print the version of the program.
+    -o / --ofile   :    the name of the output file. Default is "tmp.dot"
+    -l / --seqLen  :    Maximum sequence length for each entry in the FASTA file. Default is the full sequence length.
+    -a / --alnNum  :    The number of alignments (sequences) used for creating the De Bruijn graph. Default is "3".
+```
+
+---
+
+
+## Random generators
 In the `./Random_generator` directory, we provide a __complete WG generator__ and a __d-NFA WG generator__.
 
 To run the complete WG generator, run the following command.
