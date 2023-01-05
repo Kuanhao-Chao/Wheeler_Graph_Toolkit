@@ -51,8 +51,8 @@ To generate a trie (in DOT format) from a FASTA file, run `Trie_generator.py` in
 ```
 usage: 
 
-    RevDetGraph.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file```
-
+    Trie_generator.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file```
+```
 
 ```
 Optional arguments
