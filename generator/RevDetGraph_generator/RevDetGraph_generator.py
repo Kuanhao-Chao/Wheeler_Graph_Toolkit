@@ -11,7 +11,7 @@ import node as n
 import sys
 import os
 queue = []     #Initialize a queue
-USAGE = '''usage: RevDetGraph.py [-h] [-v] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file'''
+USAGE = '''usage: RevDetGraph.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] multilple sequence alignments (MSA) FASTA file'''
 
 def main(argv):
     ##############################
@@ -20,7 +20,7 @@ def main(argv):
     # Default parameters:
     k = 3
     verbose = False
-    outfile = "./"
+    outfile = "tmp.dot"
     seqLen = -1
     alnNum = 3
     try:
@@ -29,10 +29,10 @@ def main(argv):
         print(USAGE)
         sys.exit(2)
     for opt, arg in opts:
-        if opt == '-h':
+        if opt in ("-h", "--help"):
             print(USAGE)
             sys.exit()
-        elif opt == '-v':
+        if opt in ("-v", "--version"):
             verbose = True
         elif opt in ("-o", "--ofile"):
             outfile = arg

@@ -1,8 +1,8 @@
 #search_dir=../../multiseq_alignment/
 for entry in "$1/"*
 do
-	old_string="../../multiseq_alignment/"
-	new_string="../../graph/RevDetGraph/"
+	old_string="../../data/multiseq_alignment/"
+	new_string="../../data/graph/RevDetGraph/"
 	outfile="${entry/"$old_string"/"$new_string"}"
 	outfile=${outfile%.fa}.dot
 	outdir=$( dirname -- "$outfile"; )

@@ -6,12 +6,11 @@ strict digraph  {
 	S1 -> S5 [ label = A ];
 	S2 -> S6 [ label = C ];
 	S3 -> S7 [ label = G ];
-	S4 -> S8 [ label = C ];
-	S5 -> S9 [ label = G ];
-	S6 -> S10 [ label = A ];
-	S7 -> S11 [ label = T ];
-	S8 -> S10 [ label = A ];
-	S9 -> S12 [ label = G ];
+	S4 -> S6 [ label = C ];
+	S5 -> S8 [ label = G ];
+	S6 -> S9 [ label = A ];
+	S7 -> S10 [ label = T ];
+	S8 -> S11 [ label = G ];
+	S9 -> S12 [ label = A ];
 	S10 -> S13 [ label = A ];
-	S11 -> S14 [ label = A ];
 }

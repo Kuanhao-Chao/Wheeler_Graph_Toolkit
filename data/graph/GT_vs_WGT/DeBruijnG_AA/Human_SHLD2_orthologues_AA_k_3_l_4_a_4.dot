@@ -7,10 +7,10 @@ strict digraph  {
 	S2 -> S6 [ label = R ];
 	S3 -> S7 [ label = A ];
 	S4 -> S8 [ label = Q ];
-	S5 -> S9 [ label = T ];
-	S6 -> S10 [ label = N ];
+	S5 -> S9 [ label = M ];
+	S5 -> S10 [ label = T ];
+	S6 -> S5 [ label = N ];
 	S7 -> S11 [ label = S ];
 	S8 -> S12 [ label = M ];
-	S9 -> S13 [ label = M ];
-	S10 -> S14 [ label = M ];
+	S10 -> S13 [ label = M ];
 }

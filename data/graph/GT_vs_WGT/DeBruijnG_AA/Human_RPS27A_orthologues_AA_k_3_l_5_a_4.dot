@@ -6,12 +6,12 @@ strict digraph  {
 	S2 -> S5 [ label = I ];
 	S3 -> S6 [ label = T ];
 	S4 -> S7 [ label = I ];
-	S5 -> S8 [ label = T ];
+	S5 -> S6 [ label = T ];
+	S6 -> S8 [ label = H ];
 	S6 -> S9 [ label = I ];
 	S7 -> S10 [ label = Q ];
-	S8 -> S11 [ label = H ];
+	S8 -> S11 [ label = W ];
 	S9 -> S12 [ label = R ];
 	S10 -> S13 [ label = M ];
-	S11 -> S14 [ label = W ];
-	S12 -> S15 [ label = M ];
+	S12 -> S14 [ label = M ];
 }

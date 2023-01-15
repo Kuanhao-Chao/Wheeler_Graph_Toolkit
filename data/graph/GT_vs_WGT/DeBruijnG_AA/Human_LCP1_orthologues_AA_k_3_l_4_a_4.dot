@@ -9,9 +9,8 @@ strict digraph  {
 	S4 -> S8 [ label = M ];
 	S5 -> S9 [ label = A ];
 	S6 -> S10 [ label = P ];
-	S7 -> S11 [ label = M ];
-	S8 -> S12 [ label = K ];
-	S9 -> S13 [ label = M ];
-	S10 -> S14 [ label = D ];
-	S11 -> S12 [ label = K ];
+	S7 -> S8 [ label = M ];
+	S8 -> S11 [ label = K ];
+	S9 -> S8 [ label = M ];
+	S10 -> S12 [ label = D ];
 }

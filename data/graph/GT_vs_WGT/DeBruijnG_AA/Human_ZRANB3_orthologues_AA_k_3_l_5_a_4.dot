@@ -14,7 +14,7 @@ strict digraph  {
 	S9 -> S13 [ label = G ];
 	S10 -> S14 [ label = Y ];
 	S11 -> S15 [ label = L ];
-	S12 -> S16 [ label = L ];
-	S13 -> S17 [ label = M ];
-	S14 -> S18 [ label = R ];
+	S12 -> S4 [ label = L ];
+	S13 -> S16 [ label = M ];
+	S14 -> S17 [ label = R ];
 }

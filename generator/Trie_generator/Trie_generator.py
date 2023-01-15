@@ -6,7 +6,7 @@ import getopt
 import os
 
 queue = []     #Initialize a queue
-USAGE = '''usage: trie_generator.py [-h] [-v] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
+USAGE = '''usage: trie_generator.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
 
 alignment_len = -1
 node_idx = 0
@@ -27,10 +27,10 @@ def main(argv):
         sys.exit(2)
     for opt, arg in opts:
         print(opt)
-        if opt == '-h':
+        if opt in ("-h", "--help"):
             print(USAGE)
             sys.exit()
-        elif opt == '-v':
+        if opt in ("-v", "--version"):
             verbose = True
         elif opt in ("-o", "--ofile"):
             outfile = arg

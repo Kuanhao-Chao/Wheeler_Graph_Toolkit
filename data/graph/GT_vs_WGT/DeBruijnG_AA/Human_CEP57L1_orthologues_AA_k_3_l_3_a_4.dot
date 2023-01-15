@@ -6,8 +6,8 @@ strict digraph  {
 	S1 -> S5 [ label = E ];
 	S2 -> S6 [ label = D ];
 	S3 -> S7 [ label = A ];
-	S4 -> S8 [ label = D ];
-	S5 -> S9 [ label = M ];
-	S6 -> S10 [ label = M ];
-	S7 -> S11 [ label = M ];
+	S4 -> S6 [ label = D ];
+	S5 -> S8 [ label = M ];
+	S6 -> S9 [ label = M ];
+	S7 -> S10 [ label = M ];
 }

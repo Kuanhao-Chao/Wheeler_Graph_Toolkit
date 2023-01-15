@@ -6,7 +6,7 @@ import getopt
 import os
 
 queue = []     #Initialize a queue
-USAGE = '''usage: DeBruijnGraph_generator.py [-h] [-v] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
+USAGE = '''usage: DeBruijnGraph_generator.py [-h / --help] [-v/ --version] [-o / --ofile FILE] [-k / --kmer k-mer length] [-l / --seqLen sequence length] [-a / --alnNum alignment number] sequence FATA file'''
 
 def main(argv):
     ##############################
@@ -24,10 +24,10 @@ def main(argv):
         print(USAGE)
         sys.exit(2)
     for opt, arg in opts:
-        if opt == '-h':
+        if opt in ("-h", "--help"):
             print(USAGE)
             sys.exit()
-        elif opt == '-v':
+        if opt in ("-v", "--version"):
             verbose = True
         elif opt in ("-o", "--ofile"):
             outfile = arg

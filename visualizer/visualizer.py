@@ -75,6 +75,7 @@ def main(argv):
         x_pos += 1
 
     options = {
+        "node_size": 1200,
         "node_color": "#b9ddeb",
         "width": 2,
         "font_weight": "bold",

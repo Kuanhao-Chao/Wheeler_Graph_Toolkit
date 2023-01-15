@@ -1,0 +1,20 @@
+strict digraph  {
+	S0 -> S1 [ label = P ];
+	S0 -> S2 [ label = P ];
+	S1 -> S3 [ label = T ];
+	S2 -> S4 [ label = K ];
+	S2 -> S5 [ label = N ];
+	S3 -> S6 [ label = K ];
+	S4 -> S7 [ label = A ];
+	S5 -> S8 [ label = A ];
+	S6 -> S9 [ label = E ];
+	S7 -> S10 [ label = M ];
+	S8 -> S10 [ label = M ];
+	S9 -> S11 [ label = K ];
+	S10 -> S12 [ label = N ];
+	S11 -> S2 [ label = P ];
+	S12 -> S13 [ label = E ];
+	S13 -> S14 [ label = E ];
+	S14 -> S15 [ label = L ];
+	S15 -> S16 [ label = S ];
+}

@@ -1,4 +1,4 @@
-#search_dir=../../multiseq_alignment/Genes/<gene name>/<AA or DNA>/<paralogues or orthologues>
+#search_dir=../../data/multiseq_alignment/Genes/<gene name>/<AA or DNA>/<paralogues or orthologues>
 kmers="6"
 # for d in {20,40,80,100,150,200,250,300,350,400}
 END=5000
@@ -9,8 +9,8 @@ do
 		# echo $i
 		for entry in "$1/"*
 		do	
-			old_string="../../multiseq_alignment/"
-			new_string="../../graph/DeBruijnGraph/"
+			old_string="../../data/multiseq_alignment/"
+			new_string="../../data/graph/DeBruijnGraph/"
 			outfile="${entry/"$old_string"/"$new_string"}"
 			outfile=${outfile%.fa}_k_"$d"_l_"$i".dot
 			outdir=$( dirname -- "$outfile"; )

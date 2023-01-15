@@ -10,13 +10,13 @@ strict digraph  {
 	S5 -> S9 [ label = A ];
 	S6 -> S10 [ label = V ];
 	S7 -> S11 [ label = I ];
-	S8 -> S12 [ label = I ];
-	S9 -> S13 [ label = C ];
-	S10 -> S14 [ label = F ];
-	S11 -> S15 [ label = W ];
-	S12 -> S16 [ label = M ];
-	S13 -> S17 [ label = Q ];
+	S8 -> S11 [ label = I ];
+	S9 -> S12 [ label = C ];
+	S10 -> S13 [ label = F ];
+	S11 -> S14 [ label = W ];
+	S11 -> S15 [ label = M ];
+	S12 -> S16 [ label = Q ];
+	S13 -> S17 [ label = I ];
 	S14 -> S18 [ label = I ];
-	S15 -> S19 [ label = I ];
-	S16 -> S20 [ label = Q ];
+	S15 -> S19 [ label = Q ];
 }

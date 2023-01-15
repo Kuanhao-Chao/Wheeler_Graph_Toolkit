@@ -6,13 +6,13 @@ strict digraph  {
 	S2 -> S5 [ label = R ];
 	S3 -> S6 [ label = I ];
 	S4 -> S7 [ label = M ];
-	S5 -> S8 [ label = I ];
-	S6 -> S9 [ label = A ];
-	S7 -> S10 [ label = G ];
-	S8 -> S11 [ label = P ];
-	S8 -> S12 [ label = G ];
-	S9 -> S13 [ label = M ];
-	S10 -> S14 [ label = M ];
-	S11 -> S15 [ label = M ];
-	S12 -> S16 [ label = M ];
+	S5 -> S6 [ label = I ];
+	S6 -> S8 [ label = A ];
+	S6 -> S9 [ label = P ];
+	S6 -> S10 [ label = G ];
+	S7 -> S11 [ label = G ];
+	S8 -> S12 [ label = M ];
+	S9 -> S7 [ label = M ];
+	S10 -> S13 [ label = M ];
+	S11 -> S13 [ label = M ];
 }

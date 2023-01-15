@@ -7,5 +7,5 @@ strict digraph  {
 	S3 -> S6 [ label = T ];
 	S4 -> S7 [ label = C ];
 	S5 -> S8 [ label = A ];
-	S6 -> S9 [ label = A ];
+	S6 -> S8 [ label = A ];
 }

@@ -29,7 +29,7 @@ def main():
 
 
     f, ax = plt.subplots(figsize=(6, 6), dpi=300, constrained_layout=True)
-    labels = ["Random WGs", "De Bruijn WGs (DNA)", "De Bruijn WGs (Protein)", "Trie WGs (DNA)", "Trie WGs (Protein)", "Reverse Deterministic Graphs (DNA)", "Reverse Deterministic Graphs (Protein)"]
+    labels = ["Random WGs", "De Bruijn WGs (DNA)", "De Bruijn WGs (Protein)", "Trie WGs (DNA)", "Trie WGs (Protein)", "Non-collapsed De Bruijn WGs (DNA)", "Non-collapsed De Bruijn WGs (Protein)", "Reverse Deterministic Graphs (DNA)", "Reverse Deterministic Graphs (Protein)"]
     idx = 0
     timeout_padding = 4000000
     timeout = 30000000
@@ -100,4 +100,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# python plot_solvers.py ../../unit_test/GT_vs_WGT/Timeout_test/RandomG/results/ ../../unit_test/GT_vs_WGT/Timeout_test/DeBruijnG_DNA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/DeBruijnG_AA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/Trie_DNA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/Trie_AA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/RevDetG_DNA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/RevDetG_AA/results/
+# python plot_solvers.py ../../unit_test/GT_vs_WGT/Timeout_test/RandomG/results/ ../../unit_test/GT_vs_WGT/Timeout_test/DeBruijnG_DNA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/DeBruijnG_AA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/Trie_DNA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/Trie_AA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/DeBruijnGNC_DNA/results ../../unit_test/GT_vs_WGT/Timeout_test/DeBruijnGNC_AA/results ../../unit_test/GT_vs_WGT/Timeout_test/RevDetG_DNA/results/ ../../unit_test/GT_vs_WGT/Timeout_test/RevDetG_AA/results/
