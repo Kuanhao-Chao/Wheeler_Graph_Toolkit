@@ -108,7 +108,7 @@ handles.append(timeout_line_handle)
 fig.legend(handles, ['Wheelie-SMT', 'Wheelie-SMT median', 'Wheelie-Pr', 'Wheelie-Pr median', '1000-second timeout line'], loc='upper right', bbox_to_anchor=(1, 1.0097), ncol=3)
 
 # plt.show()
-plt.savefig(os.path.join("Figure_4.png"), format="PNG")
+plt.savefig(os.path.join("Figure_4.pdf"), format="PDF")
 # plt.savefig(os.path.join("per_vs_smt__dNFA.png"), format="PNG")
 
 # python plot_dNFA.py ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_dNFA/results/parsed_RHSMT_out.txt ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_dNFA/results/parsed_RHPer_out.txt

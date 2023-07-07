@@ -29,7 +29,7 @@ def main():
 
 
     f, ax = plt.subplots(figsize=(6, 6), dpi=300, constrained_layout=True)
-    labels = ["Random WGs", "De Bruijn WGs (DNA)", "De Bruijn WGs (Protein)", "Trie WGs (DNA)", "Trie WGs (Protein)", "Non-collapsed De Bruijn WGs (DNA)", "Non-collapsed De Bruijn WGs (Protein)", "Reverse Deterministic Graphs (DNA)", "Reverse Deterministic Graphs (Protein)"]
+    labels = [u"Random Wheeler graphs", u"De Bruijn graphs (DNA)", u"De Bruijn graphs (Protein)", u"Tries (DNA)", u"Tries (Protein)", u"Pseudo-De Bruijn graphs (DNA)", u"Pseudo-De Bruijn graphs (Protein)", u"Reverse deterministic graphs (DNA)", u"Reverse deterministic graphs (Protein)"]
     idx = 0
     timeout_padding = 4000000
     timeout = 30000000
@@ -95,7 +95,7 @@ def main():
     # plt.gca().set_aspect('equal', adjustable='box')
     # # ax.set_aspect('equal', adjustable='box')
     # plt.show()
-    plt.savefig(os.path.join("Figure_1.png"), format="PNG")
+    plt.savefig(os.path.join("Figure_1.pdf"), format="PDF")
 
 if __name__ == "__main__":
     main()

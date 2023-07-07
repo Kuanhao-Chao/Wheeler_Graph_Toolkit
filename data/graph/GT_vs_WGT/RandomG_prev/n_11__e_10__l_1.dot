@@ -1,0 +1,12 @@
+strict digraph {
+	S2 -> S2 [ label = 0 ];
+	S2 -> S3 [ label = 0 ];
+	S3 -> S4 [ label = 0 ];
+	S3 -> S5 [ label = 0 ];
+	S4 -> S6 [ label = 0 ];
+	S6 -> S7 [ label = 0 ];
+	S11 -> S8 [ label = 0 ];
+	S11 -> S9 [ label = 0 ];
+	S11 -> S10 [ label = 0 ];
+	S11 -> S11 [ label = 0 ];
+}

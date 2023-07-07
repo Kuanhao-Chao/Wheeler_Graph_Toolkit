@@ -118,7 +118,7 @@ print("handles: ", handles)
 handles.append(timeout_line_handle)
 fig.legend(handles, ["Wheelie-SMT", "Wheelie-Pr", "Timeout line"], loc='center right', bbox_to_anchor=(0.995,0.7), ncol=1)
 # fig.text(0.5, 0.04, 'common xlabel', ha='center', va='center')
-plt.savefig(os.path.join("Figure_5.png"), format="PNG")
+plt.savefig(os.path.join("Figure_5.pdf"), format="PDF")
 
 
 # python plot_exp_all.py ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_e_n_l__merged/smt/results/parsed_all_controlled_RD_exp1_out.txt ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_e_n_l__merged/permutation/results/parsed_all_controlled_RD_exp1_out.txt ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_e_n_l__merged/smt/results/parsed_all_controlled_RD_exp2_out.txt ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_e_n_l__merged/permutation/results/parsed_all_controlled_RD_exp2_out.txt ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_e_n_l__merged/smt/results/parsed_all_controlled_RD_exp3_out.txt ../../unit_test/RHPer_vs_RHSMT/Timeout_test/RandomG_e_n_l__merged/permutation/results/parsed_all_controlled_RD_exp3_out.txt

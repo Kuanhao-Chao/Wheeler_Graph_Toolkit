@@ -6,18 +6,28 @@ extern bool verbose;
 // extern chrono::high_resolution_clock::time_point c_start;
 // extern chrono::high_resolution_clock::time_point c_end;
 
-void bit_array_itr(int e_len, int n_len, int sigma_len, int L_len) {
+int bit_array_itr(int e_len, int n_len, int sigma_len, int L_len) {
     int I_len = e_len + n_len;
     int O_len = e_len + n_len;
     /***********************
     * Iterating I array
-    ************************/
+    ************************/    
+    int pow_I_len = pow(2, I_len);
+    int pow_O_len = pow(2, O_len);
+
+    // cout <<  "pow(2, I_len): " << pow_I_len << endl;
+    // cout <<  "pow(2, O_len): " << pow_O_len << endl;
+    if (pow(2, I_len) > 10000 || pow(2, O_len) > 10000) {
+        return -1;
+    }
+
     for (int i_idx = 0; i_idx < pow(2, I_len); i_idx++) {
         // cout <<  "I: " << i_idx << endl;
         string I_itr_encoding = bitset<100>(i_idx).to_string();
         I_itr_encoding = I_itr_encoding.substr(100-I_len, I_len);
         int I_zero_count = count(I_itr_encoding.begin(), I_itr_encoding.end(), '0');
 
+        
         /***********************
         * WG checking condition (I).
         ************************/
@@ -52,6 +62,9 @@ void bit_array_itr(int e_len, int n_len, int sigma_len, int L_len) {
             }
             cout << endl << endl;   
         }
+
+
+
         /***********************
         * Iterating O array
         ************************/
@@ -141,5 +154,6 @@ void bit_array_itr(int e_len, int n_len, int sigma_len, int L_len) {
 #endif
         }
     }
+    return 1;
 }
 

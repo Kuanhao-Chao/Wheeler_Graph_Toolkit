@@ -112,6 +112,7 @@ int main(int argc, char* argv[]) {
     int n_len = node_names.size();
     int e_len = edge_labels.size();
     int L_len = 0;
+
     std::sort(edge_labels.begin(), edge_labels.end());
     int sigma_len = std::unique(edge_labels.begin(), edge_labels.end()) - edge_labels.begin();
     int encoding_len = ceil(log2(sigma_len));
@@ -153,8 +154,15 @@ int main(int argc, char* argv[]) {
     cout << "\nIterating through 3 bit arrays: " << endl;
 #endif
 
+    // cout << "n_len: " << n_len << endl;
+    // cout << "e_len: " << e_len << endl;
+    // cout << "L_len: " << L_len << endl;
+
     // Bit array I
-    bit_array_itr(e_len, n_len, sigma_len, L_len);
+    int result = bit_array_itr(e_len, n_len, sigma_len, L_len);
+
+    // cout << "After result: " << result << endl;
+
 
     // c_end = chrono::high_resolution_clock::now();
     // auto duration = chrono::duration_cast<chrono::microseconds>(c_end - c_start);
@@ -162,7 +170,11 @@ int main(int argc, char* argv[]) {
     cpu_time_used = ((double) (c_end - c_start));
 
 #ifdef BENCHMARK
-    cout << 0 << "\t" << to_string(n_len) << "\t" << cpu_time_used << "\t" << path_name << endl;
+    if (result == 1) {
+        cout << 0 << "\t" << to_string(n_len) << "\t" << cpu_time_used << "\t" << path_name << endl;
+    } else {
+        cout << -1 << "\t" << to_string(0) << "\t" << 60000000 << "\t" << path_name << endl;
+    }
 #endif
     return 0;
 }

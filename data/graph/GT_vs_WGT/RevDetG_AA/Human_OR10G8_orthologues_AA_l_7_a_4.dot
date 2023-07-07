@@ -1,14 +1,8 @@
 strict digraph  {
-	S0 -> S1 [ label = L ];
-	S0 -> S2 [ label = F ];
-	S0 -> S3 [ label = H ];
-	S1 -> S4 [ label = T ];
-	S2 -> S5 [ label = S ];
-	S3 -> S5 [ label = S ];
-	S4 -> S6 [ label = L ];
-	S5 -> S7 [ label = Q ];
-	S6 -> S8 [ label = S ];
-	S7 -> S8 [ label = S ];
-	S8 -> S9 [ label = K ];
-	S9 -> S11 [ label = Y ];
+	S0 -> S1 [ label = H ];
+	S1 -> S2 [ label = S ];
+	S2 -> S3 [ label = Q ];
+	S3 -> S4 [ label = S ];
+	S4 -> S5 [ label = K ];
+	S5 -> S7 [ label = Y ];
 }

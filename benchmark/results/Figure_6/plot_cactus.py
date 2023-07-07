@@ -100,7 +100,7 @@ print("handles: ", handles)
 # handles.append(timeout_line_handle)
 fig.legend(handles, ["Wheelie-SMT", "Pure SMT"], loc='center right', prop={'size': 15}, ncol=1)
 # , bbox_to_anchor=(0.99,1)
-plt.savefig(os.path.join("Figure_6.png"), format="PNG")
+plt.savefig(os.path.join("Figure_6.pdf"), format="PDF")
 
 #python plot_cactus.py ../../unit_test/SMT_vs_RHSMT/Timeout_test/DeBruijnG_AA/results/30_DB_AA_restrict_out.txt ../../unit_test/SMT_vs_RHSMT/Timeout_test/DeBruijnG_AA/results/30_DB_AA_full_out.txt ../../unit_test/SMT_vs_RHSMT/Timeout_test/RevDetG_AA/results/30_RD_AA_restrict_out.txt  ../../unit_test/SMT_vs_RHSMT/Timeout_test/RevDetG_AA/results/30_RD_AA_full_out.txt
 

@@ -2,9 +2,9 @@ for f in $(find ../../../multiseq_alignment/Ensembl_REST/fasta/AA/ -name '*.fa')
     fb="$(basename $f)"
     fout="${fb%.fa}"
     # echo "Running $fout (Exp1)"
-    for k in {3..4}
-    do 
-        for l in {1..10}
+    for k in {3..9..2}
+    do
+        for l in {1..201..20}
         do
             # for a in {4}
             # do

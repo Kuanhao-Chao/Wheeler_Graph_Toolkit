@@ -1,0 +1,15 @@
+strict digraph  {
+    S_1 -> S_8 [ label = a ];
+    S_2 -> S_4 [ label = a ];
+    S_2 -> S_6 [ label = a ];
+    S_2 -> S_7 [ label = b ];
+    S_3 -> S_1 [ label = c ];
+    S_3 -> S_5 [ label = b ];
+    S_4 -> S_3 [ label = c ];
+    S_4 -> S_6 [ label = a ];
+    S_5 -> S_1 [ label = c ];
+    S_5 -> S_5 [ label = b ];
+    S_6 -> S_7 [ label = b ];
+    S_7 -> S_3 [ label = c ];
+    S_7 -> S_8 [ label = a ];
+}

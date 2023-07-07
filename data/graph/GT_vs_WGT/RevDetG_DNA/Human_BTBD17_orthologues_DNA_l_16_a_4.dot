@@ -1,0 +1,32 @@
+strict digraph  {
+	S0 -> S1 [ label = C ];
+	S1 -> S2 [ label = T ];
+	S2 -> S3 [ label = T ];
+	S2 -> S4 [ label = C ];
+	S3 -> S5 [ label = A ];
+	S3 -> S6 [ label = G ];
+	S4 -> S5 [ label = A ];
+	S5 -> S7 [ label = G ];
+	S5 -> S8 [ label = A ];
+	S6 -> S9 [ label = T ];
+	S7 -> S10 [ label = G ];
+	S8 -> S11 [ label = A ];
+	S9 -> S11 [ label = A ];
+	S10 -> S12 [ label = G ];
+	S11 -> S12 [ label = G ];
+	S12 -> S13 [ label = T ];
+	S12 -> S14 [ label = C ];
+	S13 -> S15 [ label = T ];
+	S14 -> S16 [ label = C ];
+	S15 -> S17 [ label = A ];
+	S16 -> S17 [ label = A ];
+	S17 -> S18 [ label = G ];
+	S17 -> S19 [ label = A ];
+	S18 -> S20 [ label = G ];
+	S18 -> S21 [ label = A ];
+	S19 -> S20 [ label = G ];
+	S20 -> S23 [ label = A ];
+	S21 -> S23 [ label = A ];
+	S23 -> S24 [ label = A ];
+	S24 -> S25 [ label = G ];
+}

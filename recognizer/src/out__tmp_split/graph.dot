@@ -1,0 +1,17 @@
+strict digraph  {
+	7 -> 2 [label=A];
+	12 -> 3 [label=A];
+	14 -> 3 [label=A];
+	2 -> 4 [label=C];
+	3 -> 5 [label=C];
+	5 -> 6 [label=C];
+	1 -> 7 [label=G];
+	3 -> 8 [label=G];
+	4 -> 9 [label=G];
+	11 -> 9 [label=G];
+	13 -> 10 [label=G];
+	2 -> 11 [label=T];
+	4 -> 12 [label=T];
+	6 -> 13 [label=T];
+	9 -> 14 [label=T];
+}

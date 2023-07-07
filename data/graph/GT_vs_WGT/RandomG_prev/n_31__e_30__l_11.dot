@@ -1,0 +1,32 @@
+strict digraph {
+	S7 -> S2 [ label = 0 ];
+	S29 -> S3 [ label = 0 ];
+	S5 -> S4 [ label = 1 ];
+	S20 -> S5 [ label = 1 ];
+	S4 -> S6 [ label = 2 ];
+	S22 -> S7 [ label = 2 ];
+	S3 -> S8 [ label = 3 ];
+	S26 -> S9 [ label = 3 ];
+	S13 -> S10 [ label = 4 ];
+	S22 -> S11 [ label = 4 ];
+	S5 -> S12 [ label = 5 ];
+	S29 -> S13 [ label = 5 ];
+	S5 -> S14 [ label = 6 ];
+	S23 -> S15 [ label = 6 ];
+	S14 -> S16 [ label = 7 ];
+	S30 -> S17 [ label = 7 ];
+	S6 -> S18 [ label = 8 ];
+	S7 -> S19 [ label = 8 ];
+	S5 -> S20 [ label = 9 ];
+	S22 -> S21 [ label = 9 ];
+	S3 -> S22 [ label = 10 ];
+	S4 -> S23 [ label = 10 ];
+	S12 -> S24 [ label = 10 ];
+	S12 -> S25 [ label = 10 ];
+	S17 -> S26 [ label = 10 ];
+	S21 -> S27 [ label = 10 ];
+	S21 -> S28 [ label = 10 ];
+	S24 -> S29 [ label = 10 ];
+	S24 -> S30 [ label = 10 ];
+	S28 -> S31 [ label = 10 ];
+}

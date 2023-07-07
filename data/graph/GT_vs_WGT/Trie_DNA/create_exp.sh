@@ -2,12 +2,12 @@ for f in $(find ../../../multiseq_alignment/Ensembl_REST/fasta/DNA/ -name '*.fa'
     fb="$(basename $f)"
     fout="${fb%.fa}"
     # echo "Running $fout (Exp1)"
-    for l in {2..10}
+    for l in {1..201..20}
     do
-        for a in {3..4}
+        for a in {3..5}
         do
-            echo python ../../../generator/Trie_generator/Trie_generator.py -o "$fout"_l_"$l"_a_"$a".dot -l $l -a $a $f
-            python ../../../generator/Trie_generator/Trie_generator.py -o "$fout"_l_"$l"_a_"$a".dot -l $l -a $a $f
+            echo python ../../../../generator/Trie_generator/Trie_generator.py -o "$fout"_l_"$l"_a_"$a".dot -l $l -a $a $f
+            python ../../../../generator/Trie_generator/Trie_generator.py -o "$fout"_l_"$l"_a_"$a".dot -l $l -a $a $f
         done
     done
 done
