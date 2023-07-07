@@ -23,7 +23,7 @@
 #include "edge.hpp"
 #include "graph.hpp"
 
-#define VERSION "0.1.0"
+#define VERSION "1.0.0"
 #define USAGE "  usage:\n\n\
 \trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark] [-e / --exhaustive_search] [-f / --full_range_search] \n\n"
 
@@ -36,7 +36,7 @@ string dot_full_name;
 bool valid_wg = true;
 bool debugMode = false;
 bool verbose = false;
-string solver = "p"; // Default solver: p
+string solver = "smt"; // Default solver: p
 bool writeIOL = false;
 bool writeRange = false;
 bool label_is_int = false;
@@ -172,14 +172,14 @@ int main(int argc, char* argv[]) {
     if (full_range_search) {
         g.solve_smt();
     } else {
-        if (!solver.compare("p") || (!solver.compare("default") && permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
+        if (!solver.compare("default") || !solver.compare("smt")) {
+            g.solve_smt();
+        } else if (!solver.compare("p") || (permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
             g.permutation_start();
             if (exhaustive_search) {
                 if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
                 g.exit_program(1);
             }
-        } else {
-            g.solve_smt();
         }
     }
     return valid_wg;
