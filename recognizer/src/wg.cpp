@@ -27,6 +27,17 @@
 #define USAGE "  usage:\n\n\
 \trecognizer_p <in.dot> [-o / --outDir] [--version] [-h / --help] [-v / --verbose] [-s / --solver <smt / p>] [-w / --writeIOL] [-r / --writeRange] [-i / --label_is_int] [-b / --benchmark] [-e / --exhaustive_search] [-f / --full_range_search] \n\n"
 
+
+const char* banner = "==========================================\n"
+"Fast algorithm to recognize Wheeler Graphs\n"
+"==========================================\n\n"
+"██╗    ██╗ ██████╗████████╗\n"
+"██║    ██║██╔════╝╚══██╔══╝\n"
+"██║ █╗ ██║██║  ███╗  ██║   \n"
+"██║███╗██║██║   ██║  ██║   \n"
+"╚███╔███╔╝╚██████╔╝  ██║   \n"
+" ╚══╝╚══╝  ╚═════╝   ╚═╝   \n";
+
 using namespace std;
 
 const int PERMUTATION_CUTOFF = 50;
@@ -53,7 +64,7 @@ unordered_map<int,string> _newNodeName_2_nodeName;
 void processOptions(GArgs& args);
 
 int main(int argc, char* argv[]) {
-
+    cout << banner << endl;
     c_start = clock();
     (void)argc;
     string line;    
@@ -70,15 +81,16 @@ int main(int argc, char* argv[]) {
     "exclude=hvpwriebfs:o:");
 
 	processOptions(args);
-    string file_extension = filesystem::path(argv[1]).extension();
+    cout << "dot_full_name: " << dot_full_name << endl;
+    string file_extension = filesystem::path(dot_full_name).extension();
     if (file_extension != ".dot") {
         cout << USAGE;
         cerr << "Your input is not a DOT file. " << endl;
         return 0;
     }
 
-    ifstream ifile_dot(argv[1]);
-    filesystem::path path_name(argv[1]);
+    ifstream ifile_dot(dot_full_name);
+    filesystem::path path_name(dot_full_name);
     vector<string> node1_vec;
     vector<string> node2_vec;
     vector<string> node_names;
@@ -86,7 +98,7 @@ int main(int argc, char* argv[]) {
     vector<string> edge_labels;
     vector<int> new_edge_labels;
     unordered_map<int,int> node_2_ptr_idx;
-    dot_full_name = argv[1];
+    // dot_full_name = argv[1];
 
     /********************************
     *** Reading & Parsing DOT
@@ -247,4 +259,12 @@ void processOptions(GArgs& args) {
     cout << "full_range_search: " << full_range_search << endl;
     cout << "solver: " << solver << endl;
 #endif
+    args.startNonOpt();
+    if (args.getNonOptCount()==0) {
+		fprintf(stdout,"%s",USAGE);
+        cout << "\n[ERROR] no input provided!\n" << endl;
+        exit(1);
+    }
+    // const char* ifn=NULL;
+    dot_full_name=args.nextNonOpt();
 }
