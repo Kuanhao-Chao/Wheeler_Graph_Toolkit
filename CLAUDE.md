@@ -155,11 +155,22 @@ mechanism and encoding differ:
 - The **main** recognizer emits them in benchmark mode via the runtime `-b` flag; column 1 is `1`
   for a Wheeler graph, `-1` otherwise.
 - The **exponential** baseline has **no `-b` flag** — it always prints the columns (compile-time
-  `#define BENCHMARK`), and its column 1 is `0` for a Wheeler graph, `-1` otherwise.
+  `#define BENCHMARK`). Column 1 is `1` for a Wheeler graph, `0` for a non-Wheeler graph, `-1` for
+  over-cap/undecided (which keeps the `60000000` timeout sentinel in the time column).
 
-So column 1 is not a clean boolean (1/-1 vs 0/-1, with `-1` also doubling as the timeout sentinel
-the wrappers append), and the time column is `clock()` CPU ticks (numerically ≈ µs on Linux, but
-CPU not wall time). The `run_*.sh` scripts under `benchmark/unit_test/` wrap each call in a
+  **Note (devel):** this is the *fixed* `recognizer_e`. As published it was broken as a decision
+  procedure — `link.cpp`'s checker received only scalar counts (never the graph's edges), the
+  L-array check was dead code, and it returned "Wheeler" for *every* in-cap graph (column 1 was `0`
+  for WG, `-1` otherwise, with no non-WG verdict at all). It was rewritten (`link.cpp` +
+  `wg.cpp`) into an honest exponential decision procedure: enumerate all n! node orderings and
+  check the three Wheeler axioms against the real edges (mirrors `verify/brute_oracle.py`; gated by
+  an O(n!·e²) work budget, over-budget → `-1`). Implication: the published GT_vs_WGT figure's
+  verdicts were meaningless and its timings reflect that useless work — re-run with the fixed
+  binary (the new cost model is n!-ordering enumeration, not 2^|I|·2^|O|·2^|L|).
+
+So column 1 of the *fixed* exp recognizer is now a clean trichotomy (`1`/`0`/`-1`, with `-1`
+doubling as the over-cap/timeout sentinel the wrappers also append), and the time column is
+`clock()` CPU ticks (numerically ≈ µs on Linux, but CPU not wall time). The `run_*.sh` scripts under `benchmark/unit_test/` wrap each call in a
 `timeout` — **duration varies by experiment** (`15s`/`30s`/`500s`/`1000s`, not a uniform 500s) and
 exit 124 appends a synthetic timeout row. The unit_test tree is organized by comparison axis
 (`GT_vs_WGT`, `SMT_vs_RHSMT`, `RHPer_vs_RHSMT`), with a large legacy `prev/` subtree that is not

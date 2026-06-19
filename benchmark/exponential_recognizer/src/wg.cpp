@@ -113,11 +113,28 @@ int main(int argc, char* argv[]) {
     int e_len = edge_labels.size();
     int L_len = 0;
 
+    // Keep per-edge labels in input order BEFORE sorting (the sort below destroys their
+    // correspondence with node1_vec/node2_vec).
+    vector<string> edge_labels_orig = edge_labels;
+
     std::sort(edge_labels.begin(), edge_labels.end());
     int sigma_len = std::unique(edge_labels.begin(), edge_labels.end()) - edge_labels.begin();
-    int encoding_len = ceil(log2(sigma_len));
-    if (encoding_len == 0) encoding_len = 1;
+    int encoding_len = (sigma_len <= 1) ? 1 : (int)ceil(log2(sigma_len));   // guard log2(0/1)
     L_len = e_len * encoding_len;
+
+    // Build node-indexed edge arrays for the decision procedure. DOT "u -> v" => tail=u, head=v
+    // (matching the oracle). Label rank = lexicographic order over the distinct label strings,
+    // which is exactly the order std::sort produced in edge_labels[0..sigma_len-1].
+    unordered_map<string,int> node_idx;
+    for (int i = 0; i < n_len; i++) node_idx[node_names[i]] = i;
+    map<string,int> labrank_map;
+    for (int i = 0; i < sigma_len; i++) labrank_map[edge_labels[i]] = i;
+    vector<int> e_tail(e_len), e_head(e_len), e_lab(e_len);
+    for (int i = 0; i < e_len; i++) {
+        e_tail[i] = node_idx[node1_vec[i]];
+        e_head[i] = node_idx[node2_vec[i]];
+        e_lab[i]  = labrank_map[edge_labels_orig[i]];
+    }
 
 #ifndef BENCHMARK
     string curr_encoding;
@@ -158,8 +175,8 @@ int main(int argc, char* argv[]) {
     // cout << "e_len: " << e_len << endl;
     // cout << "L_len: " << L_len << endl;
 
-    // Bit array I
-    int result = bit_array_itr(e_len, n_len, sigma_len, L_len);
+    // Decide Wheeler-ness over the actual graph (exponential: enumerate all n! node orderings).
+    int result = recognize_wheeler(n_len, e_len, e_tail, e_head, e_lab);
 
     // cout << "After result: " << result << endl;
 
@@ -170,7 +187,14 @@ int main(int argc, char* argv[]) {
     cpu_time_used = ((double) (c_end - c_start));
 
 #ifdef BENCHMARK
+    // Column 1 verdict: 1 = Wheeler graph, 0 = NOT a Wheeler graph, -1 = over-cap / undecided.
+    // (Wheeler now codes as 1, matching the main recognizer; the original used 0=WG. Only
+    // results/Figure_1/plot_solvers.py consumes this output and it reads column 2 (time) only,
+    // so the col1 change breaks no plot.) Real verdicts carry the real CPU time; only the
+    // over-cap case keeps the 60000000 sentinel so the cactus plot still treats it as unsolved.
     if (result == 1) {
+        cout << 1 << "\t" << to_string(n_len) << "\t" << cpu_time_used << "\t" << path_name << endl;
+    } else if (result == 0) {
         cout << 0 << "\t" << to_string(n_len) << "\t" << cpu_time_used << "\t" << path_name << endl;
     } else {
         cout << -1 << "\t" << to_string(0) << "\t" << 60000000 << "\t" << path_name << endl;

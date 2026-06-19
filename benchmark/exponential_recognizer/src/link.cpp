@@ -1,159 +1,91 @@
 // #define DEBUGPRINT
 #include "link.hpp"
+#include <vector>
 
 extern bool debugMode;
 extern bool verbose;
-// extern chrono::high_resolution_clock::time_point c_start;
-// extern chrono::high_resolution_clock::time_point c_end;
 
-int bit_array_itr(int e_len, int n_len, int sigma_len, int L_len) {
-    int I_len = e_len + n_len;
-    int O_len = e_len + n_len;
-    /***********************
-    * Iterating I array
-    ************************/    
-    int pow_I_len = pow(2, I_len);
-    int pow_O_len = pow(2, O_len);
+/*
+ * recognize_wheeler -- honest exponential Wheeler-graph decision procedure.
+ *
+ * HISTORY: the original bit_array_itr() enumerated abstract I/O/L bitstrings but never received
+ * the actual graph (only scalar counts), discarded the L result, had the real L check dead
+ * (#ifdef PERMUTATION + commented out), and returned 1 unconditionally -- so EVERY graph within
+ * the size cap was reported "Wheeler". This rewrite wires in the real edges and decides correctly.
+ *
+ * METHOD (exponential, as the paper's baseline intends): enumerate all n! node orderings and test
+ * the three Wheeler axioms directly against the input edges. This mirrors the independent oracle
+ * verify/brute_oracle.py exactly. A graph is a Wheeler graph iff there is a total order pi on the
+ * nodes (pi[i] = position of node i) such that, for edges (u1,v1,a1) and (u2,v2,a2):
+ *   (A1) every in-degree-0 node precedes every in-degree-positive node;
+ *   (A2) a1 < a2          =>  pi[v1] <  pi[v2];
+ *   (A3) a1 == a2 & pi[u1] < pi[u2]  =>  pi[v1] <= pi[v2].
+ *
+ * Inputs are node-indexed edge arrays (tail/head in 0..n_len-1, label rank in 0..sigma-1).
+ * Returns: 1 = Wheeler, 0 = not Wheeler, -1 = over-cap / not enumerated (see WORK_BUDGET).
+ *
+ * Complexity O(n! * e^2). The whole-space enumeration is gated by a work budget so a degenerate
+ * input cannot hang; over-budget graphs return -1 (reported as the benchmark's timeout sentinel).
+ */
+int recognize_wheeler(int n_len, int e_len,
+                      const std::vector<int>& tail,
+                      const std::vector<int>& head,
+                      const std::vector<int>& lab) {
+    // Empty graph (no nodes, no edges) is vacuously a Wheeler graph.
+    if (n_len == 0) return 1;
 
-    // cout <<  "pow(2, I_len): " << pow_I_len << endl;
-    // cout <<  "pow(2, O_len): " << pow_O_len << endl;
-    if (pow(2, I_len) > 10000 || pow(2, O_len) > 10000) {
-        return -1;
+    // --- work-budget cap: refuse graphs too large to enumerate (O(n! * e^2)) ---
+    const unsigned long long WORK_BUDGET = 2000000000ULL;   // ~2e9 axiom checks
+    unsigned long long fact = 1;                             // n_len! (saturating)
+    bool over = false;
+    for (int i = 2; i <= n_len; i++) {
+        if (fact > WORK_BUDGET / (unsigned long long)i) { over = true; break; }
+        fact *= (unsigned long long)i;
+    }
+    unsigned long long e2 = (unsigned long long)(e_len ? e_len : 1);
+    e2 *= e2;
+    if (over || fact > WORK_BUDGET / e2) {
+        return -1;   // over-cap / undecided
     }
 
-    for (int i_idx = 0; i_idx < pow(2, I_len); i_idx++) {
-        // cout <<  "I: " << i_idx << endl;
-        string I_itr_encoding = bitset<100>(i_idx).to_string();
-        I_itr_encoding = I_itr_encoding.substr(100-I_len, I_len);
-        int I_zero_count = count(I_itr_encoding.begin(), I_itr_encoding.end(), '0');
-
-        
-        /***********************
-        * WG checking condition (I).
-        ************************/
-        // 1. 0 count must be e_len
-        if (I_zero_count != e_len) {
-            continue;
-        }
-        // 2. Last bit must be 1.
-        if (I_itr_encoding.back() == '0') {
-            continue;
-        }
-        // 3. nodes with in-degree 0 precede those with positive in-degree
-        char prev_char = ' ';
-        bool in_degree_invalid = false;
-        for (auto& I_ele : I_itr_encoding) {
-            if (prev_char == '1' && I_ele == '1') {
-                in_degree_invalid = true;
-                break;
-            }
-            prev_char = I_ele;
-        }
-        if (in_degree_invalid) {
-            continue;
-        }
-
-        if (verbose) {
-            cout << "I_zero_count: " << I_zero_count << endl;         
-            for (auto& I_ele : I_itr_encoding) {
-                if (I_ele == '0') {
-                    cout << I_ele;
-                }
-            }
-            cout << endl << endl;   
-        }
-
-
-
-        /***********************
-        * Iterating O array
-        ************************/
-        for (int o_idx = 0; o_idx < pow(2, O_len); o_idx++) {
-            // cout << "O: " <<  o_idx << endl;
-            string O_itr_encoding = bitset<100>(o_idx).to_string();
-            O_itr_encoding = O_itr_encoding.substr(100-O_len, O_len);
-            int O_zero_count = count(O_itr_encoding.begin(), O_itr_encoding.end(), '0');
-
-            /***********************
-            * WG checking condition (O).
-            ************************/
-            // 1. 0 count must be e_len
-            if (O_zero_count != e_len) {
-                continue;
-            }
-            // 2. Last bit must be 1.
-            if (O_itr_encoding.back() == '0') {
-                continue;
-            }
-
-            if (verbose) {
-
-                cout << "O_zero_count: " << O_zero_count << endl;         
-                for (auto& O_ele : O_itr_encoding) {
-                    // if (O_ele == '0') {
-                        cout << O_ele;
-                    // }
-                }
-                cout << endl;
-            }
-
-            /***********************
-            * Iterating L array
-            ************************/
-            for (int l_idx = 0; l_idx < pow(2, e_len*sigma_len); l_idx++) {
-                // cout << "O: " <<  o_idx << endl;
-                string L_itr_encoding = bitset<100>(l_idx).to_string();
-                L_itr_encoding = L_itr_encoding.substr(100-L_len, L_len);
-                if (verbose) {
-                    cout << L_itr_encoding << endl;
-                }
-                int L_zero_count = count(L_itr_encoding.begin(), L_itr_encoding.end(), '0');
-            }
-            
-#ifdef PERMUTATION
-            /**************************
-             * Permutate the L_array
-             **************************/
-            // cout << "Start permutation" << endl;
-            // do {
-            //     /***********************
-            //     * WG checking condition (L).
-            //     ************************/
-            //     // The string is increasing in each O chunk.
-            //     int chunk_start = 0;
-            //     int chunk_end = 0;
-            //     int one_counter = 0;
-            //     for (int i=0; i<O_itr_encoding.size(); i++) {
-            //         // cout << "i idx: " << i << " "<< O_itr_encoding[i] << endl;
-            //         if (O_itr_encoding[i] == '1') {
-            //             chunk_end = i;
-            //             cout << "(" << chunk_start << ", " << chunk_end << ")" << endl;
-            //             for (int j=chunk_start-one_counter; j<chunk_end-one_counter; j++) {
-            //                 // cout << "j: " << j << endl;
-            //                 cout << L_array_char_sorted[j];
-            //             }
-            //             cout << " ";
-
-            //             chunk_start = i+1;
-          
-
-            //     // for (char L_ele : L_array_char_sorted) {
-            //     //     cout << L_ele << ' ';
-            //     // }
-            //     // cout << endl;
-            //             one_counter ++;
-            //         }
-            //     }
-
-            //     // for (char L_ele : L_array_char_sorted) {
-            //     //     cout << L_ele << ' ';
-            //     // }
-            //     // cout << endl;
-            //     // std::cout << L_array_char[0] << ' ' << L_array_char[1] << ' ' << L_array_char[2] << '\n';
-            // } while ( next_permutation(L_array_char_sorted.begin(),L_array_char_sorted.end()) );
-#endif
-        }
+    // --- in-degrees for axiom A1 ---
+    std::vector<int> indeg(n_len, 0);
+    for (int k = 0; k < e_len; k++) indeg[head[k]]++;
+    std::vector<int> zero_in, pos_in;
+    for (int i = 0; i < n_len; i++) {
+        if (indeg[i] == 0) zero_in.push_back(i);
+        else               pos_in.push_back(i);
     }
-    return 1;
+
+    // --- enumerate all n! node orderings; perm[i] = position assigned to node i ---
+    std::vector<int> perm(n_len);
+    for (int i = 0; i < n_len; i++) perm[i] = i;
+
+    do {
+        // A1: every in-degree-0 node precedes every in-degree-positive node.
+        if (!zero_in.empty() && !pos_in.empty()) {
+            int maxZero = -1, minPos = n_len;
+            for (int i : zero_in) if (perm[i] > maxZero) maxZero = perm[i];
+            for (int i : pos_in)  if (perm[i] < minPos) minPos = perm[i];
+            if (maxZero >= minPos) continue;
+        }
+
+        // A2 + A3: check every ordered pair of distinct edges.
+        bool ok = true;
+        for (int i = 0; i < e_len && ok; i++) {
+            int v1 = head[i], u1 = tail[i], a1 = lab[i];
+            for (int j = 0; j < e_len; j++) {
+                if (i == j) continue;
+                int v2 = head[j], u2 = tail[j], a2 = lab[j];
+                if (a1 < a2) {
+                    if (!(perm[v1] < perm[v2])) { ok = false; break; }   // A2
+                } else if (a1 == a2) {
+                    if (perm[u1] < perm[u2] && !(perm[v1] <= perm[v2])) { ok = false; break; }  // A3
+                }
+            }
+        }
+        if (ok) return 1;   // a valid Wheeler order exists
+    } while (std::next_permutation(perm.begin(), perm.end()));
+
+    return 0;   // no ordering satisfies the axioms => not a Wheeler graph
 }
-
