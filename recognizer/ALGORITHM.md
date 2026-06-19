@@ -62,9 +62,13 @@ product of per-group range sizes — Phase-1 fix for an `int` overflow) against 
 Encodes the node order as a Z3 `QF_IDL` problem: one integer order variable per node, constrained to
 its `_node_ranges` window, all-distinct (guarded against the degenerate empty case — Phase-1 fix for
 a `z3::distinct([])` abort), plus the A2/A3 ordering constraints between edges (per-label head/tail
-monotonicity; cross-label head ordering under `-f`). A model ⇒ Wheeler; `unsat` ⇒ not. The model is
-re-checked by `SMT_WG_final_check()` before accepting. The cross-group A2 encoding is currently
-all-pairs `head < head` (a Phase-4 target: replace with per-label boundary variables).
+monotonicity; cross-label head ordering under `-f`). `s.check()` is handled three ways: **`sat`** ⇒
+Wheeler (the model is re-checked by `SMT_WG_final_check()` before accepting); **`unsat`** ⇒ not
+Wheeler; **`unknown`** ⇒ *undecided* — z3 can give up on very large `-f` encodings, and conflating
+`unknown` with `unsat` falsely rejects a solvable Wheeler graph (Phase-4 soundness fix; use the
+default backend for such graphs). The cross-group A2 encoding under `-f` is the sparse per-label
+head-boundary form (Phase 4.1, `#lo_/#hi_`); within-group A3 is still all-pairs `O(E_l²)`
+(Phase-4.2 target).
 
 ## Backend 2 — Permutation (`graph.cpp:permutation_start`)
 
@@ -82,7 +86,8 @@ the bridge to the repair tooling (`repair/`).
 ## Verdict & output contract
 
 - **Exit code / benchmark column:** `exit_program(v)` prints the benchmark row
-  `<v>\t<n>\t<cpu_us>\t<path>` (under `-b`) and exits with `v`: **`1` = Wheeler, `-1` (→255) = not**
+  `<v>\t<n>\t<cpu_us>\t<path>` (under `-b`) and exits with `v`: **`1` = Wheeler, `-1` (→255) = not
+  Wheeler, `0` = undecided** (SMT returned `unknown` — see the SMT backend above)
   (`graph.cpp`, around the `exit_program` definition).
 - **Default run** writes no files — it prints `(v) It is a wheeler graph!!` (preceded by `solved by
   SMT` / `solved by permutation` / `Decided after propagation`).

@@ -182,8 +182,21 @@ void digraph::solve_smt() {
         }
 #endif
         valid_wg = true;
-    } else {
+        this -> SMT_WG_final_check();
+    } else if (res == unsat) {
+        // Proof that no Wheeler ordering exists -- a genuine NOT-a-Wheeler-graph verdict.
         valid_wg = false;
+        this -> invalid_wheeler_graph("SMT returned unsat: no valid Wheeler ordering exists", true);
+    } else {
+        // z3 returned UNKNOWN: the solver could not decide this instance (e.g. a very large -f
+        // encoding it cannot search, even though a model exists). unknown != unsat -- the old code's
+        // `else { valid_wg = false; }` reported "not a Wheeler graph" here, a FALSE REJECT (confirmed:
+        // such instances are SAT once a witness order is fixed). Report UNDECIDED instead (column 1 =
+        // 0, exit 0) so the recognizer never claims a Wheeler graph is non-Wheeler just because the
+        // solver gave up. Use the default backend (heuristic range-narrowing) to decide such graphs.
+        valid_wg = false;
+        if (!benchmark_mode)
+            cout << "(?) Undecided: SMT solver returned unknown (instance too hard for -f)" << endl;
+        this -> exit_program(0);
     }
-    this -> SMT_WG_final_check();
 }
