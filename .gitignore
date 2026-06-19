@@ -20,3 +20,9 @@ visualizer/out__*
 visualizer/*.dot
 generator/MultiSeqWG_generator/
 generator/PrefixSortedGraph/
+
+# build artifacts and test scratch (verify/ + repair/ phases)
+recognizer/bin/recognizer_linux
+verify/_edgetmp/
+verify/repro/
+repair/_wtmp/
