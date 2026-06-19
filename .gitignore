@@ -26,3 +26,7 @@ recognizer/bin/recognizer_linux
 verify/_edgetmp/
 verify/repro/
 repair/_wtmp/
+
+# Phase 3 benchmark re-run: regenerable results tree + scratch (reports/docs are tracked)
+benchmark/rerun/results/
+benchmark/rerun/_synthtmp/
