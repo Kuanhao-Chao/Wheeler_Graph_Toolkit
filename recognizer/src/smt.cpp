@@ -53,26 +53,39 @@ void digraph::solve_smt() {
     }
 
     if (full_range_search) {
-        for (auto it1 = _edgeLabel_2_edge.begin(); it1 != _edgeLabel_2_edge.end(); ++it1) {
-            for (auto it2 = next(it1); it2 != _edgeLabel_2_edge.end(); ++it2) {
-                int l1 = (*it1).first;
-                int l2 = (*it2).first;
-                vector<edge>& edges1 = (*it1).second;
-                vector<edge>& edges2 = (*it2).second;
+        // Cross-group axiom A2: every head of a smaller label must order before every head of a
+        // larger label. The old encoding added this for ALL O(E^2) edge pairs across label groups.
+        // Sparse equivalent (O(E + L)): per non-empty label group l (iterating _edgeLabel_2_edge in
+        // ascending label order) introduce a [lo_l, hi_l] window bracketing the order of all of l's
+        // edge HEADS, then chain consecutive groups with a STRICT gap.
+        //   per head e in l:  xs[head(e)] in [lo_l, hi_l];   well-formed: lo_l <= hi_l
+        //   chain (l ascending):  prev_hi < lo_cur   (strict, matching WG_checker's reject-on->=)
+        // Equisatisfiable with the all-pairs form: the node vars xs are unchanged (lo/hi are
+        // auxiliary). (a) a model of all-pairs gives one here via hi_l=max, lo_l=min head order in l;
+        // (b) a model here satisfies all-pairs since for i<j, a<=hi_i < ... < lo_j <=b via the chain
+        // (>=1 strict step) => a<b. All constraints are integer difference constraints (QF_IDL).
+        // Aux names use a '#' prefix, which cannot collide with DOT node names (\w+ tokens).
+        bool have_prev = false;
+        expr prev_hi(c);
+        int group_idx = 0;
+        for (auto it = _edgeLabel_2_edge.begin(); it != _edgeLabel_2_edge.end(); ++it) {
+            vector<edge>& edges = it->second;
+            if (edges.empty()) continue;   // defensive; map keys always have >=1 edge
 
-                for (auto& e1 : edges1) {
-                    for (auto& e2 : edges2) {
-                        int v1 = e1.get_head_name();
-                        int v2 = e2.get_head_name();
+            expr lo = c.int_const(("#lo_" + to_string(group_idx)).c_str());
+            expr hi = c.int_const(("#hi_" + to_string(group_idx)).c_str());
+            ++group_idx;
 
-                        if (l1 < l2) {
-                            s.add(xs[v1] < xs[v2]);
-                        } else if (l2 < l1) {
-                            s.add(xs[v2] < xs[v1]);
-                        } else assert(false);
-                    }
-                }
+            for (auto& e : edges) {
+                int v = e.get_head_name();
+                s.add(xs[v] >= lo);
+                s.add(xs[v] <= hi);
             }
+            s.add(lo <= hi);
+
+            if (have_prev) s.add(prev_hi < lo);
+            prev_hi = hi;
+            have_prev = true;
         }
     }
 
@@ -153,9 +166,15 @@ void digraph::solve_smt() {
         for (unsigned i = 0; i < m.size(); i++) {
             func_decl v = m[i];
             string node_name = v.name().str();
+            // Skip auxiliary boundary vars (#lo_/#hi_ from the sparse cross-group encoding): they
+            // are not graph nodes. _nodeName_2_newNodeName[node_name] on a missing key would
+            // operator[]-INSERT a default id 0 and clobber the real node whose id is 0, corrupting
+            // the recovered order (and making SMT_WG_final_check reject a valid Wheeler graph).
+            auto nn = _nodeName_2_newNodeName.find(node_name);
+            if (nn == _nodeName_2_newNodeName.end()) continue;
             int node_order = m.get_const_interp(v).get_numeral_int64();
-            *_node_2_ptr_address[_nodeName_2_newNodeName[node_name]] = node_order;
-        }  
+            *_node_2_ptr_address[nn->second] = node_order;
+        }
 #ifdef DEBUGPRINT
         cout << "After assigning SMT result" << endl;
         for (auto& [nodename, ptr] : _node_2_ptr_address) {
