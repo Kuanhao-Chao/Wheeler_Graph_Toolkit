@@ -39,6 +39,21 @@ extern int permutation_counter;
 extern unordered_map<string,int> _nodeName_2_newNodeName;
 extern unordered_map<int,string> _newNodeName_2_nodeName;
 
+// A recorded Wheeler-axiom violation: the offending pair of edges and which axiom they break.
+// Used to explain *why* a graph is not a Wheeler graph and (Phase 5) to drive graph repair.
+// e*_tail / e*_head are node NAMES (decode with get_decoded_nodeName). label fields are label IDs
+// (decode with get_decoded_label). Recording is opt-in (digraph::set_record_violations) so the
+// permutation search's pruning checks don't accumulate them.
+struct WGViolation {
+    enum Kind { SAME_GROUP_TAIL, SAME_GROUP_HEAD, CROSS_GROUP };
+    Kind kind;
+    int label;            // edge-label group of the violation (the lower group for CROSS_GROUP)
+    int label2;           // the higher group for CROSS_GROUP, else -1
+    int e1_tail, e1_head; // offending edge 1 (node names)
+    int e2_tail, e2_head; // offending edge 2 (node names)
+    string msg;           // human-readable description
+};
+
 /********************************
 *** When number of duplicates is large, faster to convert to set and 
 *** then dump the data back into a vector.
@@ -77,6 +92,11 @@ class digraph {
 
         // [ (lb, ub), [node_names] ]
         vector< pair< pair<int, int>, vector<int> > > _node_ranges;
+
+        // Opt-in capture of Wheeler-axiom violations (for explain / repair). Off during the
+        // permutation search so pruning failures are not recorded.
+        bool _record_violations = false;
+        vector<WGViolation> _violations;
 
 
     public:
@@ -143,6 +163,13 @@ class digraph {
 
         bool WG_checker_in_edge_group(int label, vector<edge> &edges);
         bool WG_checker();
+
+        // Violation capture (for explain / repair). When recording is on, WG_checker* append a
+        // WGViolation for each axiom break they detect into _violations.
+        void set_record_violations(bool on) { _record_violations = on; }
+        void clear_violations() { _violations.clear(); }
+        const vector<WGViolation>& get_violations() const { return _violations; }
+        void print_violations();
         void SMT_WG_final_check();
         // Find the in degree == 0;
         void find_root_node();

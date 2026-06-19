@@ -45,7 +45,10 @@ void digraph::solve_smt() {
             s.add(constr);
             distinct_nodes.push_back(xs[idx]);
         }
-        if (lb != ub)
+        // Guard: z3::distinct() asserts (SIGABRT) on an empty vector, and a singleton group needs
+        // no distinctness constraint. A degenerate graph can yield an empty range group -- e.g.
+        // running `-f` on a 0-node input previously crashed here.
+        if (lb != ub && distinct_nodes.size() > 1)
             s.add(distinct(distinct_nodes));
     }
 
@@ -75,7 +78,8 @@ void digraph::solve_smt() {
 
     /* Encode edge relations within edge group */
     for (auto& [label, edges] : _edgeLabel_2_edge) {
-        for (size_t i = 0; i < edges.size() - 1; ++i) {
+        // `i + 1 < size()` instead of `i < size()-1` to avoid size_t underflow on an empty group.
+        for (size_t i = 0; i + 1 < edges.size(); ++i) {
             for (size_t j = i+1; j < edges.size(); ++j) {
                 edge& ei = edges[i];
                 edge& ej = edges[j];

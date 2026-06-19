@@ -54,6 +54,7 @@ bool label_is_int = false;
 bool benchmark_mode = false;
 bool exhaustive_search = false;
 bool full_range_search = false;
+bool explain_mode = false;
 int permutation_counter = 1;
 clock_t c_start, c_end;
 double cpu_time_used;
@@ -77,8 +78,8 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;full_range_search;"
-    "exclude=hvpwriebfs:o:");
+	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;full_range_search;explain;"
+    "exclude=hvpwriebfxs:o:");
 
 	processOptions(args);
     cout << "dot_full_name: " << dot_full_name << endl;
@@ -165,6 +166,7 @@ int main(int argc, char* argv[]) {
     /********************************
     *** Step 1: If after initialization, it is not a WG => it is not a WG.
     ********************************/
+    if (explain_mode) g.set_record_violations(true);
     g.relabel_initialization();
 #ifdef DEBUGPRINT
     g.print_graph();
@@ -189,8 +191,16 @@ int main(int argc, char* argv[]) {
         } else if (!solver.compare("p") || (permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
             g.permutation_start();
             if (exhaustive_search) {
-                if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
-                g.exit_program(1);
+                // Exhaustive search enumerates ALL valid orderings without exiting on the first
+                // one, so decide here from the count. (Previously this unconditionally declared a
+                // Wheeler graph, a false ACCEPT for every non-WG that reached this point.)
+                if (g.get_valid_WG_num() > 0) {
+                    if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
+                    g.exit_program(1);
+                } else {
+                    if (!benchmark_mode) cout << "(x) It is not a wheeler graph!!" << endl;
+                    g.exit_program(-1);
+                }
             }
         }
     }
@@ -247,6 +257,10 @@ void processOptions(GArgs& args) {
     benchmark_mode = (args.getOpt('b')!=NULL || args.getOpt("benchmark"));
     exhaustive_search = (args.getOpt('e')!=NULL || args.getOpt("exhaustive_search"));
     full_range_search = (args.getOpt('f')!=NULL || args.getOpt("full_range_search"));
+    explain_mode = (args.getOpt('x')!=NULL || args.getOpt("explain"));
+    // Explain mode records axiom violations from the heuristic ordering. Force the SMT backend so
+    // the permutation search's pruning checks don't flood the violation list.
+    if (explain_mode) solver = "smt";
 
 #ifdef DEBUGPRINT
     cout << "debugMode: " << debugMode << endl;

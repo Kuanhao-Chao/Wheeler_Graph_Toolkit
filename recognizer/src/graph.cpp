@@ -357,9 +357,17 @@ void digraph::innodelist_sort_relabel() {
     // Check if done
     bool all_assigned_and_distinct = (_node_ranges.size() == _nodes_num);
     if (all_assigned_and_distinct && !full_range_search) {
-        _valid_WG_num += 1;
-        if (!benchmark_mode) cout << "(v) Decided after propagation" << endl;
-        this -> valid_wheeler_graph();
+        // Hardening: this propagation fast-path used to ACCEPT here with NO final validity check,
+        // unlike the SMT path (SMT_WG_final_check) and the permutation path (WG_checker at the
+        // leaf). Run WG_checker() so a latent bug in the range-narrowing heuristic cannot produce
+        // a false ACCEPT of a non-Wheeler graph.
+        if (this -> WG_checker()) {
+            _valid_WG_num += 1;
+            if (!benchmark_mode) cout << "(v) Decided after propagation" << endl;
+            this -> valid_wheeler_graph();
+        } else {
+            this -> invalid_wheeler_graph("Propagation fixed a full order that fails WG_checker", true);
+        }
     }
 }
 
@@ -367,8 +375,17 @@ void digraph::innodelist_sort_relabel() {
 void digraph::permutation_counter_check(int range_size) {
     if (permutation_counter > PERMUTATION_CUTOFF) return;
     for (int c=range_size; c>=1; c--) {
+        // Saturating multiply to avoid signed-overflow UB. `permutation_counter` accumulates a
+        // product of per-group range factorials and is only ever compared against
+        // PERMUTATION_CUTOFF, so once the product would exceed the cutoff its exact value is
+        // irrelevant -- clamp and stop. (Previously this multiplied an int by `range_size` and
+        // could wrap negative on large inputs, mis-dispatching to the permutation backend.)
+        if (permutation_counter > PERMUTATION_CUTOFF / c) {
+            permutation_counter = PERMUTATION_CUTOFF + 1;
+            return;
+        }
         permutation_counter *= c;
-        if (permutation_counter > PERMUTATION_CUTOFF) break;
+        if (permutation_counter > PERMUTATION_CUTOFF) return;
     }
 }
 
@@ -620,6 +637,16 @@ void digraph::permutation_start() {
         // Relabel back before trying another permutation.
         this -> relabel_reverse_root(repeat_vec, original_labels);
     } while(std::next_permutation(repeat_vec.begin(), repeat_vec.end()));
+
+    // If we reach here, the entire permutation search space has been exhausted without any
+    // ordering passing the final WG_checker() (the only accept path, valid_wheeler_graph(),
+    // exits the program on success). Therefore the graph is NOT a Wheeler graph. Previously this
+    // function simply returned and main() returned the default `valid_wg = true`, so every
+    // non-Wheeler graph that survived steps 1-2 was falsely ACCEPTED by the -s p backend.
+    // (In exhaustive_search mode the accept path is a no-op by design, so we must not reject here.)
+    if (!exhaustive_search) {
+        this -> invalid_wheeler_graph("No valid ordering found by permutation search", true);
+    }
 }
 
 void digraph::permutation_4_edge_group(int label) {
@@ -1030,6 +1057,7 @@ bool digraph::WG_checker_in_edge_group(int label, vector<edge> &edges) {
             if (edge->get_tail_label() < prev(edge)->get_tail_label()) {
                 WG_valid = false; 
                 msg = "In the same edge group, the tail of the current edge (" + to_string(edge->get_tail_label()) + ") has to be bigger or equal to the tail of the previous edge (" + to_string(prev(edge)->get_tail_label()) + ").";
+                if (_record_violations) _violations.push_back({WGViolation::SAME_GROUP_TAIL, label, -1, prev(edge)->get_tail_name(), prev(edge)->get_head_name(), edge->get_tail_name(), edge->get_head_name(), msg});
                 if (verbose && !benchmark_mode) {
                     cout << endl << endl << endl;
                     cout << "=================================================================" << endl;
@@ -1047,6 +1075,7 @@ bool digraph::WG_checker_in_edge_group(int label, vector<edge> &edges) {
             if (edge->get_head_label() < prev(edge)->get_head_label()) {
                 WG_valid = false; 
                 msg = "In the same edge group, the head of the current edge (" + to_string(edge->get_head_label()) + ") has to be bigger or equal to the head of the previous edge (" + to_string(prev(edge)->get_head_label()) + ")." ;
+                if (_record_violations) _violations.push_back({WGViolation::SAME_GROUP_HEAD, label, -1, prev(edge)->get_tail_name(), prev(edge)->get_head_name(), edge->get_tail_name(), edge->get_head_name(), msg});
                 if (verbose && !benchmark_mode) {
                     cout << endl << endl << endl;
                     cout << "=================================================================" << endl;
@@ -1104,6 +1133,11 @@ bool digraph::WG_checker() {
             if ((it->second.end()-1)->get_head_label() >= next(it)->second.begin()->get_head_label()) {
                 WG_valid = false; 
                 msg = "The head of the last edge in edge group " + this->get_decoded_label(it->first) + " (" + to_string((it->second.end()-1)->get_head_label()) + ") has to be bigger than the head of the last edge in edge group " + this->get_decoded_label(next(it)->first) + " (" + to_string(next(it)->second.begin()->get_head_label()) + ").";
+                if (_record_violations) {
+                    edge& le = *(it->second.end()-1);
+                    edge& fe = *(next(it)->second.begin());
+                    _violations.push_back({WGViolation::CROSS_GROUP, it->first, next(it)->first, le.get_tail_name(), le.get_head_name(), fe.get_tail_name(), fe.get_head_name(), msg});
+                }
                 this -> invalid_wheeler_graph(msg, false);
                 break;
             }
@@ -1113,6 +1147,29 @@ bool digraph::WG_checker() {
         if (!WG_valid) break;
     }
     return WG_valid;
+}
+
+
+void digraph::print_violations() {
+    if (_violations.empty()) {
+        cout << "(no specific edge-pair violation was recorded; the candidate ordering produced by "
+                "the heuristic was rejected by the solver / no valid ordering exists)" << endl;
+        return;
+    }
+    cout << "Why it is not a Wheeler graph -- " << _violations.size()
+         << " axiom violation(s) in the heuristic ordering:" << endl;
+    for (auto& v : _violations) {
+        string kind = (v.kind == WGViolation::SAME_GROUP_TAIL) ? "same-label edges out of tail order"
+                    : (v.kind == WGViolation::SAME_GROUP_HEAD) ? "same-label edges out of head order"
+                    : "cross-label heads out of order";
+        int l2 = (v.kind == WGViolation::CROSS_GROUP) ? v.label2 : v.label;
+        cout << "  [" << kind << "]  "
+             << get_decoded_nodeName(v.e1_tail) << "->" << get_decoded_nodeName(v.e1_head)
+             << " [label=" << get_decoded_label(v.label) << "]   vs   "
+             << get_decoded_nodeName(v.e2_tail) << "->" << get_decoded_nodeName(v.e2_head)
+             << " [label=" << get_decoded_label(l2) << "]" << endl;
+        cout << "      " << v.msg << endl;
+    }
 }
 
 
@@ -1241,25 +1298,30 @@ string digraph::get_decoded_label(int new_label) {
 
 
 void digraph::valid_wheeler_graph() {
-    if (!exhaustive_search) {
-        if (verbose && !benchmark_mode) {
-            cout << endl << endl << endl;
-            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-            cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
-            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-            this -> print_graph("%%");
-            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-            cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
-            cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-        }
-        _valid_WG_num += 1;
-        if (writeIOL) {
-            this -> output_wg_gagie();
-        }
-        _is_wg = true;
-        if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
-        this -> exit_program(1);
+    // Record that a valid Wheeler ordering was found. In exhaustive_search mode we must NOT exit
+    // here -- we keep enumerating every valid ordering, and main() decides WG-ness afterwards from
+    // get_valid_WG_num(). (Previously this whole body was guarded by !exhaustive_search, so in
+    // exhaustive mode nothing was recorded and main() declared every graph a Wheeler graph.)
+    _valid_WG_num += 1;
+    _is_wg = true;
+    if (exhaustive_search) {
+        return;
     }
+    if (verbose && !benchmark_mode) {
+        cout << endl << endl << endl;
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        this -> print_graph("%%");
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+        cout << "%%%%% Valid WG !!!!!!!!!!!!!!!!!! %%%%%" << endl;
+        cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    }
+    if (writeIOL) {
+        this -> output_wg_gagie();
+    }
+    if (!benchmark_mode) cout << "(v) It is a wheeler graph!!" << endl;
+    this -> exit_program(1);
 }
 
 
@@ -1279,6 +1341,7 @@ void digraph::invalid_wheeler_graph(string msg, bool stop) {
     if (stop) {
         _is_wg = false;
         if (!benchmark_mode) cout << "(x) It is not a wheeler graph!!" << endl;
+        if (_record_violations && !benchmark_mode) this -> print_violations();
         this -> exit_program(-1);
     }
 }
