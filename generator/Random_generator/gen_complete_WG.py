@@ -67,8 +67,11 @@ def main():
     parser.add_argument('-s', '--shuffle', action='store_true', help='Shuffle node names (default: False)')
     parser.add_argument('-c', '--complete', action='store_true', help='Generate complete WG (default: False)')
     parser.add_argument('-o', '--outfile', type=str, default='tmp.dot', help='Output DOT filename (default: ./tmp.dot)')
+    parser.add_argument('--seed', type=int, default=None, help='RNG seed for reproducible output (default: None = nondeterministic)')
 
     args = parser.parse_args()
+    if args.seed is not None:
+        random.seed(args.seed)
 
     num_nodes = args.nodes
     num_edges = args.edges
