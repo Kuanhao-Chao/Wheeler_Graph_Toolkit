@@ -73,10 +73,17 @@ distinct nodes `D_l = min(T_l, H_l)`, bracket the other side's positions into a 
 window (`#mn_k ≤ xs[other] ≤ #mx_k`, `O(E_l)`), and order the windows for distinct keys
 (`xs[k] < xs[k'] ⇒ #mx_k ≤ #mn_k'`, `O(D_l²)`). This is equisatisfiable with the all-pairs form
 (`xs[v_i] ≤ #mx_{k_i} ≤ #mn_{k_j} ≤ xs[v_j]` for `k_i < k_j`; all atoms stay in QF_IDL) and is used
-only behind a never-worse guard `D_l(D_l−1)+2E_l < E_l(E_l−1)`, so a group with all-distinct
-endpoints (`D_l ≈ E_l`, e.g. De Bruijn graphs where each node has ≤1 out-edge per character) falls
-back to the original `O(E_l²)` pairwise loop. The default (range-narrowed) backend keeps the pairwise
-loop unchanged. The recovered order is always re-validated by `SMT_WG_final_check()`.
+only behind a guard `2·D_l < E_l  ∧  D_l(D_l−1)+2E_l < E_l(E_l−1)` (Phase 4.3). The second clause is
+the atom-count test; the first clause (`D_l < E_l/2`) is **necessary** because the block trades
+pairwise difference atoms for `2·D_l` auxiliary integer variables (`#mn/#mx`), and those aux vars
+*enlarge z3's search* — an atom-count-only guard fires up to `D_l ≈ 0.7·E_l` and there the block can
+make z3's **solve** time *worse* even with fewer atoms (measured: a 512-node complete WG went
+36 s → timeout). Requiring `D_l < E_l/2` restricts the block to the regime where it genuinely pays off
+(De Bruijn graphs: `D_l/E_l ≈ 0.25`, a clear win), and otherwise falls back to the verified
+`O(E_l²)` pairwise loop. So a group with all-distinct or merely dense endpoints (`D_l ≳ E_l/2`,
+including De Bruijn *tails* and complete WGs) uses the pairwise form. The default (range-narrowed)
+backend keeps the pairwise loop unchanged. The recovered order is always re-validated by
+`SMT_WG_final_check()`.
 
 ## Backend 2 — Permutation (`graph.cpp:permutation_start`)
 

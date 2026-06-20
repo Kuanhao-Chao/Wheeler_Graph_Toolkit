@@ -112,17 +112,25 @@ void digraph::solve_smt() {
         // Same-key edges (parallel edges / self-loops sharing the key) get no inter-constraint, exactly
         // as in the pairwise form. All atoms are differences of int consts => stays in QF_IDL.
         // SMT_WG_final_check() independently re-validates the recovered order (no false ACCEPT risk).
-        // GUARD: use the block form only when it is STRICTLY cheaper than pairwise (so it is never
-        // worse, and strictly better when endpoints are shared). On De Bruijn graphs tails are nearly
-        // all-distinct (T_l ~ E_l) -- keying on tails would REGRESS; min(T_l,H_l) picks the head side.
+        // GUARD: use the block form only when it genuinely pays off. The block trades pairwise
+        // difference atoms (only over the original node vars) for 2*D auxiliary integer vars
+        // (#mn_k/#mx_k) plus D*(D-1) inter-key ordering atoms. A pure *atom-count* test
+        // (D*(D-1)+2E < E*(E-1)) is NOT sufficient: it fires up to D ~ 0.7*E, but the aux vars
+        // enlarge z3's search and can make SOLVE time *worse* even with fewer atoms. Measured: on
+        // dense/complete WGs (D/E ~ 0.70) the block REGRESSES (e.g. n=512 complete: 36.5s -> timeout),
+        // whereas on De Bruijn graphs (high in-multiplicity, D/E ~ 0.25) it is a clear win. So we also
+        // require D < E/2: the aux-var overhead is only justified when D is well below E. Below the
+        // threshold the encoding falls back to the verified pairwise loop (never-worse). On De Bruijn
+        // graphs tails are nearly all-distinct (T_l ~ E_l); min(T_l,H_l) picks the small head side.
         if (full_range_search) {
             unordered_set<int> tails, heads;
             for (auto& e : edges) { tails.insert(e.get_tail_name()); heads.insert(e.get_head_name()); }
             size_t E = edges.size();
             size_t T = tails.size(), H = heads.size();
             size_t D = (T <= H) ? T : H;
-            // pairwise atom count ~ E*(E-1); block ~ D*(D-1) + 2*E. (E ~ 3e4 max => no size_t overflow.)
-            if (D * (D - 1) + 2 * E < E * (E - 1)) {
+            // Fire only when D < E/2 (aux-var overhead justified) AND the atom count strictly drops.
+            // (E ~ 3e4 max => no size_t overflow.)
+            if (2 * D < E && D * (D - 1) + 2 * E < E * (E - 1)) {
                 bool key_on_tail = (T <= H);
                 // distinct key node id -> the "other"-endpoint node ids whose positions it brackets.
                 unordered_map<int, vector<int>> groups;
