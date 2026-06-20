@@ -142,6 +142,9 @@ def main():
     ap.add_argument("--keep-tmp", action="store_true")
     ap.add_argument("--allow-self", action="store_true", help="include self-loops in random graphs")
     ap.add_argument("--allow-dup", action="store_true", help="include duplicate parallel edges")
+    ap.add_argument("--dense", action="store_true",
+                    help="dense few-label (1-2) near-complete regime: exercises the -f within-group "
+                         "A3 block encoding (E_l >> distinct heads/tails). Combine with --allow-dup.")
     args = ap.parse_args()
 
     rng = random.Random(args.seed)
@@ -183,10 +186,18 @@ def main():
     # --- random simple graphs ---
     for i in range(args.random):
         n = rng.randint(2, args.max_n)
-        n_labels = rng.randint(1, 4)
-        # edge count from sparse to fairly dense
-        max_simple = n * (n - 1) * n_labels
-        n_edges = rng.randint(1, max(1, min(max_simple, n * 3)))
+        if args.dense:
+            # Few labels + near-complete edge count => large E_l with few distinct heads/tails,
+            # so the -f within-group A3 block path fires (and its never-worse guard is satisfied).
+            n_labels = rng.randint(1, 2)
+            max_simple = n * (n - 1) * n_labels
+            hi = max_simple + (n * n_labels if args.allow_dup else 0)
+            n_edges = rng.randint(max(1, max_simple // 2), max(1, hi))
+        else:
+            n_labels = rng.randint(1, 4)
+            # edge count from sparse to fairly dense
+            max_simple = n * (n - 1) * n_labels
+            n_edges = rng.randint(1, max(1, min(max_simple, n * 3)))
         path = os.path.join(tmpdir, f"rand_{i}.dot")
         write_random_dot(path, n, n_labels, n_edges, rng,
                          allow_self=args.allow_self, allow_dup=args.allow_dup)

@@ -67,8 +67,16 @@ Wheeler (the model is re-checked by `SMT_WG_final_check()` before accepting); **
 Wheeler; **`unknown`** ⇒ *undecided* — z3 can give up on very large `-f` encodings, and conflating
 `unknown` with `unsat` falsely rejects a solvable Wheeler graph (Phase-4 soundness fix; use the
 default backend for such graphs). The cross-group A2 encoding under `-f` is the sparse per-label
-head-boundary form (Phase 4.1, `#lo_/#hi_`); within-group A3 is still all-pairs `O(E_l²)`
-(Phase-4.2 target).
+head-boundary form (Phase 4.1, `#lo_/#hi_`). The within-group A3 encoding under `-f` is the sparse
+**endpoint-block** form (Phase 4.2): for each label group, key on whichever endpoint side has fewer
+distinct nodes `D_l = min(T_l, H_l)`, bracket the other side's positions into a per-key `[#mn,#mx]`
+window (`#mn_k ≤ xs[other] ≤ #mx_k`, `O(E_l)`), and order the windows for distinct keys
+(`xs[k] < xs[k'] ⇒ #mx_k ≤ #mn_k'`, `O(D_l²)`). This is equisatisfiable with the all-pairs form
+(`xs[v_i] ≤ #mx_{k_i} ≤ #mn_{k_j} ≤ xs[v_j]` for `k_i < k_j`; all atoms stay in QF_IDL) and is used
+only behind a never-worse guard `D_l(D_l−1)+2E_l < E_l(E_l−1)`, so a group with all-distinct
+endpoints (`D_l ≈ E_l`, e.g. De Bruijn graphs where each node has ≤1 out-edge per character) falls
+back to the original `O(E_l²)` pairwise loop. The default (range-narrowed) backend keeps the pairwise
+loop unchanged. The recovered order is always re-validated by `SMT_WG_final_check()`.
 
 ## Backend 2 — Permutation (`graph.cpp:permutation_start`)
 

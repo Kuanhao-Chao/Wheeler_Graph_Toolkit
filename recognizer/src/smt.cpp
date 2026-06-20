@@ -8,6 +8,7 @@
 #include <fstream>
 #include <ctime>
 #include <cassert>
+#include <unordered_set>
 #include "z3++.h"
 
 #include "graph.hpp"
@@ -89,8 +90,71 @@ void digraph::solve_smt() {
         }
     }
 
-    /* Encode edge relations within edge group */
+    /* Encode edge relations within edge group (axiom A3: same-label co-monotonicity, the strict
+       antecedent xs[ui] < xs[uj] => xs[vi] <= xs[vj]). */
+    // Phase 4.2 aux-var counter for the sparse block form below. Names "#mn_<k>"/"#mx_<k>"; the '#'
+    // prefix cannot collide with DOT node names (\w+ tokens) nor the Phase-4.1 "#lo_/#hi_" vars, and
+    // is auto-skipped by the model-extraction filter (find()==end() at the read-back loop).
+    int a3_aux_counter = 0;
     for (auto& [label, edges] : _edgeLabel_2_edge) {
+        if (edges.empty()) continue;   // defensive; map keys always have >=1 edge
+
+        // ---- Phase 4.2: sparse endpoint-block A3, scoped to the full-range (-f) path ----
+        // The pairwise form below is O(E_l^2) DISJUNCTIVE implications; under -f almost nothing is
+        // fixed[], so it dominates -- on dense graphs the constraint BUILDING alone times out before
+        // z3 even solves. When a group's edges share endpoints, A3 is equisatisfiable with an
+        // O(E_l + D_l^2) block encoding: key on whichever endpoint side has fewer DISTINCT nodes
+        // (D_l = min(T_l, H_l)) and bracket the OTHER side's positions into a per-key [#mn,#mx] window:
+        //   brackets (per edge):   #mn_k <= xs[other] <= #mx_k                         (O(E_l))
+        //   distinct-key pairs:    xs[k] < xs[k'] => #mx_k <= #mn_k'  (+ symmetric)    (O(D_l^2))
+        // Equisatisfiable with the all-pairs form: (=>) set #mn_k/#mx_k = min/max bracketed position;
+        // (<=) for edges with xs[k_i] < xs[k_j], xs[other_i] <= #mx_{k_i} <= #mn_{k_j} <= xs[other_j].
+        // Same-key edges (parallel edges / self-loops sharing the key) get no inter-constraint, exactly
+        // as in the pairwise form. All atoms are differences of int consts => stays in QF_IDL.
+        // SMT_WG_final_check() independently re-validates the recovered order (no false ACCEPT risk).
+        // GUARD: use the block form only when it is STRICTLY cheaper than pairwise (so it is never
+        // worse, and strictly better when endpoints are shared). On De Bruijn graphs tails are nearly
+        // all-distinct (T_l ~ E_l) -- keying on tails would REGRESS; min(T_l,H_l) picks the head side.
+        if (full_range_search) {
+            unordered_set<int> tails, heads;
+            for (auto& e : edges) { tails.insert(e.get_tail_name()); heads.insert(e.get_head_name()); }
+            size_t E = edges.size();
+            size_t T = tails.size(), H = heads.size();
+            size_t D = (T <= H) ? T : H;
+            // pairwise atom count ~ E*(E-1); block ~ D*(D-1) + 2*E. (E ~ 3e4 max => no size_t overflow.)
+            if (D * (D - 1) + 2 * E < E * (E - 1)) {
+                bool key_on_tail = (T <= H);
+                // distinct key node id -> the "other"-endpoint node ids whose positions it brackets.
+                unordered_map<int, vector<int>> groups;
+                for (auto& e : edges) {
+                    int k = key_on_tail ? e.get_tail_name() : e.get_head_name();
+                    int o = key_on_tail ? e.get_head_name() : e.get_tail_name();
+                    groups[k].push_back(o);
+                }
+                vector<int> keys;
+                keys.reserve(groups.size());
+                expr_vector mns(c), mxs(c);     // parallel to `keys`
+                for (auto& [k, others] : groups) {
+                    expr mn = c.int_const(("#mn_" + to_string(a3_aux_counter)).c_str());
+                    expr mx = c.int_const(("#mx_" + to_string(a3_aux_counter)).c_str());
+                    ++a3_aux_counter;
+                    for (int o : others) { s.add(mn <= xs[o]); s.add(xs[o] <= mx); }
+                    keys.push_back(k);
+                    mns.push_back(mn);
+                    mxs.push_back(mx);
+                }
+                for (size_t a = 0; a + 1 < keys.size(); ++a) {
+                    for (size_t b = a + 1; b < keys.size(); ++b) {
+                        int ka = keys[a], kb = keys[b];
+                        s.add(implies(xs[ka] < xs[kb], mxs[a] <= mns[b]));
+                        s.add(implies(xs[ka] > xs[kb], mxs[b] <= mns[a]));
+                    }
+                }
+                continue;   // block form replaces the pairwise loop for this group
+            }
+        }
+
+        // ---- default / fallback: original O(E_l^2) pairwise A3 (UNCHANGED) ----
         // `i + 1 < size()` instead of `i < size()-1` to avoid size_t underflow on an empty group.
         for (size_t i = 0; i + 1 < edges.size(); ++i) {
             for (size_t j = i+1; j < edges.size(); ++j) {
