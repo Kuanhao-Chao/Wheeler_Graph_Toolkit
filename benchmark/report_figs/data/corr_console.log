@@ -1,0 +1,5 @@
+######## S1a  OLD buggy recognizer (expect perm/perm-e false-accepts) ########
+  -> benchmark/report_figs/data/corr_buggy.log (rc=1)
+######## S1b  NEW recognizer (expect 0 false verdicts) ########
+  -> benchmark/report_figs/data/corr_new.log (rc=0)
+######## S2a  UNSOUND exponential (--encoding old; expect false-accept = all non-WG) ########

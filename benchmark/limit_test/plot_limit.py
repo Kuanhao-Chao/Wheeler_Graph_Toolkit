@@ -51,6 +51,8 @@ def load_runs(results):
 def load_summary(results):
     path = os.path.join(results, "summary", "limit_summary.csv")
     rows = []
+    if not os.path.exists(path):
+        return rows   # summary is written only at run completion; raw-based figures still render
     with open(path) as fh:
         header = fh.readline().strip().split(",")
         for line in fh:
@@ -123,6 +125,9 @@ def plot_size_vs_time(runs, T, outdir):
 
 
 def plot_limits_bar(summary, outdir):
+    if not summary:
+        print("limits_bar skipped (no summary yet; run still in progress)")
+        return
     families = sorted({r["family"] for r in summary})
     algos = [a for a in ALGO_STYLE if any(r["algo"] == a for r in summary)]
     fig, ax = plt.subplots(figsize=(10, 5.5))

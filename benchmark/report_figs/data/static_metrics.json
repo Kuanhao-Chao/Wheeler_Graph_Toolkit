@@ -1,0 +1,33 @@
+{
+  "_source": "Transcribed from committed benchmark/PHASE3_IMPACT.md and benchmark/VERDICT_AGREEMENT.md.",
+  "phase3_impact": {
+    "scope": "n<=9 oracle-decidable subset of GT_vs_WGT",
+    "per_corpus": [
+      {"corpus": "DeBruijnG_AA",    "graphs": 100, "wg": 100, "nonwg": 0, "old_gt_timeout": 0,  "old_gt_decided": 100, "rescued_nonwg": 0},
+      {"corpus": "DeBruijnG_DNA",   "graphs": 100, "wg": 100, "nonwg": 0, "old_gt_timeout": 0,  "old_gt_decided": 100, "rescued_nonwg": 0},
+      {"corpus": "DeBruijnGNC_AA",  "graphs": 100, "wg": 100, "nonwg": 0, "old_gt_timeout": 0,  "old_gt_decided": 100, "rescued_nonwg": 0},
+      {"corpus": "DeBruijnGNC_DNA", "graphs": 100, "wg": 100, "nonwg": 0, "old_gt_timeout": 0,  "old_gt_decided": 100, "rescued_nonwg": 0},
+      {"corpus": "RandomG",         "graphs": 38,  "wg": 38,  "nonwg": 0, "old_gt_timeout": 18, "old_gt_decided": 20,  "rescued_nonwg": 0},
+      {"corpus": "RevDetG_AA",      "graphs": 170, "wg": 170, "nonwg": 0, "old_gt_timeout": 79, "old_gt_decided": 91,  "rescued_nonwg": 0},
+      {"corpus": "RevDetG_DNA",     "graphs": 173, "wg": 166, "nonwg": 7, "old_gt_timeout": 60, "old_gt_decided": 113, "rescued_nonwg": 7},
+      {"corpus": "Trie_AA",         "graphs": 75,  "wg": 75,  "nonwg": 0, "old_gt_timeout": 2,  "old_gt_decided": 73,  "rescued_nonwg": 0},
+      {"corpus": "Trie_DNA",        "graphs": 75,  "wg": 75,  "nonwg": 0, "old_gt_timeout": 0,  "old_gt_decided": 75,  "rescued_nonwg": 0}
+    ],
+    "total": {"graphs": 931, "wg": 924, "nonwg": 7, "new_gt_agree": 931, "new_wgt_agree": 931,
+              "old_gt_timeout": 159, "old_gt_decided": 772, "rescued_nonwg": 7},
+    "rescued_graphs": [
+      "RevDetG_DNA/Human_BTBD17_orthologues_DNA_l_6_a_4.dot",
+      "RevDetG_DNA/Human_BTBD17_orthologues_DNA_l_7_a_4.dot",
+      "RevDetG_DNA/Human_FAM53A_orthologues_DNA_l_7_a_4.dot",
+      "RevDetG_DNA/Human_LCP1_orthologues_DNA_l_7_a_4.dot",
+      "RevDetG_DNA/Human_TRAM1_orthologues_DNA_l_6_a_4.dot",
+      "RevDetG_DNA/Human_TRPC1_orthologues_DNA_l_6_a_4.dot",
+      "RevDetG_DNA/Human_TRPC1_orthologues_DNA_l_7_a_4.dot"
+    ]
+  },
+  "verdict_agreement": {
+    "REAL":  {"graphs": 931,  "wg": 924, "nonwg": 7,    "SMT": [931, 0], "PERM": [931, 0], "EXP": [931, 0]},
+    "SYNTH": {"graphs": 1516, "wg": 379, "nonwg": 1137, "SMT": [1516, 0], "PERM": [1516, 0], "EXP": [1516, 0]},
+    "total_graphs": 2447, "total_wg": 1303, "total_nonwg": 1144, "total_disagreements": 0
+  }
+}

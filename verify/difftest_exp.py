@@ -32,12 +32,36 @@ import brute_oracle as bo                                   # noqa: E402
 from difftest import write_random_dot, gen_positive         # noqa: E402
 from edgecases import CASES, dot                            # noqa: E402
 
-EXP = os.path.join(ROOT, "benchmark", "exponential_recognizer", "bin", "recognizer_e")
+# Exponential binary. Override with WGT_EXP (bare name under benchmark/.../bin/, or a full path) to
+# point this harness at the historical *unsound* binary, e.g. WGT_EXP=recognizer_e_unsound, in which
+# case pass --encoding old (see below).
+_exp_env = os.environ.get("WGT_EXP")
+_EXP_DEFAULT = os.path.join(ROOT, "benchmark", "exponential_recognizer", "bin", "recognizer_e")
+if not _exp_env:
+    EXP = _EXP_DEFAULT
+elif os.path.sep in _exp_env:
+    EXP = _exp_env
+else:
+    # bare name: look in recognizer/bin (where recognizer_e_unsound lives), then the exp bin dir
+    _cand = os.path.join(ROOT, "recognizer", "bin", _exp_env)
+    EXP = _cand if os.path.exists(_cand) else \
+        os.path.join(ROOT, "benchmark", "exponential_recognizer", "bin", _exp_env)
 REPRO = os.path.join(HERE, "repro_exp")
 
+# Column-0 decode scheme. "new" = the fixed honest binary (1=WG, 0=not, -1=over-cap). "old" = the
+# published *unsound* binary's inverted scheme (0=WG, -1=not-WG/over-cap) -- it never emits a real
+# not-WG verdict, so decoding it honestly exposes the false-accept-everything behaviour.
+ENCODING = "new"
 
-def exp_verdict(path, timeout=60):
+
+EXP_TIMEOUT = 60   # per-graph wall cap (overridable via --exp-timeout); the OLD unsound binary can
+                   # spin for minutes on near-cap / self-loop / parallel-edge inputs it never handled.
+
+
+def exp_verdict(path, timeout=None):
     """Return 1 (WG), 0 (not WG), None (over-cap/undecided), 'TIMEOUT', or ('ERR', detail)."""
+    if timeout is None:
+        timeout = EXP_TIMEOUT
     try:
         r = subprocess.run([EXP, path], capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -54,6 +78,14 @@ def exp_verdict(path, timeout=60):
         col0 = int(last[0])
     except ValueError:
         return ("ERR", f"bad col0: {last[0]!r}")
+    if ENCODING == "old":
+        # published unsound scheme: 0 => "Wheeler", -1 => "not / over-cap" (conflated, never a true
+        # decided not-WG). We map -1 -> None (cannot distinguish over-cap), 0 -> 1 (its WG verdict).
+        if col0 == 0:
+            return 1
+        if col0 == -1:
+            return None
+        return ("ERR", f"unexpected old-encoding col0={col0}")
     if col0 == 1:
         return 1
     if col0 == 0:
@@ -79,7 +111,19 @@ def main():
     ap.add_argument("--max-n", type=int, default=7, help="oracle cap; also keeps exp enumeration cheap")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--keep-tmp", action="store_true")
+    ap.add_argument("--encoding", choices=["new", "old"], default="new",
+                    help="col0 decode: new=honest recognizer_e (1/0/-1); "
+                         "old=unsound published binary (0=WG, -1=not/over-cap)")
+    ap.add_argument("--exp-timeout", type=int, default=60,
+                    help="per-graph wall cap for the exp binary (default 60; lower for the slow "
+                         "OLD unsound binary)")
     args = ap.parse_args()
+
+    global ENCODING, EXP_TIMEOUT
+    ENCODING = args.encoding
+    EXP_TIMEOUT = args.exp_timeout
+    print(f"exp binary  : {EXP}")
+    print(f"encoding     : {ENCODING}\n")
 
     rng = random.Random(args.seed)
     os.makedirs(REPRO, exist_ok=True)
@@ -87,10 +131,11 @@ def main():
     os.makedirs(tmp, exist_ok=True)
 
     checked = pos = bad = anom = skipped = 0
+    fa = fr = 0   # false-accept (nonWG->WG), false-reject (WG->nonWG)
     examples = []
 
     def handle(path, tag):
-        nonlocal checked, pos, bad, anom, skipped
+        nonlocal checked, pos, bad, anom, skipped, fa, fr
         truth = oracle_verdict(path, args.max_n)
         if truth is None:
             skipped += 1
@@ -109,6 +154,10 @@ def main():
             pos += 1
         if v != truth:
             bad += 1
+            if truth == 0 and v == 1:
+                fa += 1
+            elif truth == 1 and v == 0:
+                fr += 1
             dst = os.path.join(REPRO, f"mismatch_{bad:04d}_{tag}.dot")
             with open(path) as src, open(dst, "w") as out:
                 out.write(src.read())
@@ -145,6 +194,8 @@ def main():
     print(f"  truth non-WG  : {checked - pos}")
     print(f"skipped         : {skipped}  (oracle/exp over their caps)")
     print(f"MISMATCHES      : {bad}")
+    print(f"  false-accept  : {fa}  (truth non-WG, exp said WG)")
+    print(f"  false-reject  : {fr}  (truth WG, exp said non-WG)")
     print(f"anomalies       : {anom}  (timeouts / unexpected output)")
     if bad == 0 and anom == 0:
         print("RESULT: fixed exponential recognizer agrees with the oracle on every decided graph. ✓")

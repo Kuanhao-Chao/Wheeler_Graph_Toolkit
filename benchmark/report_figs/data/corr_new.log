@@ -1,0 +1,17 @@
+recognizer  : /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/recognizer/bin/recognizer_linux
+modes       : ['smt', 'perm', 'perm-e', 'full']
+
+
+==================== SUMMARY ====================
+checked         : 6000
+  truth Wheeler : 1441
+  truth non-WG  : 4559
+undecided(>maxn): 0
+MISMATCHES      : 0
+anomalies       : 0 (timeouts / unexpected exit codes)
+per-mode false verdicts (truth vs binary):
+  smt     : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm-e  : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  full    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+RESULT: recognizer agrees with the oracle on every decided graph. ✓

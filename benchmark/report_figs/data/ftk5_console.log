@@ -1,0 +1,67 @@
+binaries : ['new', 'pre42', 'pre41']
+graphs   : 19  (edge range 360..1046)
+timeout  : 90.0s   replicates 2
+
+resuming: 816 (binary,graph) results already cached
+
+[1/19] Human_TUNAR_orthologues_DNA_k_5_l_2000_a_8.dot   e=  360 new   -> 3.224s v=1
+[1/19] Human_TUNAR_orthologues_DNA_k_5_l_2000_a_8.dot   e=  360 pre42 -> 2.526s v=1
+[1/19] Human_TUNAR_orthologues_DNA_k_5_l_2000_a_8.dot   e=  360 pre41 -> 2.922s v=1
+[2/19] Human_LEAP2_orthologues_DNA_k_5_l_2000_a_6.dot   e=  450 new   -> 4.901s v=1
+[2/19] Human_LEAP2_orthologues_DNA_k_5_l_2000_a_6.dot   e=  450 pre42 -> 3.762s v=1
+[2/19] Human_LEAP2_orthologues_DNA_k_5_l_2000_a_6.dot   e=  450 pre41 -> 4.786s v=1
+[3/19] Human_C17orf67_orthologues_DNA_k_5_l_2000_a_8.do e=  691 new   -> 6.764s v=1
+[3/19] Human_C17orf67_orthologues_DNA_k_5_l_2000_a_8.do e=  691 pre42 -> 7.884s v=1
+[3/19] Human_C17orf67_orthologues_DNA_k_5_l_2000_a_8.do e=  691 pre41 -> 8.558s v=1
+[4/19] Human_RPS27A_orthologues_DNA_k_5_l_2000_a_8.dot  e=  843 new   -> 8.746s v=1
+[4/19] Human_RPS27A_orthologues_DNA_k_5_l_2000_a_8.dot  e=  843 pre42 -> 12.381s v=1
+[4/19] Human_RPS27A_orthologues_DNA_k_5_l_2000_a_8.dot  e=  843 pre41 -> 12.887s v=1
+[5/19] Human_OR10G8_orthologues_DNA_k_5_l_2000_a_7.dot  e=  858 new   -> 8.623s v=1
+[5/19] Human_OR10G8_orthologues_DNA_k_5_l_2000_a_7.dot  e=  858 pre42 -> 12.194s v=1
+[5/19] Human_OR10G8_orthologues_DNA_k_5_l_2000_a_7.dot  e=  858 pre41 -> 12.723s v=1
+[6/19] Human_FAM53A_orthologues_DNA_k_5_l_2000_a_6.dot  e=  896 new   -> 7.983s v=1
+[6/19] Human_FAM53A_orthologues_DNA_k_5_l_2000_a_6.dot  e=  896 pre42 -> 12.967s v=1
+[6/19] Human_FAM53A_orthologues_DNA_k_5_l_2000_a_6.dot  e=  896 pre41 -> 13.099s v=1
+[7/19] Human_TRAM1_orthologues_DNA_k_5_l_2000_a_6.dot   e=  953 new   -> 7.681s v=1
+[7/19] Human_TRAM1_orthologues_DNA_k_5_l_2000_a_6.dot   e=  953 pre42 -> 12.948s v=1
+[7/19] Human_TRAM1_orthologues_DNA_k_5_l_2000_a_6.dot   e=  953 pre41 -> 14.390s v=1
+[8/19] Human_ANGPTL4_orthologues_DNA_k_5_l_2000_a_6.dot e=  955 new   -> 8.252s v=1
+[8/19] Human_ANGPTL4_orthologues_DNA_k_5_l_2000_a_6.dot e=  955 pre42 -> 14.390s v=1
+[8/19] Human_ANGPTL4_orthologues_DNA_k_5_l_2000_a_6.dot e=  955 pre41 -> 14.389s v=1
+[9/19] Human_SPA17_orthologues_DNA_k_5_l_2000_a_8.dot   e=  987 new   -> 8.655s v=1
+[9/19] Human_SPA17_orthologues_DNA_k_5_l_2000_a_8.dot   e=  987 pre42 -> 14.388s v=1
+[9/19] Human_SPA17_orthologues_DNA_k_5_l_2000_a_8.dot   e=  987 pre41 -> 15.396s v=1
+[10/19] Human_BTBD17_orthologues_DNA_k_5_l_2000_a_7.dot  e= 1008 new   -> 8.356s v=1
+[10/19] Human_BTBD17_orthologues_DNA_k_5_l_2000_a_7.dot  e= 1008 pre42 -> 14.641s v=1
+[10/19] Human_BTBD17_orthologues_DNA_k_5_l_2000_a_7.dot  e= 1008 pre41 -> 15.103s v=1
+[11/19] Human_SLC22A2_orthologues_DNA_k_5_l_2000_a_6.dot e= 1008 new   -> 8.003s v=1
+[11/19] Human_SLC22A2_orthologues_DNA_k_5_l_2000_a_6.dot e= 1008 pre42 -> 14.375s v=1
+[11/19] Human_SLC22A2_orthologues_DNA_k_5_l_2000_a_6.dot e= 1008 pre41 -> 15.081s v=1
+[12/19] Human_DCSTAMP_orthologues_DNA_k_5_l_2000_a_7.dot e= 1019 new   -> 8.424s v=1
+[12/19] Human_DCSTAMP_orthologues_DNA_k_5_l_2000_a_7.dot e= 1019 pre42 -> 14.789s v=1
+[12/19] Human_DCSTAMP_orthologues_DNA_k_5_l_2000_a_7.dot e= 1019 pre41 -> 15.465s v=1
+[13/19] Human_FHIP1B_orthologues_DNA_k_5_l_2000_a_7.dot  e= 1022 new   -> 8.117s v=1
+[13/19] Human_FHIP1B_orthologues_DNA_k_5_l_2000_a_7.dot  e= 1022 pre42 -> 15.170s v=1
+[13/19] Human_FHIP1B_orthologues_DNA_k_5_l_2000_a_7.dot  e= 1022 pre41 -> 15.565s v=1
+[14/19] Human_CLPX_orthologues_DNA_k_5_l_2000_a_6.dot    e= 1031 new   -> 8.071s v=1
+[14/19] Human_CLPX_orthologues_DNA_k_5_l_2000_a_6.dot    e= 1031 pre42 -> 15.213s v=1
+[14/19] Human_CLPX_orthologues_DNA_k_5_l_2000_a_6.dot    e= 1031 pre41 -> 15.555s v=1
+[15/19] Human_SLC38A9_orthologues_DNA_k_5_l_2000_a_7.dot e= 1033 new   -> 7.608s v=1
+[15/19] Human_SLC38A9_orthologues_DNA_k_5_l_2000_a_7.dot e= 1033 pre42 -> 14.613s v=1
+[15/19] Human_SLC38A9_orthologues_DNA_k_5_l_2000_a_7.dot e= 1033 pre41 -> 14.373s v=1
+[16/19] Human_GGT6_orthologues_DNA_k_5_l_2000_a_8.dot    e= 1034 new   -> 8.338s v=1
+[16/19] Human_GGT6_orthologues_DNA_k_5_l_2000_a_8.dot    e= 1034 pre42 -> 15.134s v=1
+[16/19] Human_GGT6_orthologues_DNA_k_5_l_2000_a_8.dot    e= 1034 pre41 -> 15.893s v=1
+[17/19] Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_6.dot  e= 1040 new   -> 8.592s v=1
+[17/19] Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_6.dot  e= 1040 pre42 -> 15.243s v=1
+[17/19] Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_6.dot  e= 1040 pre41 -> 15.899s v=1
+[18/19] Human_TRPC1_orthologues_DNA_k_5_l_2000_a_7.dot   e= 1045 new   -> 8.344s v=1
+[18/19] Human_TRPC1_orthologues_DNA_k_5_l_2000_a_7.dot   e= 1045 pre42 -> 15.544s v=1
+[18/19] Human_TRPC1_orthologues_DNA_k_5_l_2000_a_7.dot   e= 1045 pre41 -> 16.124s v=1
+[19/19] Human_DOCK4_orthologues_DNA_k_5_l_2000_a_8.dot   e= 1046 new   -> 8.223s v=1
+[19/19] Human_DOCK4_orthologues_DNA_k_5_l_2000_a_8.dot   e= 1046 pre42 -> 15.253s v=1
+[19/19] Human_DOCK4_orthologues_DNA_k_5_l_2000_a_8.dot   e= 1046 pre41 -> 15.932s v=1
+
+wrote benchmark/report_figs/data/ftiming_dna.raw.jsonl
+wrote benchmark/report_figs/data/ftiming_dna.csv
+DONE_FTK5

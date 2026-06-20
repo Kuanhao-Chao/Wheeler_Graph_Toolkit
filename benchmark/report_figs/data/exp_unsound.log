@@ -1,0 +1,181 @@
+exp binary  : /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/recognizer/bin/recognizer_e_unsound
+encoding     : old
+
+MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0001_edgecase.dot
+MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0002_edgecase.dot
+MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0003_edgecase.dot
+MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0004_edgecase.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0005_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0006_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0007_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0008_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0009_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0010_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0011_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0012_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0013_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0014_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0015_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0016_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0017_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0018_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0019_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0020_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0021_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0022_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0023_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0024_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0025_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0026_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0027_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0028_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0029_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0030_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0031_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0032_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0033_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0034_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0035_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0036_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0037_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0038_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0039_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0040_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0041_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0042_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0043_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0044_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0045_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0046_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0047_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0048_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0049_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0050_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0051_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0052_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0053_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0054_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0055_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0056_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0057_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0058_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0059_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0060_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0061_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0062_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0063_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0064_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0065_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0066_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0067_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0068_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0069_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0070_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0071_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0072_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0073_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0074_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0075_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0076_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0077_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0078_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0079_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0080_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0081_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0082_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0083_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0084_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0085_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0086_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0087_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0088_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0089_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0090_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0091_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0092_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0093_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0094_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0095_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0096_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0097_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0098_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0099_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0100_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0101_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0102_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0103_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0104_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0105_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0106_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0107_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0108_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0109_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0110_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0111_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0112_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0113_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0114_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0115_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0116_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0117_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0118_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0119_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0120_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0121_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0122_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0123_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0124_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0125_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0126_rand.dot
+MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0127_rand.dot
+
+================ EXP vs ORACLE SUMMARY ================
+checked         : 252
+  truth Wheeler : 125
+  truth non-WG  : 127
+skipped         : 4  (oracle/exp over their caps)
+MISMATCHES      : 127
+  false-accept  : 127  (truth non-WG, exp said WG)
+  false-reject  : 0  (truth WG, exp said non-WG)
+anomalies       : 60  (timeouts / unexpected output)
+RESULT: discrepancies found -- see verify/repro_exp/ and messages above.
+  MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0001_edgecase.dot
+  MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0002_edgecase.dot
+  MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0003_edgecase.dot
+  MISMATCH [edgecase] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0004_edgecase.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_0.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0005_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0006_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0007_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0008_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0009_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_12.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0010_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0011_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0012_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_19.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0013_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0014_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_26.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0015_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0016_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0017_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0018_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0019_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_38.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_40.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0020_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0021_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0022_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0023_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0024_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_50.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_51.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_52.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0025_rand.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0026_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_57.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0027_rand.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_61.dot
+  ANOMALY [rand] TIMEOUT /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/_exptmp/rand_62.dot
+  MISMATCH [rand] oracle=0 exp=1 -> /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/verify/repro_exp/mismatch_0028_rand.dot

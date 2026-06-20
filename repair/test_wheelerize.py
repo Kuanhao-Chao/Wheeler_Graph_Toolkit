@@ -10,6 +10,7 @@ actually needed repair, plus node blow-up statistics.
 Run: python3 repair/test_wheelerize.py --n 500 --seed 1
 """
 import argparse
+import json
 import os
 import random
 import subprocess
@@ -48,6 +49,8 @@ def main():
     ap.add_argument("--n", type=int, default=500)
     ap.add_argument("--max-n", type=int, default=7, help="max nodes per random DAG")
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--dump", default=None,
+                    help="write per-DAG repair records (in/out node counts, ratio) to this JSON file")
     args = ap.parse_args()
     rng = random.Random(args.seed)
     tmp = os.path.join(HERE, "_wtmp")
@@ -55,6 +58,7 @@ def main():
 
     total = already = repaired = failures = aborts = 0
     blowups = []
+    records = []   # per-DAG {in_nodes, out_nodes, ratio, was_wheeler}
     for i in range(args.n):
         n = rng.randint(2, args.max_n)
         n_labels = rng.randint(1, 3)
@@ -77,7 +81,11 @@ def main():
                 if line.startswith("node blow-up:"):
                     try:
                         a, b = line.split(":")[1].split("(")[0].split("->")
-                        blowups.append(int(b.strip()) / max(1, int(a.strip())))
+                        ain, bout = int(a.strip()), int(b.strip())
+                        blowups.append(bout / max(1, ain))
+                        records.append({"in_nodes": ain, "out_nodes": bout,
+                                        "ratio": bout / max(1, ain),
+                                        "was_wheeler": bool(was_wheeler)})
                     except Exception:
                         pass
         elif r.returncode in (2, 3):
@@ -99,6 +107,11 @@ def main():
               f"min={min(blowups):.2f}  max={max(blowups):.2f}")
     print("RESULT:", "every DAG repaired to a verified Wheeler graph, strings preserved. ✓"
           if failures == 0 else "FAILURES found ✗")
+    if args.dump:
+        with open(args.dump, "w") as fh:
+            json.dump({"total": total, "already": already, "repaired": repaired,
+                       "aborts": aborts, "failures": failures, "records": records}, fh)
+        print(f"wrote per-DAG records -> {args.dump}")
     for f in os.listdir(tmp):
         os.remove(os.path.join(tmp, f))
     os.rmdir(tmp)

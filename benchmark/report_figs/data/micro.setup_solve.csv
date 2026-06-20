@@ -1,0 +1,16 @@
+name,edges,binary,setup_med,solve_med,setup_status,solve_status
+Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7.dot,1041,pre41,2.105230,13.041900,OK,OK
+Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7.dot,1041,pre42,1.879840,12.333300,OK,OK
+Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7.dot,1041,new,0.144836,6.441450,OK,OK
+Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8.dot,1049,pre41,2.236830,13.487900,OK,OK
+Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8.dot,1049,pre42,2.025000,12.917900,OK,OK
+Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8.dot,1049,new,0.156300,7.862890,OK,OK
+Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_8.dot,1047,pre41,2.261940,13.040600,OK,OK
+Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_8.dot,1047,pre42,1.987240,12.809200,OK,OK
+Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_8.dot,1047,new,0.156855,8.091830,OK,OK
+Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7.dot,269,pre41,0.109589,0.274936,OK,OK
+Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7.dot,269,pre42,0.097316,0.298685,OK,OK
+Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7.dot,269,new,0.018849,0.140795,OK,OK
+Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_6.dot,271,pre41,0.110441,0.278353,OK,OK
+Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_6.dot,271,pre42,0.098616,0.310570,OK,OK
+Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_6.dot,271,new,0.019338,0.152917,OK,OK

@@ -1,0 +1,49 @@
+######## S4  setup/solve split + memory (pre41/pre42/new on headline graphs) ########
+Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7.dot e= 1041 pre41 setup=2.10523 solve=13.0419 [OK]
+Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7.dot e= 1041 pre42 setup=1.87984 solve=12.3333 [OK]
+Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7.dot e= 1041 new   setup=0.144836 solve=6.44145 [OK]
+Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8.dot e= 1049 pre41 setup=2.23683 solve=13.4879 [OK]
+Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8.dot e= 1049 pre42 setup=2.025 solve=12.9179 [OK]
+Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8.dot e= 1049 new   setup=0.1563 solve=7.86289 [OK]
+Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_8.do e= 1047 pre41 setup=2.26194 solve=13.0406 [OK]
+Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_8.do e= 1047 pre42 setup=1.98724 solve=12.8092 [OK]
+Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_8.do e= 1047 new   setup=0.156855 solve=8.09183 [OK]
+Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7.dot e=  269 pre41 setup=0.109589 solve=0.274936 [OK]
+Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7.dot e=  269 pre42 setup=0.097316 solve=0.298685 [OK]
+Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7.dot e=  269 new   setup=0.018849 solve=0.140795 [OK]
+Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_6.do e=  271 pre41 setup=0.110441 solve=0.278353 [OK]
+Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_6.do e=  271 pre42 setup=0.098616 solve=0.31057 [OK]
+Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_6.do e=  271 new   setup=0.019338 solve=0.152917 [OK]
+MEM Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7 pre41 -> 662168 KB
+MEM Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7 pre42 -> 663660 KB
+MEM Human_DOCK4_orthologues_DNA_k_5_l_2000_a_7 new   -> 1210144 KB
+MEM Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8 pre41 -> 669648 KB
+MEM Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8 pre42 -> 674932 KB
+MEM Human_TRPC1_orthologues_DNA_k_5_l_2000_a_8 new   -> 1288460 KB
+MEM Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_ pre41 -> 667928 KB
+MEM Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_ pre42 -> 674068 KB
+MEM Human_ZRANB3_orthologues_DNA_k_5_l_2000_a_ new   -> 1276684 KB
+MEM Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7 pre41 -> 58540 KB
+MEM Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7 pre42 -> 58008 KB
+MEM Human_DOCK4_orthologues_DNA_k_4_l_2000_a_7 new   -> 57636 KB
+MEM Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_ pre41 -> 58912 KB
+MEM Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_ pre42 -> 59672 KB
+MEM Human_ZRANB3_orthologues_DNA_k_4_l_2000_a_ new   -> 59468 KB
+
+wrote benchmark/report_figs/data/micro.setup_solve.csv
+wrote benchmark/report_figs/data/micro.mem.csv
+S4 done (rc=0)
+######## S5  repair blow-up distribution (1000 random DAGs) ########
+
+==================== WHEELERIZE SUMMARY ====================
+DAGs tested        : 820
+  already Wheeler  : 504
+  needed repair    : 316
+aborts (cyclic/big): 0
+FAILURES           : 0
+node blow-up x     : avg=0.87  min=0.33  max=1.86
+RESULT: every DAG repaired to a verified Wheeler graph, strings preserved. ✓
+wrote per-DAG records -> benchmark/report_figs/data/repair_records.json
+S5 done (rc=0)
+ALL MICRO DONE
+DONE_MICRO

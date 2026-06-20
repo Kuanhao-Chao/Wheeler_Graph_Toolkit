@@ -1,0 +1,14 @@
+exp binary  : /ccb/salz3/kh.chao/PR_Wheeler_Graph/PR_Wheeler_Graph/benchmark/exponential_recognizer/bin/recognizer_e
+encoding     : new
+
+
+================ EXP vs ORACLE SUMMARY ================
+checked         : 2512
+  truth Wheeler : 939
+  truth non-WG  : 1573
+skipped         : 4  (oracle/exp over their caps)
+MISMATCHES      : 0
+  false-accept  : 0  (truth non-WG, exp said WG)
+  false-reject  : 0  (truth WG, exp said non-WG)
+anomalies       : 0  (timeouts / unexpected output)
+RESULT: fixed exponential recognizer agrees with the oracle on every decided graph. ✓
