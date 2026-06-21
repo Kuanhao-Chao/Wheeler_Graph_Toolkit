@@ -26,7 +26,7 @@ data file; §8 is the reproduction manifest.
 | **Performance — `-f`** | total `-f` time, DOCK4 DNA k=5 (1041 edges) | 15.2 s (pre-4.1) | **6.6 s** (≈ **2.3×**) | Fig 7, `data/micro.setup_solve.csv` |
 | **Performance — `-f`** | encoding *setup* time, same graph | 2.1 s | **0.14 s** (≈ **14×**) | Fig 7 |
 | **Performance — `-f`** | encoding asymptotics (cross-group A2 / within-group A3) | O(E²) / O(E_l²) | **O(E+L) / O(D_l²+E_l)** | §4 |
-| **Capability — scale** | largest graph recognized within 600 s (default SMT, `complete` family) | exp baseline CAPPED ≈ n=10 | **n ≈ 2900+** (≈290× past exp) | §5 (limit sweep in progress) |
+| **Capability — scale** | largest graph recognized within 600 s (default SMT, `complete` family) | exp baseline CAPPED at n=10 | **n = 2816** (THRESHOLD, ≈280× past exp) | §5, `summary/limit_summary.csv` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 
 **One-paragraph version.** The OLD recognizer's permutation backends *false-accepted* non-Wheeler
@@ -35,11 +35,13 @@ for every graph it finished and timed out on every non-Wheeler instance, so its 
 were meaningless. The NEW code agrees with an independent n!-enumeration oracle on **2447** graphs
 with **zero** disagreements, and decides non-Wheeler verdicts the OLD baseline was structurally
 incapable of. On top of that — *correctness first, performance second* — the Phase-4 sparse `-f`
-SMT encoding has a **strictly-smaller-or-equal constraint count** (guarded fallback), cuts encoding
-**setup** universally (~6–14×), and cuts **total** `-f` time ~2× on the largest *Wheeler* DNA graphs.
-We also report the honest cost: on a minority (~20%) of *non-Wheeler* (UNSAT) instances the extra
-auxiliary variables make z3's refutation slower (§4.2) — a real trade, not a free lunch. None of this
-touches the **default** backend, which is the production path and decides these graphs near-instantly.
+SMT encoding cuts encoding **setup** universally (~14× at k=5) and **total** `-f` time ~2× on the
+largest *Wheeler* DNA graphs. Building this report's sweeps also **caught a regression in the
+committed Phase 4.2 code** (its block-encoding guard fired too eagerly and slowed z3 on dense /
+non-Wheeler instances); the verification motivated a one-line fix (**Phase 4.3**, `D < E/2` guard,
+re-verified at 0 mismatches over ~9,700 graphs), after which NEW is **≥ OLD on every `-f` graph
+measured** — faster on Wheeler instances, neutral on non-Wheeler. None of this touches the
+**default** backend, which is the production path and decides these graphs near-instantly.
 
 ---
 
@@ -106,7 +108,7 @@ accept-everything behaviour. A live probe (`/tmp/wgt_probe`): on a 4-node non-WG
 | `recognizer_buggy` | `8ed7c4eb4` | recognizer **before** the Phase-1 correctness fixes |
 | `recognizer_pre41` | `c396d2b56` | `-f` with **dense** A2 (`O(E²)`) + dense A3, before the z3-unknown fix |
 | `recognizer_linux_old` (pre-4.2) | `3f9045d2d` | `-f` with **sparse A2** (Phase 4.1) + dense A3 |
-| `recognizer_linux` (**NEW**) | `d0c02ca37` | `-f` with sparse A2 **and** sparse A3 (Phase 4.2) + all fixes |
+| `recognizer_linux` (**NEW**) | `e37960ec7` | `-f` sparse A2 + sparse A3 with the **Phase 4.3** guard `2D<E` + all fixes |
 | `recognizer_e` (**NEW exp**) | `devel` | honest n!-enumeration decision procedure |
 | `recognizer_e_unsound` | `4cfd7a9e2` | the published exp baseline (accept-everything) |
 
@@ -194,8 +196,12 @@ size** dominates. The two sparsifications:
 | within-group **A3** (head order from tail order, per label `l`) | `O(E_l²)` all-pairs | `O(E_l²)` all-pairs | **`O(D_l²+E_l)`** endpoint-block (`#mn_/#mx_`), `D_l=min(distinct tails,heads)` |
 
 The Phase 4.2 block form is **equisatisfiable** with the all-pairs form (all atoms stay in QF_IDL;
-proof sketch in `ALGORITHM.md`) and is used only behind a **never-worse guard**
-`D_l(D_l−1)+2E_l < E_l(E_l−1)`, so all-distinct-endpoint groups fall back to the original loop.
+proof sketch in `ALGORITHM.md`) and is used only behind a guard **`2·D_l < E_l ∧
+D_l(D_l−1)+2E_l < E_l(E_l−1)`**. The atom-count clause alone (Phase 4.2) proved insufficient — it
+fires up to `D_l ≈ 0.7·E_l`, where the block's auxiliary variables make z3 *solve* slower despite
+fewer atoms (this report's verification caught it; §4.2/§5). The **`D_l < E_l/2`** clause (Phase 4.3)
+restricts the block to the regime where it genuinely helps, so all-distinct *and* merely-dense
+groups fall back to the verified pairwise loop.
 
 ### 4.1 Setup/solve split on the headline graphs (Fig 7)
 
@@ -214,39 +220,42 @@ The setup win is almost entirely **A3 (Phase 4.2)**: pre-4.1 → pre-4.2 barely 
 pre-4.2 → NEW collapses it (1.88 → 0.14 s). The smaller formula also roughly halves z3 solve time.
 TRPC1 k=5 (1049 edges) shows the same shape (setup 2.24 → 0.16 s, total 15.7 → 8.0 s).
 
-### 4.2 Distribution across the real corpus (Figs 4–6)
+### 4.2 Distribution across the real corpus — and a regression this report found and fixed (Figs 4–6)
 
 ![Fig 4](report_figs/F4_f_scatter_cpu.png)
 
 3-point sweep (pre-4.1 / pre-4.2 / NEW), `-b -f`, **string labels** (no `-i`, matching the biological
-corpora), median of replicates, 90 s per-graph timeout, on the DNA corpora
-(`data/graph/SMT_vs_RHSMT/{DeBruijnG,RevDetG}_DNA`; the full DeBruijn k-mer range incl. k=5 plus a
-representative non-WG-heavy RevDetG sample — the largest RevDetG non-WG graphs were sampled, not
-exhausted, to bound runtime). The distribution reveals a **verdict-dependent asymmetry that the
-single-graph headline hides**, and we report it plainly. Over the **290 graphs** all three versions
-decided (183 WG, 107 non-WG; CPU-time medians):
+corpora), median of replicates, all three binaries run **adjacently per graph** (so the per-graph
+comparison shares conditions), on **289 DNA graphs** (full DeBruijn k-mer range incl. k=5, plus a
+representative non-WG-heavy RevDetG sample). CPU-time medians over the graphs all three decided
+(181 WG, 108 non-WG; `data/ftiming_dna2.raw.jsonl`):
 
 | comparison | WG / SAT instances | non-WG / UNSAT instances |
 |---|--:|--:|
-| **pre-4.1 → NEW** (total Phase-4 gain) | median **1.43×** (max 2.34×) | median **1.44×** (max 2.07×) |
-| **pre-4.2 → NEW** (isolated A3 gain) | median **1.18×** (max 2.50×) | median **1.04×** (≈ neutral) |
+| **pre-4.1 → NEW** (total Phase-4 gain) | median **1.53×** faster | median **1.42×** faster |
+| **pre-4.2 → NEW** (isolated A3 gain)   | median **1.51×** faster | median **1.00×** (≈ neutral) |
 
-- **vs the original pre-4.1**, NEW is faster on *both* SAT and UNSAT instances (median ~1.43×) — a
-  clean win over the baseline that paper figures would have used.
-- **The isolated A3 step (pre-4.2 → NEW) helps SAT instances but is roughly neutral on UNSAT**, with
-  a **tail of 23 / 107 (≈21%) non-WG graphs where NEW is *slower*** than pre-4.2 (worst observed in
-  wall time: a 525-edge non-WG graph, 9.5 s → 67.8 s). The reason is structural and worth stating:
-  the block encoding trades a quadratic
-  *constraint* count for a linear number of **auxiliary order variables**, which shrink the formula
-  (great for *finding* a model on a Wheeler graph) but **enlarge the search space z3 must refute** to
-  prove *no* order exists on a non-Wheeler graph. Encoding **setup** still shrinks universally (it is
-  about building fewer constraints, SAT or UNSAT — ≈6× at k=4, ≈14× at k=5); the regression is
-  confined to z3 **solve** time on UNSAT instances.
+**NEW is now ≥ OLD on every DNA graph** — faster on Wheeler graphs (the block encoding fires), and
+neutral on non-Wheeler graphs (it falls back). **0 / 289 regressions** beyond measurement noise
+(worst remaining non-WG ratio 1.13×), **0 timeouts**.
 
-Fig 4 is the per-graph scatter (points below y=x = NEW faster), colored by verdict — non-WG points
-sit closer to / above the diagonal. Fig 5 is the speedup ECDF split by verdict (the asymmetry above).
-Fig 6 is the cactus/survival curve. The headline DOCK4 DNA k=5 graph (§4.1) is a *Wheeler* graph, so
-its 2.3× total speedup is representative of the SAT case, not the UNSAT case.
+> **This clean result is the *outcome* of a regression this report's verification caught.** The
+> original Phase 4.2 block encoding was gated only by an *atom-count* guard (`D(D-1)+2E < E(E-1)`),
+> which fires up to `D/E ≈ 0.7`. The block trades pairwise difference atoms for `2·D` auxiliary
+> integer variables; those aux vars **enlarge z3's search** and — measured here — made *solve* time
+> **worse** on dense / UNSAT instances even with fewer atoms. Before the fix, the same sweep showed a
+> tail of **23 / 107 (≈21%) non-WG graphs where NEW was slower** (worst, wall time: a 525-edge non-WG
+> graph **9.5 s → 67.8 s**), and the synthetic `complete` family regressed hard (§5). A setup/solve
+> split pinned the loss entirely in z3 **solve** (NEW *setup* was still faster: 0.17 s vs 0.35 s),
+> confirming the aux-variable hypothesis. **Phase 4.3** (commit `e37960ec7`) tightens the guard with a
+> `D < E/2` clause so the block fires only when it genuinely pays off (De Bruijn graphs, `D/E ≈ 0.25`)
+> and otherwise uses the verified pairwise loop. Correctness is unaffected (the block is
+> equisatisfiable; the guard only changes *when* it is used) — re-verified at **0 mismatches across
+> ~9,700 graphs** (`difftest` std + dense). The table and Figs 4–6 above are the **post-fix** numbers.
+
+Fig 4 is the per-graph scatter (points below y=x = NEW faster), colored by verdict. Fig 5 is the
+speedup ECDF split by verdict — both curves now sit right of 1.0 (the pre-fix UNSAT regression tail is
+gone; the non-WG curve is a near-vertical step at 1.0 = neutral fallback). Fig 6 is the cactus curve.
 
 ![Fig 5](report_figs/F5_speedup_ecdf_cpu.png)
 ![Fig 6](report_figs/F6_cactus_cpu.png)
@@ -275,7 +284,7 @@ moderate extra memory on tractable graphs to buy a large setup-time reduction �
 
 ### 4.4 The honest limit: all-distinct, dense groups
 
-When a label group has (near-)all-distinct endpoints, `D_l ≈ E_l`, the never-worse guard fails and
+When a label group has (near-)all-distinct endpoints, `D_l ≈ E_l`, the guard's `D_l < E_l/2` clause fails and
 the block form correctly **falls back** to the pairwise loop — so there is **no speedup** there. The
 extreme case is DOCK4 **AA** k=5 (6636 edges, 20-letter alphabet → many distinct endpoints):
 measured (`/tmp` probe, 90 s cap), the `-f` encoding **does not finish setup within 90 s for *any*
@@ -295,32 +304,64 @@ fact that the default backend is what one runs in practice.
 
 ## §5 Scalability — how large a graph can each algorithm recognize?
 
-> **Status: preliminary.** The `benchmark/limit_test/` ladder→bisect sweep (600 s timeout, R=3) is
-> still running at the time of this revision. The numbers below are the *in-progress* observations;
-> the final typed per-algorithm limits and Figs 8–10 (size-vs-time per family, the limits bar chart,
-> and the OLD-vs-NEW `-f` scalability overlay) are added in the §5 update once the sweep completes.
-> The harness is committed and resumable (`benchmark/limit_test/`), so these reproduce exactly.
+The `benchmark/limit_test/` harness climbs a geometric size ladder per (algorithm, family) under a
+**600 s** wall-clock timeout, takes the **median of R=3** replicate graphs per rung, and bisects the
+largest size still decided. Every rung doubles as a large-scale differential correctness test: the
+`complete` and `dnfa` families are Wheeler **by construction**, so every decisive verdict must be WG
+(the brute oracle anchors the small rungs) — **0 correctness failures across the whole sweep
+(CLEAN)**. Limits are **typed**: **THRESHOLD** = timeout-bounded (the algorithm would keep going with
+more time), **CAPPED** = a hard capability ceiling (`exp` over its n!·e² budget; `full` = z3 returns
+`unknown`/UNDECIDED, *not* a timeout; `wheelerize` trie-too-large), **UNREACHED** = no wall hit up to
+the ladder top. The `complete` family (all-distinct dense groups) is the symmetric worst case.
 
-The harness climbs a geometric size ladder per (algorithm, family) under a **600 s** wall-clock
-timeout, takes the **median of R=3** replicate graphs per rung, and bisects the largest size still
-decided. Every rung doubles as a large-scale differential correctness test: the `complete` and
-`dnfa` families are Wheeler **by construction**, so every decisive verdict must be WG (the brute
-oracle anchors the small rungs). Limits are **typed** — THRESHOLD (timeout-bounded), CAPPED
-(capability cap: `exp` over-budget, `full` z3-`unknown`, `wheelerize` trie-too-large), or UNREACHED.
+Final limits (`benchmark/limit_test/results/summary/limit_summary.csv`):
 
-Preliminary observations (in-progress; the `complete` family is the symmetric worst case):
+| backend | `complete` family | `dnfa` family | limit type |
+|---|--:|--:|---|
+| **default SMT** | **2816** (median 500 s) | **2176** (532 s) | THRESHOLD (timeout) |
+| permutation (`-s p`) | **240** (0.3 s) | **256** (33 s) | THRESHOLD (timeout) |
+| full-range `-f`, **NEW** | **832** (182 s) | **832** (161 s) | CAPPED (z3 UNDECIDED) |
+| full-range `-f`, **OLD** (pre-4.2) | **832** (177 s) | **832** (161 s) | CAPPED (z3 UNDECIDED) |
+| exponential (GT) | **10** | **10** | CAPPED (n!·e² budget) |
+| repair (`wheelerize`) | — | — | UNREACHED **8192** |
 
-| backend | `complete` family | `dnfa` family |
-|---|--:|--:|
-| **default SMT** | decides n ≈ **2900+** within 600 s (still climbing) | n ≈ **2300+** |
-| permutation (`-s p`) | n ≈ **192–240** | n ≈ **256** |
-| full-range (`-f`, NEW) | n ≈ **384** | (in progress) |
-| exponential (GT) | CAPPED ≈ n=10 (n!·e² budget) | CAPPED ≈ n=10 |
+![Fig 8a](report_figs/F8_size_vs_time_complete.png)
+![Fig 8b](report_figs/F8_size_vs_time_dnfa.png)
+![Fig 9](report_figs/F9_limits_bar.png)
 
-The default range-narrowed SMT backend is, as expected, the dramatically better scaler — an order of
-magnitude past the permutation and full-range backends, and ~290× past the exponential baseline's
-hard cap. The OLD-vs-NEW `-f` overlay (`full-old` = pre-4.2) is being collected and will quantify
-whether Phase 4.2 raises the `-f` max size as well as lowering its per-graph time.
+**The default range-narrowed SMT backend is the decisive scaler.** It decides ~**2816**-node
+`complete` graphs (and ~2176 `dnfa`) inside 600 s — and its limit is a *timeout*, not a wall, so it
+keeps climbing with more time. That is **~3.4×** past the full-range backend (832), **~12×** past the
+permutation backend (240), and **~280×** past the exponential baseline's hard capability cap (10).
+This is exactly why range-narrowing (Step 2 of the pipeline) is the production default: it shrinks the
+search space *before* the solver runs, and nothing else comes close.
+
+**The `-f` size ceiling is identical for NEW and OLD — and it is a z3 capability wall, not a
+timeout.** Both the NEW (Phase 4.2/4.3) and OLD (pre-4.2) full-range encodings stop at exactly
+**n=832** on both families, where z3 returns `unknown` (UNDECIDED) rather than a model or `unsat`.
+This is the honest, important nuance for the three-axes rule: **Phase 4.2/4.3 buys per-graph *time*
+(§4.2, ~1.5× on the real DNA corpus), not a higher *size* ceiling.** The ceiling is a property of z3
+on this `QF_IDL` encoding, the same for both. Fig 10 makes this concrete — on `complete` the OLD and
+NEW `-f` time curves essentially **coincide** and terminate at the same point (median 177 s vs 182 s
+at the wall, within noise). They coincide *because* `complete` is dense (`D/E ≈ 0.70`), so Phase 4.3's
+tightened guard correctly keeps the A3 block **off** and NEW falls back to the verified pairwise loop
+— making NEW ≡ OLD here by construction. The block's speedup is visible on the sparse De Bruijn graphs
+(`D/E ≈ 0.25`, §4.2), not on this synthetic dense worst case.
+
+![Fig 10a](report_figs/F10_old_vs_new_complete.png)
+![Fig 10b](report_figs/F10_old_vs_new_dnfa.png)
+
+> **Methodology note — a confound this report caught and corrected.** An earlier draft of this table
+> reported `full` (NEW `-f`) capping at **n=384**, below the OLD `-f`'s 832 — which would have wrongly
+> read as a *regression*. That number was a **measurement artifact**: the `full` rungs had run
+> concurrently with the `-f` timing and correctness sweeps, under heavy machine load, so they timed
+> out early. Re-running `full` **clean** (idle machine) gives **832**, identical to `full-old`. The
+> committed CSV is the clean re-run. Contention can masquerade as an algorithmic difference; isolating
+> the measurement is what kept the §5 conclusion honest (no false regression, no false speedup).
+
+The exponential baseline caps at **n=10** — not a timeout but its n!-ordering enumeration budget
+(O(n!·e²)); past that it returns `-1`/over-cap by design. Repair (`wheelerize`, §6) never hit a wall:
+trie construction is near-linear, so it reached the ladder top (**8192**) UNREACHED.
 
 ---
 
@@ -356,15 +397,17 @@ cluster = merging, a >1.0 tail = genuine node-splitting).
   timed out on most graphs, so the published `GT_vs_WGT` verdicts were meaningless and its timings
   reflected useless work. Re-running with the honest binary changes both the verdicts and the cost
   model (n!-ordering enumeration, not `2^(e+n)`).
-- **Performance gains are asymptotic, guarded, and honestly two-sided.** The sparse forms have a
-  strictly-smaller-or-equal *constraint count* (the never-worse guard only switches them on when they
-  reduce it), and encoding *setup* shrinks universally. But fewer constraints come at the price of
-  more auxiliary order variables, and that is a genuine trade: it speeds up *finding* a model (SAT /
-  Wheeler graphs — the headline k=5 wins) while it can slow down *refuting* one (UNSAT / non-Wheeler
-  graphs, ~20% of which regress; §4.2). Net, NEW still beats the original pre-4.1 on both SAT and
-  UNSAT; the regression is purely the isolated A3 step on UNSAT. A future refinement could gate the
-  block encoding on an SAT/UNSAT heuristic, or only on the SAT-leaning default-backend path. Crucially
-  the **default** backend is untouched and is what runs in practice; `-f` is the completeness path.
+- **Verification didn't just measure the improvement — it improved it.** Building this report's
+  OLD-vs-NEW sweeps surfaced that Phase 4.2's block encoding, gated only by an atom-count guard,
+  *regressed* z3 solve time on dense / UNSAT instances (the aux variables enlarge the search): a tail
+  of ~21% of non-WG DNA graphs and the entire synthetic `complete` family (n=512: 36.5 s → timeout)
+  were slower than the OLD code. That is the kind of finding an honest benchmark exists to catch.
+  Phase 4.3 added a `D < E/2` clause so the block fires only where it pays off; re-verified at 0
+  mismatches across ~9,700 graphs, and the regressions are gone (§4.2, §5). Net: the sparse forms now
+  have a strictly-smaller-or-equal *constraint count* **and** are ≥ the OLD code on every graph
+  measured — faster on Wheeler instances (median ~1.5×), neutral on non-Wheeler. Encoding *setup*
+  shrinks universally (~14× at k=5). Crucially the **default** backend is untouched and is what runs
+  in practice; `-f` is the completeness path.
 - **Scope honesty.** `-f` is an NP-hard full-search path; no encoding makes it polynomial. The
   default range-narrowed backend is what makes recognition fast in practice; `-f` exists for
   completeness and for graphs where the heuristic's narrowing is itself the question.
@@ -406,7 +449,7 @@ python3 benchmark/limit_test/limit_test.py --timeout 600 --replicates 3 \
 | F1 false-accepts | `data/corr_buggy.log`, `data/corr_new.log`, `data/exp_unsound.log` | `plot_report.py` |
 | F2 verdict agreement | `data/static_metrics.json` (← `VERDICT_AGREEMENT.md`) | `plot_report.py` |
 | F3 capability | `data/static_metrics.json` (← `PHASE3_IMPACT.md`) | `plot_report.py` |
-| F4–F6 `-f` scatter/ECDF/cactus | `data/ftiming_dna.raw.jsonl` (DNA corpus; AA covered by the §4.4 probe) | `plot_report.py` |
+| F4–F6 `-f` scatter/ECDF/cactus | `data/ftiming_dna2.raw.jsonl` (post-4.3 fair re-run; AA via §4.4 probe) | `plot_report.py` |
 | F7 / F7b setup-solve / memory | `data/micro.setup_solve.csv` / `data/micro.mem.csv` | `plot_report.py` |
 | F8–F10 scalability | `limit_test/results/summary/limit_summary.csv` + `raw/runs.jsonl` | `plot_limit.py` |
 | F11 repair blow-up | `data/repair_records.json` | `plot_report.py` |
@@ -435,3 +478,11 @@ Each was found by **oracle disagreement** and is regression-covered. File:line a
 
 (Also fixed in the oracle itself: a `n≤1 → Wheeler` shortcut that skipped axiom checks; a single node
 with two different-label self-loops violates A2. Now only `n==0` shortcuts.)
+
+**Performance regression found by this report (not a correctness bug):** the Phase 4.2 `-f` block
+encoding was gated only by an atom-count guard, which fired up to `D/E ≈ 0.7` and there *slowed* z3's
+solve (the `2·D` aux variables enlarge the search) — a 512-node complete WG went 36.5 s → timeout, and
+~21% of non-WG DNA graphs regressed (worst 9.5 s → 67.8 s). Building the OLD-vs-NEW `-f` sweeps for
+this report surfaced it; **Phase 4.3** (`smt.cpp`, commit `e37960ec7`) adds a `D < E/2` clause so the
+block fires only where it pays off, restoring NEW ≥ OLD on every `-f` graph measured. Correctness
+unaffected (re-verified 0 mismatches / ~9,700 graphs); see §4.2.

@@ -1,0 +1,11 @@
+algo,family,kind,limit_n,timeout_s,fail_reason,median_wall_at_limit
+smt,complete,THRESHOLD,2816,600.0,TIMEOUT,500.1389
+smt,dnfa,THRESHOLD,2176,600.0,TIMEOUT,531.9392
+perm,complete,THRESHOLD,240,600.0,TIMEOUT,0.3345
+perm,dnfa,THRESHOLD,256,600.0,TIMEOUT,32.9497
+full,complete,CAPPED,832,600.0,UNDECIDED,181.889
+full,dnfa,CAPPED,832,600.0,UNDECIDED,161.3104
+exp,complete,CAPPED,10,600.0,CAPPED,0.8213
+exp,dnfa,CAPPED,10,600.0,CAPPED,0.5171
+full-old,complete,CAPPED,832,600.0,UNDECIDED,177.026
+full-old,dnfa,CAPPED,832,600.0,UNDECIDED,161.2346

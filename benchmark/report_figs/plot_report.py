@@ -215,8 +215,13 @@ def load_ftiming():
     _verdict columns -- matching what the figure code expects. Reading the jsonl rather than the
     end-of-run CSV lets the figures render on partial data while the sweep is still running.
     """
+    # Prefer the post-Phase-4.3 fair re-measurement (ftiming_dna2) when present; it supersedes the
+    # pre-fix DNA sweep (ftiming_dna), which measured the too-loose-guard NEW under contention.
+    dna_file = ("ftiming_dna2.raw.jsonl"
+                if os.path.exists(os.path.join(DATA, "ftiming_dna2.raw.jsonl"))
+                else "ftiming_dna.raw.jsonl")
     per_graph = {}
-    for tag, fn, T in (("DNA", "ftiming_dna.raw.jsonl", TIMEOUT_DNA),
+    for tag, fn, T in (("DNA", dna_file, TIMEOUT_DNA),
                        ("AA", "ftiming_aa.raw.jsonl", TIMEOUT_AA)):
         path = os.path.join(DATA, fn)
         if not os.path.exists(path):

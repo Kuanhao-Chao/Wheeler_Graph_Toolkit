@@ -1,0 +1,139 @@
+
+=== limit: smt on complete (T=600.0s, R=3) ===
+  [smt       complete   ] n=8      -> PASS  med=0.00s
+  [smt       complete   ] n=16     -> PASS  med=0.02s
+  [smt       complete   ] n=32     -> PASS  med=0.03s
+  [smt       complete   ] n=64     -> PASS  med=0.06s
+  [smt       complete   ] n=128    -> PASS  med=0.16s
+  [smt       complete   ] n=256    -> PASS  med=0.79s
+  [smt       complete   ] n=512    -> PASS  med=3.55s
+  [smt       complete   ] n=1024   -> PASS  med=18.85s
+  [smt       complete   ] n=2048   -> PASS  med=180.66s
+  [smt       complete   ] n=4096   -> FAIL(TIMEOUT)
+  [smt       complete   ] bisect n=3072   -> FAIL(TIMEOUT)
+  [smt       complete   ] bisect n=2560   -> PASS
+  [smt       complete   ] bisect n=2816   -> PASS
+  [smt       complete   ] bisect n=2944   -> FAIL(TIMEOUT)
+
+=== limit: smt on dnfa (T=600.0s, R=3) ===
+  [smt       dnfa       ] n=8      -> PASS  med=0.02s
+  [smt       dnfa       ] n=16     -> PASS  med=0.02s
+  [smt       dnfa       ] n=32     -> PASS  med=0.03s
+  [smt       dnfa       ] n=64     -> PASS  med=0.06s
+  [smt       dnfa       ] n=128    -> PASS  med=0.19s
+  [smt       dnfa       ] n=256    -> PASS  med=0.95s
+  [smt       dnfa       ] n=512    -> PASS  med=5.66s
+  [smt       dnfa       ] n=1024   -> PASS  med=34.10s
+  [smt       dnfa       ] n=2048   -> PASS  med=402.85s
+  [smt       dnfa       ] n=4096   -> FAIL(TIMEOUT)
+  [smt       dnfa       ] bisect n=3072   -> FAIL(TIMEOUT)
+  [smt       dnfa       ] bisect n=2560   -> FAIL(TIMEOUT)
+  [smt       dnfa       ] bisect n=2304   -> FAIL(TIMEOUT)
+  [smt       dnfa       ] bisect n=2176   -> PASS
+
+=== limit: perm on complete (T=600.0s, R=3) ===
+  [perm      complete   ] n=8      -> PASS  med=0.00s
+  [perm      complete   ] n=16     -> PASS  med=0.01s
+  [perm      complete   ] n=32     -> PASS  med=0.01s
+  [perm      complete   ] n=64     -> PASS  med=0.01s
+  [perm      complete   ] n=128    -> PASS  med=0.02s
+  [perm      complete   ] n=256    -> FAIL(TIMEOUT)
+  [perm      complete   ] bisect n=192    -> PASS
+  [perm      complete   ] bisect n=224    -> PASS
+  [perm      complete   ] bisect n=240    -> PASS
+
+=== limit: perm on dnfa (T=600.0s, R=3) ===
+  [perm      dnfa       ] n=8      -> PASS  med=0.00s
+  [perm      dnfa       ] n=16     -> PASS  med=0.01s
+  [perm      dnfa       ] n=32     -> PASS  med=0.01s
+  [perm      dnfa       ] n=64     -> PASS  med=0.01s
+  [perm      dnfa       ] n=128    -> PASS  med=0.02s
+  [perm      dnfa       ] n=256    -> PASS  med=32.95s
+  [perm      dnfa       ] n=512    -> FAIL(TIMEOUT)
+  [perm      dnfa       ] bisect n=384    -> FAIL(TIMEOUT)
+  [perm      dnfa       ] bisect n=320    -> FAIL(TIMEOUT)
+  [perm      dnfa       ] bisect n=288    -> FAIL(TIMEOUT)
+  [perm      dnfa       ] bisect n=272    -> FAIL(TIMEOUT)
+
+=== limit: full on complete (T=600.0s, R=3) ===
+  [full      complete   ] n=8      -> PASS  med=0.02s
+  [full      complete   ] n=16     -> PASS  med=0.02s
+  [full      complete   ] n=32     -> PASS  med=0.04s
+  [full      complete   ] n=64     -> PASS  med=0.13s
+  [full      complete   ] n=128    -> PASS  med=0.66s
+  [full      complete   ] n=256    -> PASS  med=5.02s
+  [full      complete   ] n=512    -> PASS  med=36.68s
+  [full      complete   ] n=1024   -> FAIL(TIMEOUT)
+  [full      complete   ] bisect n=768    -> PASS
+  [full      complete   ] bisect n=896    -> FAIL(UNDECIDED)
+  [full      complete   ] bisect n=832    -> PASS
+  [full      complete   ] bisect n=864    -> FAIL(UNDECIDED)
+
+=== limit: full on dnfa (T=600.0s, R=3) ===
+  [full      dnfa       ] n=8      -> PASS  med=0.02s
+  [full      dnfa       ] n=16     -> PASS  med=0.02s
+  [full      dnfa       ] n=32     -> PASS  med=0.04s
+  [full      dnfa       ] n=64     -> PASS  med=0.12s
+  [full      dnfa       ] n=128    -> PASS  med=0.58s
+  [full      dnfa       ] n=256    -> PASS  med=3.67s
+  [full      dnfa       ] n=512    -> PASS  med=33.93s
+  [full      dnfa       ] n=1024   -> FAIL(TIMEOUT)
+  [full      dnfa       ] bisect n=768    -> PASS
+  [full      dnfa       ] bisect n=896    -> FAIL(UNDECIDED)
+  [full      dnfa       ] bisect n=832    -> PASS
+  [full      dnfa       ] bisect n=864    -> FAIL(UNDECIDED)
+
+=== limit: exp on complete (T=600.0s, R=3) ===
+  [exp       complete   ] n=8      -> PASS  med=0.02s
+  [exp       complete   ] n=12     -> FAIL(CAPPED)
+  [exp       complete   ] bisect n=10     -> PASS
+
+=== limit: exp on dnfa (T=600.0s, R=3) ===
+  [exp       dnfa       ] n=8      -> PASS  med=0.02s
+  [exp       dnfa       ] n=12     -> FAIL(CAPPED)
+  [exp       dnfa       ] bisect n=10     -> PASS
+
+=== limit: full-old on complete (T=600.0s, R=3) ===
+  [full-old  complete   ] n=8      -> PASS  med=0.02s
+  [full-old  complete   ] n=16     -> PASS  med=0.02s
+  [full-old  complete   ] n=32     -> PASS  med=0.04s
+  [full-old  complete   ] n=64     -> PASS  med=0.13s
+  [full-old  complete   ] n=128    -> PASS  med=0.69s
+  [full-old  complete   ] n=256    -> PASS  med=4.36s
+  [full-old  complete   ] n=512    -> PASS  med=37.64s
+  [full-old  complete   ] n=1024   -> FAIL(TIMEOUT)
+  [full-old  complete   ] bisect n=768    -> PASS
+  [full-old  complete   ] bisect n=896    -> FAIL(UNDECIDED)
+  [full-old  complete   ] bisect n=832    -> PASS
+  [full-old  complete   ] bisect n=864    -> FAIL(UNDECIDED)
+
+=== limit: full-old on dnfa (T=600.0s, R=3) ===
+  [full-old  dnfa       ] n=8      -> PASS  med=0.02s
+  [full-old  dnfa       ] n=16     -> PASS  med=0.02s
+  [full-old  dnfa       ] n=32     -> PASS  med=0.04s
+  [full-old  dnfa       ] n=64     -> PASS  med=0.12s
+  [full-old  dnfa       ] n=128    -> PASS  med=0.59s
+  [full-old  dnfa       ] n=256    -> PASS  med=4.02s
+  [full-old  dnfa       ] n=512    -> PASS  med=33.31s
+  [full-old  dnfa       ] n=1024   -> FAIL(TIMEOUT)
+  [full-old  dnfa       ] bisect n=768    -> PASS
+  [full-old  dnfa       ] bisect n=896    -> FAIL(UNDECIDED)
+  [full-old  dnfa       ] bisect n=832    -> PASS
+  [full-old  dnfa       ] bisect n=864    -> FAIL(UNDECIDED)
+
+==================== LIMIT SUMMARY ====================
+timeout T = 600.0s, replicates R = 3
+  smt        complete    -> THRESHOLD  largest decided n = 2816
+  smt        dnfa        -> THRESHOLD  largest decided n = 2176
+  perm       complete    -> THRESHOLD  largest decided n = 240
+  perm       dnfa        -> THRESHOLD  largest decided n = 256
+  full       complete    -> CAPPED     capability cap at n = 832 (reason UNDECIDED)
+  full       dnfa        -> CAPPED     capability cap at n = 832 (reason UNDECIDED)
+  exp        complete    -> CAPPED     capability cap at n = 10 (reason CAPPED)
+  exp        dnfa        -> CAPPED     capability cap at n = 10 (reason CAPPED)
+  full-old   complete    -> CAPPED     capability cap at n = 832 (reason UNDECIDED)
+  full-old   dnfa        -> CAPPED     capability cap at n = 832 (reason UNDECIDED)
+
+wrote benchmark/limit_test/results/summary/limit_summary.csv
+correctness failures: 0 (CLEAN)
+DONE_FULL2

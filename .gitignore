@@ -22,9 +22,12 @@ generator/MultiSeqWG_generator/
 generator/PrefixSortedGraph/
 
 # build artifacts and test scratch (verify/ + repair/ phases)
-recognizer/bin/recognizer_linux
+# all locally-built recognizer binaries (NEW + OLD historical comparison binaries) are
+# platform-specific and regenerable from git history; only the committed macOS `recognizer` is tracked.
+recognizer/bin/recognizer_*
 verify/_edgetmp/
 verify/repro/
+verify/repro_exp/
 repair/_wtmp/
 
 # Phase 3 benchmark re-run: regenerable results tree + scratch (reports/docs are tracked)
