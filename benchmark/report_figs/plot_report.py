@@ -476,6 +476,177 @@ def fig11_repair():
     print(f"wrote {p}")
 
 
+# ----------------------------------------------------------------------------- F12 (Q1)
+TYPE_FROM_DIR = {
+    "DeBruijnG_DNA": "De Bruijn\nDNA", "DeBruijnG_AA": "De Bruijn\nAA",
+    "RevDetG_DNA": "RevDet\nDNA", "RevDetG_AA": "RevDet\nAA",
+}
+TYPE_ORDER = ["De Bruijn\nDNA", "De Bruijn\nAA", "RevDet\nDNA", "RevDet\nAA"]
+
+
+def load_ftiming_bytype():
+    """Pivot ftiming_bytype.raw.jsonl into per-graph dicts tagged with graph type (from the dot path).
+
+    Returns rows with _type, edges, and per-binary {label}_wall/_status plus new_verdict. Reads the
+    jsonl incrementally so it renders on partial data while the per-type sweep is still running."""
+    path = os.path.join(DATA, "ftiming_bytype.raw.jsonl")
+    if not os.path.exists(path):
+        return None
+    per_graph = {}
+    with open(path) as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            dotpath = rec["dot"]
+            gtype = next((TYPE_FROM_DIR[d] for d in TYPE_FROM_DIR if f"/{d}/" in dotpath), None)
+            if gtype is None:
+                continue
+            g = per_graph.setdefault(dotpath, {"_type": gtype, "edges": rec["edges"]})
+            lab = rec["label"]
+            g[f"{lab}_wall"] = rec.get("median_wall")
+            g[f"{lab}_status"] = rec.get("status", "")
+            if rec.get("verdict") is not None:
+                g["new_verdict" if lab == "new" else f"{lab}_verdict"] = str(rec["verdict"])
+    return list(per_graph.values())
+
+
+def fig12_type_speedup():
+    """Per-graph-type median `-f` wall speedup (pre41->new = total Phase-4 gain; pre42->new = A3 gain),
+    split WG/non-WG, one panel per baseline. Includes an explicit 0-regression check."""
+    rows = load_ftiming_bytype()
+    if not rows:
+        print("F12 skipped (need ftiming_bytype.raw.jsonl)")
+        return
+    vstyle = [("WG (SAT)", "1", "#1f77b4"), ("non-WG (UNSAT)", "-1", "#d62728")]
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.6), sharey=True)
+    regressions = []
+    for ax, old, title in ((axes[0], "pre41", "total Phase-4 gain  (pre-4.1 → NEW)"),
+                           (axes[1], "pre42", "isolated A3 gain  (pre-4.2 → NEW)")):
+        types = [t for t in TYPE_ORDER if any(r["_type"] == t for r in rows)]
+        x = np.arange(len(types))
+        bw = 0.38
+        for vi, (vlabel, vval, color) in enumerate(vstyle):
+            meds, ns = [], []
+            for t in types:
+                ratios = []
+                for r in rows:
+                    if r["_type"] != t or r.get("new_verdict") != vval:
+                        continue
+                    ov, nv = r.get(f"{old}_wall"), r.get("new_wall")
+                    if (r.get(f"{old}_status") == "DECISIVE" and r.get("new_status") == "DECISIVE"
+                            and ov and nv and nv > 0):
+                        ratios.append(ov / nv)
+                med = float(np.median(ratios)) if ratios else 0.0
+                meds.append(med)
+                ns.append(len(ratios))
+                if ratios and med < 1.0:
+                    regressions.append((old, t.replace("\n", " "), vlabel, med))
+            off = (vi - 0.5) * bw
+            bars = ax.bar(x + off, meds, bw, color=color, label=vlabel)
+            for b, m, n in zip(bars, meds, ns):
+                if n:
+                    ax.text(b.get_x() + b.get_width() / 2, m + 0.03, f"{m:.2f}×\nn={n}",
+                            ha="center", va="bottom", fontsize=7.5)
+        ax.axhline(1.0, ls="--", color="gray", lw=1, label="1× (no change)")
+        ax.set_xticks(x)
+        ax.set_xticklabels(types, fontsize=9)
+        ax.set_title(title)
+        ax.legend(fontsize=8.5, loc="upper right")
+        ax.grid(True, axis="y", alpha=0.25)
+        ax.margins(y=0.18)
+    axes[0].set_ylabel("median `-f` wall speedup  (OLD / NEW;  >1 = NEW faster)")
+    fig.suptitle("Per-graph-type `-f` speedup, by verdict  (biological corpora)", fontsize=12)
+    p = os.path.join(OUT, "F12_type_speedup.png")
+    fig.tight_layout(); fig.savefig(p, dpi=300); plt.close(fig)
+    if regressions:
+        print(f"  !! F12 0-regression check FAILED: {regressions}")
+    else:
+        print("  F12 0-regression check OK (no type/verdict median < 1×)")
+    print(f"wrote {p}")
+
+
+# ----------------------------------------------------------------------------- F15 (Q4)
+GEN_COLOR = {"debruijn": "#1f77b4", "revdet": "#ff7f0e", "trie": "#2ca02c"}
+GEN_DISP = {"debruijn": "De Bruijn", "revdet": "RevDet", "trie": "Trie"}
+
+
+def fig15_practicality():
+    """MSA → Wheeler graph practicality on real Ensembl gene MSAs (msa_practicality.csv):
+    (A) Wheeler-rate by construction, (B) graph size vs MSA width, (C) recognition-time ECDF."""
+    rows = load_csv(os.path.join(DATA, "msa_practicality.csv"))
+    if not rows:
+        print("F15 skipped (need msa_practicality.csv)")
+        return
+    gens = [g for g in ("debruijn", "revdet", "trie") if any(r["generator"] == g for r in rows)]
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5.0))
+
+    # (A) Wheeler-rate (stacked 100% bars, WG vs non-WG), with counts
+    ax = axes[0]
+    x = np.arange(len(gens))
+    wg_frac, nw_frac, labels = [], [], []
+    for g in gens:
+        gr = [r for r in rows if r["generator"] == g and r["verdict"] in ("1", "-1", "0")]
+        tot = len(gr) or 1
+        nwg = sum(1 for r in gr if r["verdict"] == "1")
+        nnw = sum(1 for r in gr if r["verdict"] in ("-1", "0"))
+        wg_frac.append(100 * nwg / tot)
+        nw_frac.append(100 * nnw / tot)
+        labels.append((nwg, nnw))
+    b1 = ax.bar(x, wg_frac, 0.6, color="#2ca02c", label="Wheeler")
+    b2 = ax.bar(x, nw_frac, 0.6, bottom=wg_frac, color="#d62728", label="not Wheeler")
+    for xi, (nwg, nnw), wf in zip(x, labels, wg_frac):
+        ax.text(xi, 50, f"{nwg} WG\n{nnw} non", ha="center", va="center", fontsize=8.5,
+                color="white", fontweight="bold")
+    ax.set_xticks(x); ax.set_xticklabels([GEN_DISP[g] for g in gens])
+    ax.set_ylabel("share of real MSAs (%)")
+    ax.set_title("(A) Wheeler-rate by construction")
+    ax.legend(fontsize=8.5, loc="lower center")
+    ax.set_ylim(0, 100)
+
+    # (B) graph size vs MSA width (aligned length), colored by generator
+    ax = axes[1]
+    for g in gens:
+        xs = [fnum(r["aln_len"]) for r in rows if r["generator"] == g and fnum(r["nodes"]) is not None]
+        ys = [fnum(r["nodes"]) for r in rows if r["generator"] == g and fnum(r["nodes"]) is not None]
+        ax.scatter(xs, ys, s=12, alpha=0.5, color=GEN_COLOR[g], label=GEN_DISP[g])
+    ax.set_xscale("log"); ax.set_yscale("log")
+    ax.set_xlabel("MSA aligned length (columns, log)")
+    ax.set_ylabel("graph size (nodes, log)")
+    ax.set_title("(B) Graph size vs MSA width\n(per-seq length capped at l=300)")
+    ax.legend(fontsize=8.5)
+    ax.grid(True, which="both", alpha=0.2)
+
+    # (C) recognition-time ECDF (all sub-second)
+    ax = axes[2]
+    for g in gens:
+        ms = sorted(fnum(r["wall_s"]) * 1000 for r in rows
+                    if r["generator"] == g and fnum(r["wall_s"]) is not None)
+        if not ms:
+            continue
+        ms = np.array(ms)
+        y = np.arange(1, len(ms) + 1) / len(ms)
+        ax.step(ms, y, where="post", color=GEN_COLOR[g],
+                label=f"{GEN_DISP[g]} (median {np.median(ms):.0f} ms, max {ms.max():.0f} ms)")
+    ax.axvline(1000, ls="--", color="gray", lw=1, label="1 s")
+    ax.set_xscale("log")
+    ax.set_xlabel("recognition wall time (ms, log)")
+    ax.set_ylabel("fraction of MSAs (ECDF)")
+    ax.set_title("(C) Recognition time on real graphs")
+    ax.legend(fontsize=8.0, loc="lower right")
+    ax.grid(True, which="both", alpha=0.2)
+
+    fig.suptitle(f"MSA → Wheeler graph on {len({r['gene'] for r in rows})} Ensembl gene MSAs "
+                 f"({len(rows)} construction runs)", fontsize=12)
+    p = os.path.join(OUT, "F15_msa_practicality.png")
+    fig.tight_layout(); fig.savefig(p, dpi=300); plt.close(fig)
+    print(f"wrote {p}")
+
+
 def main():
     figs = [
         ("fig1", fig1_correctness),
@@ -488,6 +659,8 @@ def main():
         ("fig7", fig7_setup_solve),
         ("fig7b", fig7b_memory),
         ("fig11", fig11_repair),
+        ("fig12", fig12_type_speedup),
+        ("fig15", fig15_practicality),
     ]
     only = sys.argv[1:]
     for name, f in figs:
