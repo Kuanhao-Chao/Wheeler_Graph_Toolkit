@@ -4,7 +4,7 @@ This report consolidates the multi-phase verification and improvement of the WGT
 ("Wheelie", `recognizer/src/`) and the exponential baseline (`benchmark/exponential_recognizer/`),
 and compares the **NEW** code (the fixed/sparsened `devel` branch) head-to-head against the **OLD**
 code, rebuilt from the exact historical commits. Every claim traces to a re-runnable command and a
-data file; §8 is the reproduction manifest.
+data file; §9 is the reproduction manifest.
 
 > **The cardinal rule of this report: three axes, never merged into one "X % better."**
 > A faster wrong answer is not progress. We separate
@@ -28,6 +28,7 @@ data file; §8 is the reproduction manifest.
 | **Performance — `-f`** | encoding asymptotics (cross-group A2 / within-group A3) | O(E²) / O(E_l²) | **O(E+L) / O(D_l²+E_l)** | §4 |
 | **Capability — scale** | largest graph recognized within 600 s (default SMT, `complete` family) | exp baseline CAPPED at n=10 | **n = 2816** (THRESHOLD, ≈280× past exp) | §5, `summary/limit_summary.csv` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
+| **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
 
 **One-paragraph version.** The OLD recognizer's permutation backends *false-accepted* non-Wheeler
 graphs, and the OLD exponential baseline was not a decision procedure at all — it answered "Wheeler"
@@ -101,7 +102,7 @@ accept-everything behaviour. A live probe (`/tmp/wgt_probe`): on a 4-node non-WG
 `0`(non-WG) and `1`(WG) respectively.
 
 **OLD-binary provenance** (rebuilt from git via worktrees; Z3 statically linked from
-`recognizer/src/libz3.a`; build line in §8):
+`recognizer/src/libz3.a`; build line in §9):
 
 | name | commit | what it is |
 |---|---|---|
@@ -186,6 +187,10 @@ non-Wheeler graphs — so it could *never* classify a single non-Wheeler instanc
 orthologue graphs** (BTBD17, FAM53A, LCP1, TRAM1, TRPC1) — verdicts the published baseline was
 structurally incapable of emitting. Scaling capability (largest graph decidable within a time budget)
 is §5.
+
+---
+
+## §4 Performance — sparser `-f` encodings and where they pay off
 
 The `-f` path is where Phase 4.1/4.2 live. It hands the entire order space to z3, so the **encoding
 size** dominates. The two sparsifications:
@@ -387,7 +392,69 @@ cluster = merging, a >1.0 tail = genuine node-splitting).
 
 ---
 
-## §7 Discussion
+## §7 From MSA to Wheeler graph — constructions, practicality, and a turnkey CLI
+
+The recognizer *decides* whether a graph is Wheeler; it does not say where biological graphs come
+from. This section closes that loop: starting from a **multiple-sequence alignment (MSA)**, what graph
+do you build, does it tend to be Wheeler, and is recognition fast enough to be a routine step? We
+answer empirically on **50 Ensembl ortholog gene MSAs** (25 DNA, 25 amino-acid; 15–328 sequences each;
+aligned length 65–144,114 columns), running every MSA through three constructions for **500 graph
+builds + recognitions** (`benchmark/report_figs/data/msa_practicality.csv`).
+
+**The three constructions** (all in `generator/`, driven by the same `-k/-l/-a` knobs — `k`-mer size
+for De Bruijn, per-sequence length cap `l`, number of sequences `a`):
+
+- **De Bruijn** (`DeBruijnGraph_generator`): the order-(k-1) De Bruijn graph of the sequences' k-mers —
+  nodes are distinct (k-1)-mers, each k-mer is an edge labelled by its last character, and identical
+  k-mers are **merged** into one node. Compact and the natural choice for assembly-style graphs.
+- **Reverse-deterministic column automaton** (`RevDetGraph_generator`): parse the alignment columns
+  into an automaton and merge states so that, **reading backwards**, each (state, label) pair has at
+  most one predecessor.
+- **Trie** (`Trie_generator`): the prefix tree of the (ungapped) sequences.
+
+**Which tend to be Wheeler — measured, and it corrects intuition** (Fig 15A):
+
+| construction | Wheeler-rate (real MSAs) | median size | median recognition |
+|---|--:|--:|--:|
+| **De Bruijn** | **100%** (300/300) | 330 nodes | 78 ms |
+| **Trie** | **100%** (100/100) | 1199 nodes | 169 ms |
+| **RevDet** | **1%** (1/100) | 496 nodes | 62 ms |
+
+The trie result is theoretically expected — a prefix tree is a *canonical* Wheeler graph (order nodes
+by the co-lex rank of their incoming string), so it is always Wheeler; this is the same fact §6's
+repair exploits. The **De Bruijn** result (100% here, across k ∈ {3,5,7} and a ∈ {4,8}) says the
+collapsed k-mer graphs of these highly-similar ortholog sets admit a Wheeler order at every setting we
+tried. The striking one is **RevDet: just 1% (1/100)** — despite being *reverse-deterministic*, the
+column automaton almost never admits a single global Wheeler order on real MSAs (the lone exception was
+*DOCK4* DNA at a=4). Reverse-determinism is necessary but nowhere near sufficient for Wheeler-ness.
+
+![Fig 15](report_figs/F15_msa_practicality.png)
+
+**Practicality — recognition is instant on real data.** Across all **500** runs, **every** graph was
+decided in **under one second** (Fig 15C): De Bruijn median 78 ms (max 432 ms), RevDet median 62 ms
+(max 124 ms), trie median 169 ms (max 860 ms). Graph size stays bounded and grows only mildly with MSA
+width (Fig 15B): the largest graph in the study was a 2,399-node trie, decided in 455 ms. These sizes
+sit **far below** the scalability ceiling of §5 (the production SMT backend clears multi-thousand-node
+*dense synthetic* graphs, and real biological graphs are far sparser and easier) — so for MSA-derived
+graphs the recognizer is never the bottleneck; construction and I/O dominate. *(Honesty caveat: per
+sequence length is capped at l=300. Uncapped, a trie/RevDet of a 144k-column alignment would blow up to
+~10⁶ nodes — a construction-scale problem, not a recognition one; the sub-second claim is for the
+realistic capped sizes that the study sweeps.)*
+
+**Turnkey CLI.** `pipeline/fasta_to_wg.py` chains these existing tools end-to-end — FASTA MSA in →
+chosen construction → DOT → recognizer → verdict + size + wall time out — adding no new graph logic:
+
+```bash
+python3 pipeline/fasta_to_wg.py MSA.fa --generator debruijn -k 5 -l 200 -a 8
+python3 pipeline/fasta_to_wg.py MSA.fa --generator revdet  -l 100 -a 10 --backend f --keep-dot out.dot
+python3 pipeline/fasta_to_wg.py MSA.fa --generator trie    -a 6 --tsv     # machine-readable row
+```
+
+The whole-corpus practicality sweep behind Fig 15 is `pipeline/msa_practicality.py`.
+
+---
+
+## §8 Discussion
 
 - **Correct first, fast second.** The most consequential change is not a speedup — it is that the
   recognizer and the exponential baseline now give *trustworthy* verdicts. The OLD permutation
@@ -414,7 +481,7 @@ cluster = merging, a >1.0 tail = genuine node-splitting).
 
 ---
 
-## §8 Reproducibility
+## §9 Reproducibility
 
 **Build (Linux), run from `recognizer/`:**
 ```bash
@@ -435,11 +502,13 @@ bash benchmark/report_figs/run_micro.sh
 python3 benchmark/limit_test/limit_test.py --timeout 600 --replicates 3 \
     --families complete,dnfa,random-dag --algorithms smt,perm,full,exp,wheelerize --old-f \
     --out benchmark/limit_test/results
+# S6 MSA → Wheeler-graph practicality (50 Ensembl gene MSAs × 3 constructions × k/a, l-capped)
+python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practicality.csv
 ```
 
 **Figures** (render with the spliceai python):
 ```bash
-~/miniconda3/envs/spliceai/bin/python benchmark/report_figs/plot_report.py   # F1–F7b, F11
+~/miniconda3/envs/spliceai/bin/python benchmark/report_figs/plot_report.py   # F1–F7b, F11, F12, F15
 ~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
     --results benchmark/limit_test/results                                    # F8–F10
 ```
@@ -453,6 +522,8 @@ python3 benchmark/limit_test/limit_test.py --timeout 600 --replicates 3 \
 | F7 / F7b setup-solve / memory | `data/micro.setup_solve.csv` / `data/micro.mem.csv` | `plot_report.py` |
 | F8–F10 scalability | `limit_test/results/summary/limit_summary.csv` + `raw/runs.jsonl` | `plot_limit.py` |
 | F11 repair blow-up | `data/repair_records.json` | `plot_report.py` |
+| F12 per-type `-f` speedup | `data/ftiming_bytype.raw.jsonl` | `plot_report.py` |
+| F15 MSA practicality | `data/msa_practicality.csv` | `plot_report.py` |
 
 **Honesty gates checked.** Three axes never merged · exp shown as capability/correctness, never a
 speedup · `unknown` ≠ reject kept distinct · macOS binary excluded · OLD commit hashes pinned ·
