@@ -98,4 +98,17 @@ compose_row(["F10_old_vs_new_complete.png", "F10_old_vs_new_dnfa.png"],
 copy_single("F11_repair_blowup.png",
             [os.path.join(REPORT_DIR, "rfig_repair.png")])
 
+# ---- report composites: performance-at-scale + MSA→WG (this study) --------
+# Q1 per-type -f speedup (F12 is already a 2-panel figure -> copy as-is).
+copy_single("F12_type_speedup.png",
+            [os.path.join(REPORT_DIR, "rfig_type_speedup.png")])
+# Q2 1-hour serial ceiling: size-vs-time (complete, dnfa) + limits bar, with the
+# real-MSA size band overlaid on the curves (the 1-hour analog of rfig_scalability).
+compose_row(["F13_size_vs_time_1hr_complete.png", "F13_size_vs_time_1hr_dnfa.png",
+             "F14_limits_bar_1hr.png"],
+            [os.path.join(REPORT_DIR, "rfig_scalability_1hr.png")])
+# Q4 MSA→WG practicality (F15 is already a 3-panel figure -> copy as-is).
+copy_single("F15_msa_practicality.png",
+            [os.path.join(REPORT_DIR, "rfig_practicality.png")])
+
 print("done.")
