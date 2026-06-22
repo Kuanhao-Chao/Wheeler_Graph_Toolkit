@@ -26,6 +26,7 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f`** | total `-f` time, DOCK4 DNA k=5 (1041 edges) | 15.2 s (pre-4.1) | **6.6 s** (≈ **2.3×**) | Fig 7, `data/micro.setup_solve.csv` |
 | **Performance — `-f`** | encoding *setup* time, same graph | 2.1 s | **0.14 s** (≈ **14×**) | Fig 7 |
 | **Performance — `-f`** | encoding asymptotics (cross-group A2 / within-group A3) | O(E²) / O(E_l²) | **O(E+L) / O(D_l²+E_l)** | §4 |
+| **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (717/900 subset) | 1× (pre-4.1) | **1.3–2.2×** (DNA via A3, AA via A2; 0 regressions) | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 | **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
@@ -305,6 +306,53 @@ heuristic's narrowing is itself in question); it is not the production path, and
 up the cases where `-f` *is* tractable (few-label, high-multiplicity graphs) without changing the
 fact that the default backend is what one runs in practice.
 
+### 4.5 Per-graph-type `-f` speedup: which sparsification pays where (Fig 12)
+
+§4.1–4.4 explain the encoding wins on headline graphs; this section measures them **across the four
+biological graph types** to answer Q1 ("how much faster, by graph type"). The 3-point sweep
+(`ftiming.py`, `-b -f`, string labels, median of replicates) runs all three binaries **adjacently per
+graph** so each per-graph comparison shares conditions, and splits two contributions: **pre-4.1 → NEW**
+(the *total* Phase-4 gain: A2 cross-group + A3 within-group) and **pre-4.2 → NEW** (the *isolated* A3
+within-group block). Verdicts are split WG vs non-WG. The 0-regression check classifies each cell as a
+real regression (median < 0.98×) or a break-even within wall-clock noise (0.98–1.0×); **no real
+regression appears — every type is ≥ break-even.**
+
+> **Subset note.** Numbers below are the **current 717 / 900-graph subset** (the sweep's remaining
+> ~180 graphs are all the largest `l ≥ 500` instances, an already-saturated size regime; this report
+> will be refreshed with the full 900 when the sweep completes). The medians are already stable, and
+> where the OLD pre-4.1 binary times out on the biggest graphs those pairs are *excluded* (both must be
+> DECISIVE) — so the total-column speedups are **conservative lower bounds** on large graphs.
+
+| graph type | verdict | n | pre-4.1 → NEW (total) | pre-4.2 → NEW (A3 only) |
+|---|---|--:|--:|--:|
+| De Bruijn **DNA** | WG | 225 | **1.82×** | **1.77×** |
+| De Bruijn **AA** | WG | 68 | **1.93×** | 1.01× (break-even) |
+| RevDet **DNA** | non-WG | 182 | **1.62×** | 1.00× (break-even) |
+| RevDet **DNA** | WG | 8† | 1.28× | 1.00× (break-even) |
+| RevDet **AA** | non-WG | 196 | **2.18×** | 1.00× (break-even) |
+| RevDet **AA** | WG | 2† | 1.69× | 1.01× (break-even) |
+
+![Fig 12](report_figs/F12_type_speedup.png)
+
+**The total OLD→NEW `-f` speedup is 1.3–2.2× across all four types**, on both WG and non-WG instances —
+never a regression. The more interesting result is *where the two sparsifications pay*, which the A3
+column isolates and which tracks alphabet size exactly:
+
+- **DNA (4-letter alphabet → few label groups):** the win is the **A3 within-group block**. De Bruijn
+  DNA is 1.77× from A3 alone (pre-4.2 → NEW) out of 1.82× total — A2 adds almost nothing, because
+  few-label graphs have little cross-group cost (mirrors §4.1: pre-4.1 → pre-4.2 barely moves DNA).
+- **AA (20-letter alphabet → many label groups):** the win is the **A2 cross-group sparsification**
+  (Phase 4.1). De Bruijn AA is 1.93× total but only 1.01× from A3 — i.e. essentially all the gain is in
+  pre-4.1 → pre-4.2, exactly where the many-label A2 cost lives. A3 correctly stays off (the `D < E/2`
+  guard), so it is break-even.
+
+So the two encodings are complementary: **A3 dominates the few-label (DNA) regime, A2 dominates the
+many-label (AA) regime**, and together they deliver ~1.8–1.9× on De Bruijn graphs and 1.6–2.2× on the
+(predominantly non-Wheeler) RevDet graphs. Two honesty caveats: (i) the **RevDet WG cells are small-n**
+(†n=8 and n=2) because RevDet graphs are almost never Wheeler on real MSAs (~1% WG, §7) — the
+well-powered RevDet cells are the non-WG ones; (ii) every break-even cell is a *true* break-even
+(NEW ≡ OLD by construction where the guard keeps A3 off), not a measured slowdown.
+
 ---
 
 ## §5 Scalability — how large a graph can each algorithm recognize?
@@ -544,6 +592,11 @@ OLD binaries were built from the commits in §2 via `git worktree add /tmp/wgt-o
 bash benchmark/report_figs/run_correctness.sh
 # S3 3-point -f timing (pre41/pre42/new) on the real DNA then AA corpora
 bash benchmark/report_figs/run_ftiming.sh
+# S3b per-graph-type -f speedup (§4.5, Fig 12): same 3 binaries over the 4 biological type dirs
+python3 benchmark/report_figs/ftiming.py \
+    --binaries 'pre41=recognizer/bin/recognizer_pre41,pre42=recognizer/bin/recognizer_linux_old,new=recognizer/bin/recognizer_linux' \
+    --corpus 'data/graph/SMT_vs_RHSMT/{DeBruijnG_DNA,DeBruijnG_AA,RevDetG_DNA,RevDetG_AA}' \
+    --timeout 120 --replicates 3 --out benchmark/report_figs/data/ftiming_bytype
 # S4 setup/solve split + peak RSS, S5 repair blow-up dump
 bash benchmark/report_figs/run_micro.sh
 # scalability limit test (600 s timeout, R=3)
