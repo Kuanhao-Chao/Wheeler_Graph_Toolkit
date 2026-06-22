@@ -26,7 +26,7 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f`** | total `-f` time, DOCK4 DNA k=5 (1041 edges) | 15.2 s (pre-4.1) | **6.6 s** (≈ **2.3×**) | Fig 7, `data/micro.setup_solve.csv` |
 | **Performance — `-f`** | encoding *setup* time, same graph | 2.1 s | **0.14 s** (≈ **14×**) | Fig 7 |
 | **Performance — `-f`** | encoding asymptotics (cross-group A2 / within-group A3) | O(E²) / O(E_l²) | **O(E+L) / O(D_l²+E_l)** | §4 |
-| **Capability — scale** | largest graph recognized within 600 s (default SMT, `complete` family) | exp baseline CAPPED at n=10 | **n = 2816** (THRESHOLD, ≈280× past exp) | §5, `summary/limit_summary.csv` |
+| **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 | **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
 
@@ -368,6 +368,54 @@ The exponential baseline caps at **n=10** — not a timeout but its n!-ordering 
 (O(n!·e²)); past that it returns `-1`/over-cap by design. Repair (`wheelerize`, §6) never hit a wall:
 trie construction is near-linear, so it reached the ladder top (**8192**) UNREACHED.
 
+### 5.1 In one hour: a few thousand nodes — far past anything real data produces (Figs 13–14)
+
+The 600 s limit above is a *timeout*, not a wall, so the natural follow-up is: **given a full hour, how
+large a graph can the production default decide?** A fresh **3600 s** sweep — default-SMT only, **R=2**,
+the same ladder→bisect — answers it. It runs into a clean `results_1hr/` directory on purpose: the
+run cache is keyed *without* the timeout, so reusing the 600 s directory would inherit its TIMEOUTs as
+false caps. Every rung again doubles as a large-scale differential correctness test (`complete`/`dnfa`
+are Wheeler **by construction**): **0 correctness failures across the whole 1-hour sweep (CLEAN)**.
+
+| backend | `complete` family | `dnfa` family | limit type |
+|---|--:|--:|---|
+| default SMT, **600 s** | 2816 (median 500 s) | 2176 (532 s) | THRESHOLD (timeout) |
+| default SMT, **3600 s** | **4608** (median 3128 s ≈ 52 min) | **3584** (median 3519 s ≈ 59 min) | THRESHOLD (timeout) |
+
+![Fig 13a](report_figs/F13_size_vs_time_1hr_complete.png)
+![Fig 13b](report_figs/F13_size_vs_time_1hr_dnfa.png)
+![Fig 14](report_figs/F14_limits_bar_1hr.png)
+
+**Six times the time budget buys only ~1.64× the size** (complete 2816 → 4608 = 1.64×; dnfa 2176 →
+3584 = 1.65×). That sub-linear return is the signature of the cost: on these symmetric worst-case
+families z3's `QF_IDL` search grows steeply with n (Fig 13 is near-straight on a log-time axis), so the
+*size* ceiling creeps up slowly even as the *time* budget multiplies. The limit is still **THRESHOLD**
+(z3 is making progress at the wall, not returning `unknown`), so more time would push it further — just
+slowly.
+
+**The headline, though, is the green band in Fig 13: real biology sits an order of magnitude below the
+ceiling.** Across the 500-graph practicality study (§7), the largest De Bruijn / reverse-deterministic /
+trie graph built from a real Ensembl MSA is **n = 2399 nodes** (median 541), and **every one was
+decided in under a second**. The multi-thousand-node, hour-long runs are a synthetic worst-case stress
+test, not a practical limit: for the graphs molecular biology actually produces, recognition is
+**instant**, with large headroom before the hour-scale regime even begins.
+
+### 5.2 What about running in parallel? (the honest answer)
+
+A natural question is whether parallelism would raise this ceiling. It would not, and the reason is
+structural. At scale the recognizer's wall time is **almost entirely the Z3 `QF_IDL` solve** — on the
+headline `-f` graph the solve is **~98 %** of total and encoding/setup only ~2 % (Fig 7,
+`data/micro.setup_solve.csv`), and the gap only widens with size because solve cost grows faster than
+setup. So "parallelize the recognizer" really means "parallelize a single z3 `QF_IDL` query," and z3's
+parallel/portfolio mode gives no reliable speedup for one such query — a prototype with
+`parallel.enable` showed no measurable wall-time gain on the worst-case families (the prototype was not
+retained, so this is reported as a qualitative finding, not a committed benchmark). The only other
+component, the Step-2 range-narrowing heuristic, is a **sequential Gauss–Seidel fixpoint** (a
+prefix-sum relabel with intra-pass dependencies) and is a small fraction of runtime, so parallelizing
+it cannot move the ceiling either. **The honest answer to "how large in parallel" is therefore ≈ the
+serial size.** The numbers in this section are reported as serial figures — the operative ones — rather
+than dressed up as a parallel speedup the architecture cannot deliver.
+
 ---
 
 ## §6 Repair — turning a non-Wheeler graph into a Wheeler graph (Fig 11)
@@ -502,6 +550,9 @@ bash benchmark/report_figs/run_micro.sh
 python3 benchmark/limit_test/limit_test.py --timeout 600 --replicates 3 \
     --families complete,dnfa,random-dag --algorithms smt,perm,full,exp,wheelerize --old-f \
     --out benchmark/limit_test/results
+# S5b 1-hour SERIAL ceiling (§5.1) — FRESH dir (cache key has no timeout; reuse would inherit 600 s caps)
+python3 benchmark/limit_test/limit_test.py --timeout 3600 --replicates 2 \
+    --families complete,dnfa --algorithms smt --out benchmark/limit_test/results_1hr
 # S6 MSA → Wheeler-graph practicality (50 Ensembl gene MSAs × 3 constructions × k/a, l-capped)
 python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practicality.csv
 ```
@@ -510,7 +561,10 @@ python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practi
 ```bash
 ~/miniconda3/envs/spliceai/bin/python benchmark/report_figs/plot_report.py   # F1–F7b, F11, F12, F15
 ~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
-    --results benchmark/limit_test/results                                    # F8–F10
+    --results benchmark/limit_test/results                                    # F8–F10 (600 s)
+~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
+    --results benchmark/limit_test/results_1hr \
+    --bio-csv benchmark/report_figs/data/msa_practicality.csv                 # F13–F14 (1 h, real-MSA band)
 ```
 
 | Figure | Data file | Generator |
