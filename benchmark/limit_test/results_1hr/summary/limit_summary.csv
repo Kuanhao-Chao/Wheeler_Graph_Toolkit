@@ -1,0 +1,3 @@
+algo,family,kind,limit_n,timeout_s,fail_reason,median_wall_at_limit
+smt,complete,THRESHOLD,4608,3600.0,TIMEOUT,3127.91175
+smt,dnfa,THRESHOLD,3584,3600.0,TIMEOUT,3518.8071

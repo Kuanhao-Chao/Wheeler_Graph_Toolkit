@@ -1,0 +1,42 @@
+
+=== limit: smt on complete (T=3600.0s, R=2) ===
+  [smt       complete   ] n=8      -> PASS  med=0.00s
+  [smt       complete   ] n=16     -> PASS  med=0.02s
+  [smt       complete   ] n=32     -> PASS  med=0.03s
+  [smt       complete   ] n=64     -> PASS  med=0.06s
+  [smt       complete   ] n=128    -> PASS  med=0.15s
+  [smt       complete   ] n=256    -> PASS  med=0.68s
+  [smt       complete   ] n=512    -> PASS  med=3.47s
+  [smt       complete   ] n=1024   -> PASS  med=17.36s
+  [smt       complete   ] n=2048   -> PASS  med=173.24s
+  [smt       complete   ] n=4096   -> PASS  med=2205.83s
+  [smt       complete   ] n=8192   -> FAIL(TIMEOUT)
+  [smt       complete   ] bisect n=6144   -> FAIL(TIMEOUT)
+  [smt       complete   ] bisect n=5120   -> FAIL(TIMEOUT)
+  [smt       complete   ] bisect n=4608   -> PASS
+  [smt       complete   ] bisect n=4864   -> FAIL(TIMEOUT)
+
+=== limit: smt on dnfa (T=3600.0s, R=2) ===
+  [smt       dnfa       ] n=8      -> PASS  med=0.02s
+  [smt       dnfa       ] n=16     -> PASS  med=0.03s
+  [smt       dnfa       ] n=32     -> PASS  med=0.03s
+  [smt       dnfa       ] n=64     -> PASS  med=0.06s
+  [smt       dnfa       ] n=128    -> PASS  med=0.21s
+  [smt       dnfa       ] n=256    -> PASS  med=1.04s
+  [smt       dnfa       ] n=512    -> PASS  med=5.87s
+  [smt       dnfa       ] n=1024   -> PASS  med=36.31s
+  [smt       dnfa       ] n=2048   -> PASS  med=402.77s
+  [smt       dnfa       ] n=4096   -> FAIL(TIMEOUT)
+  [smt       dnfa       ] bisect n=3072   -> PASS
+  [smt       dnfa       ] bisect n=3584   -> PASS
+  [smt       dnfa       ] bisect n=3840   -> FAIL(TIMEOUT)
+  [smt       dnfa       ] bisect n=3712   -> FAIL(TIMEOUT)
+
+==================== LIMIT SUMMARY ====================
+timeout T = 3600.0s, replicates R = 2
+  smt        complete    -> THRESHOLD  largest decided n = 4608
+  smt        dnfa        -> THRESHOLD  largest decided n = 3584
+
+wrote benchmark/limit_test/results_1hr/summary/limit_summary.csv
+correctness failures: 0 (CLEAN)
+DONE_LIMIT1HR_EXIT_0

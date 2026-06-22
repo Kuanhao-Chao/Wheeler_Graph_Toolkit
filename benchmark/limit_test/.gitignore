@@ -1,4 +1,5 @@
 # generated scratch graphs (regenerable from seeds)
 results/_graphs/
+results_1hr/_graphs/
 # pre-Phase-4.3 backup snapshots of the summary/cache (scratch)
 *.prefix43

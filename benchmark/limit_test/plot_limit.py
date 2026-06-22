@@ -13,6 +13,7 @@ Usage:  python3 benchmark/limit_test/plot_limit.py [--results DIR]
 """
 
 import argparse
+import csv
 import json
 import os
 from collections import defaultdict
@@ -91,7 +92,25 @@ def algos_in(runs, family):
     return [a for a in ALGO_STYLE if any(r["algo"] == a and r["family"] == family for r in runs)]
 
 
-def plot_size_vs_time(runs, T, outdir):
+def load_bio_band(bio_csv):
+    """Real-MSA graph-size band (min, median, max nodes) from the practicality CSV, or None."""
+    if not bio_csv or not os.path.exists(bio_csv):
+        return None
+    ns = []
+    with open(bio_csv) as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            try:
+                ns.append(int(float(row["nodes"])))
+            except (ValueError, KeyError):
+                pass
+    if not ns:
+        return None
+    ns.sort()
+    return (ns[0], median(ns), ns[-1])
+
+
+def plot_size_vs_time(runs, T, outdir, bio_band=None):
     cv = curves(runs)
     for family in families_in(runs):
         fig, ax = plt.subplots(figsize=(8, 5.5))
@@ -108,6 +127,11 @@ def plot_size_vs_time(runs, T, outdir):
         if not plotted:
             plt.close(fig)
             continue
+        if bio_band:
+            lo, med, hi = bio_band
+            ax.axvspan(lo, hi, color="#2ca02c", alpha=0.10, zorder=0,
+                       label=f"real MSA graphs (n={lo}–{hi:.0f})")
+            ax.axvline(med, color="#2ca02c", ls=":", lw=1.2, alpha=0.8)
         if T:
             ax.axhline(T, ls="--", color="gray", lw=1, label=f"timeout T={T:g}s")
         ax.set_yscale("log")
@@ -192,9 +216,13 @@ def plot_old_vs_new(runs, T, outdir):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default=os.path.join(HERE, "results"))
+    ap.add_argument("--bio-csv", default=None,
+                    help="practicality CSV (e.g. report_figs/data/msa_practicality.csv); "
+                         "overlays the real-MSA graph-size band on size_vs_time figures")
     args = ap.parse_args()
     runs = load_runs(args.results)
     summary = load_summary(args.results)
+    bio_band = load_bio_band(args.bio_csv)
     T = max((r["wall"] for r in runs if r.get("klass") == "TIMEOUT"), default=None)
     # better: read T from any summary row
     if summary:
@@ -204,7 +232,9 @@ def main():
             pass
     outdir = os.path.join(args.results, "plots")
     os.makedirs(outdir, exist_ok=True)
-    plot_size_vs_time(runs, T, outdir)
+    if bio_band:
+        print(f"bio band: real-MSA graphs n={bio_band[0]}–{bio_band[2]:.0f} (median {bio_band[1]:.0f})")
+    plot_size_vs_time(runs, T, outdir, bio_band=bio_band)
     plot_limits_bar(summary, outdir)
     plot_old_vs_new(runs, T, outdir)
 
