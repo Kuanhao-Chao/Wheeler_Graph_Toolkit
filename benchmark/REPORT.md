@@ -26,7 +26,7 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f`** | total `-f` time, DOCK4 DNA k=5 (1041 edges) | 15.2 s (pre-4.1) | **6.6 s** (≈ **2.3×**) | Fig 7, `data/micro.setup_solve.csv` |
 | **Performance — `-f`** | encoding *setup* time, same graph | 2.1 s | **0.14 s** (≈ **14×**) | Fig 7 |
 | **Performance — `-f`** | encoding asymptotics (cross-group A2 / within-group A3) | O(E²) / O(E_l²) | **O(E+L) / O(D_l²+E_l)** | §4 |
-| **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (717/900 subset) | 1× (pre-4.1) | **1.3–2.2×** (DNA via A3, AA via A2; 0 regressions) | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
+| **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **1.3–2.2×** (DNA via A3, AA via A2; 0 regressions) | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 | **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
@@ -317,16 +317,18 @@ within-group block). Verdicts are split WG vs non-WG. The 0-regression check cla
 real regression (median < 0.98×) or a break-even within wall-clock noise (0.98–1.0×); **no real
 regression appears — every type is ≥ break-even.**
 
-> **Subset note.** Numbers below are the **current 717 / 900-graph subset** (the sweep's remaining
-> ~180 graphs are all the largest `l ≥ 500` instances, an already-saturated size regime; this report
-> will be refreshed with the full 900 when the sweep completes). The medians are already stable, and
-> where the OLD pre-4.1 binary times out on the biggest graphs those pairs are *excluded* (both must be
-> DECISIVE) — so the total-column speedups are **conservative lower bounds** on large graphs.
+> **Pairing note.** The sweep is **complete — all 900 timing jobs ran.** The table below uses the
+> **682 jobs with complete timing across all three binaries** (both the OLD baseline and NEW must be
+> DECISIVE within the 120 s cap to form a ratio). The remaining 218 are the largest amino-acid
+> instances where one or more binaries exceed the cap (all-timeout, so no finite ratio exists) —
+> overwhelmingly cases where the *OLD* pre-4.1 binary times out while NEW also does, so their exclusion
+> makes the total-column speedups **conservative lower bounds** on the largest graphs, not an optimistic
+> subset. `new` returned a decision on 718 / 900 graphs (182 timeouts, all large `l = 2000` amino-acid).
 
 | graph type | verdict | n | pre-4.1 → NEW (total) | pre-4.2 → NEW (A3 only) |
 |---|---|--:|--:|--:|
 | De Bruijn **DNA** | WG | 225 | **1.82×** | **1.77×** |
-| De Bruijn **AA** | WG | 68 | **1.93×** | 1.01× (break-even) |
+| De Bruijn **AA** | WG | 69 | **1.94×** | 1.01× (break-even) |
 | RevDet **DNA** | non-WG | 182 | **1.62×** | 1.00× (break-even) |
 | RevDet **DNA** | WG | 8† | 1.28× | 1.00× (break-even) |
 | RevDet **AA** | non-WG | 196 | **2.18×** | 1.00× (break-even) |
@@ -342,7 +344,7 @@ column isolates and which tracks alphabet size exactly:
   DNA is 1.77× from A3 alone (pre-4.2 → NEW) out of 1.82× total — A2 adds almost nothing, because
   few-label graphs have little cross-group cost (mirrors §4.1: pre-4.1 → pre-4.2 barely moves DNA).
 - **AA (20-letter alphabet → many label groups):** the win is the **A2 cross-group sparsification**
-  (Phase 4.1). De Bruijn AA is 1.93× total but only 1.01× from A3 — i.e. essentially all the gain is in
+  (Phase 4.1). De Bruijn AA is 1.94× total but only 1.01× from A3 — i.e. essentially all the gain is in
   pre-4.1 → pre-4.2, exactly where the many-label A2 cost lives. A3 correctly stays off (the `D < E/2`
   guard), so it is break-even.
 

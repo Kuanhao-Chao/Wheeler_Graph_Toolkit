@@ -2151,3 +2151,558 @@ timeout  : 120.0s   replicates 3
 [716/900] Human_LCP1_orthologues_DNA_l_500_a_5.dot         e= 1233 pre42 -> 111.446s v=-1
 [716/900] Human_LCP1_orthologues_DNA_l_500_a_5.dot         e= 1233 new   -> 115.148s v=-1
 [717/900] Human_SLC38A9_orthologues_DNA_l_500_a_4.dot      e= 1234 pre41 -> TIMEOUT
+[717/900] Human_SLC38A9_orthologues_DNA_l_500_a_4.dot      e= 1234 pre42 -> 118.169s v=-1
+[717/900] Human_SLC38A9_orthologues_DNA_l_500_a_4.dot      e= 1234 new   -> 109.572s v=-1
+[718/900] Human_GGT6_orthologues_DNA_l_500_a_5.dot         e= 1241 pre41 -> TIMEOUT
+[718/900] Human_GGT6_orthologues_DNA_l_500_a_5.dot         e= 1241 pre42 -> TIMEOUT
+[718/900] Human_GGT6_orthologues_DNA_l_500_a_5.dot         e= 1241 new   -> 114.448s v=-1
+[719/900] Human_GGT6_orthologues_DNA_l_500_a_6.dot         e= 1241 pre41 -> TIMEOUT
+[719/900] Human_GGT6_orthologues_DNA_l_500_a_6.dot         e= 1241 pre42 -> 112.598s v=-1
+[719/900] Human_GGT6_orthologues_DNA_l_500_a_6.dot         e= 1241 new   -> TIMEOUT
+[720/900] Human_FAM53A_orthologues_AA_k_3_l_2000_a_8.dot   e= 1248 pre41 -> 12.474s v=1
+[720/900] Human_FAM53A_orthologues_AA_k_3_l_2000_a_8.dot   e= 1248 pre42 -> 8.319s v=1
+[720/900] Human_FAM53A_orthologues_AA_k_3_l_2000_a_8.dot   e= 1248 new   -> 5.898s v=1
+[721/900] Human_CEP57L1_orthologues_DNA_l_500_a_6.dot      e= 1248 pre41 -> TIMEOUT
+[721/900] Human_CEP57L1_orthologues_DNA_l_500_a_6.dot      e= 1248 pre42 -> TIMEOUT
+[721/900] Human_CEP57L1_orthologues_DNA_l_500_a_6.dot      e= 1248 new   -> TIMEOUT
+[722/900] Human_CLPX_orthologues_DNA_l_500_a_6.dot         e= 1263 pre41 -> TIMEOUT
+[722/900] Human_CLPX_orthologues_DNA_l_500_a_6.dot         e= 1263 pre42 -> 110.056s v=-1
+[722/900] Human_CLPX_orthologues_DNA_l_500_a_6.dot         e= 1263 new   -> 113.451s v=-1
+[723/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_6.dot    e= 1266 pre41 -> TIMEOUT
+[723/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_6.dot    e= 1266 pre42 -> TIMEOUT
+[723/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_6.dot    e= 1266 new   -> TIMEOUT
+[724/900] Human_FAM53A_orthologues_DNA_l_500_a_6.dot       e= 1278 pre41 -> TIMEOUT
+[724/900] Human_FAM53A_orthologues_DNA_l_500_a_6.dot       e= 1278 pre42 -> 105.501s v=-1
+[724/900] Human_FAM53A_orthologues_DNA_l_500_a_6.dot       e= 1278 new   -> TIMEOUT
+[725/900] Human_BTBD17_orthologues_AA_l_500_a_5.dot        e= 1278 pre41 -> TIMEOUT
+[725/900] Human_BTBD17_orthologues_AA_l_500_a_5.dot        e= 1278 pre42 -> TIMEOUT
+[725/900] Human_BTBD17_orthologues_AA_l_500_a_5.dot        e= 1278 new   -> TIMEOUT
+[726/900] Human_CEP57L1_orthologues_AA_l_500_a_4.dot       e= 1280 pre41 -> TIMEOUT
+[726/900] Human_CEP57L1_orthologues_AA_l_500_a_4.dot       e= 1280 pre42 -> TIMEOUT
+[726/900] Human_CEP57L1_orthologues_AA_l_500_a_4.dot       e= 1280 new   -> TIMEOUT
+[727/900] Human_TRAM1_orthologues_AA_k_4_l_2000_a_7.dot    e= 1286 pre41 -> TIMEOUT
+[727/900] Human_TRAM1_orthologues_AA_k_4_l_2000_a_7.dot    e= 1286 pre42 -> TIMEOUT
+[727/900] Human_TRAM1_orthologues_AA_k_4_l_2000_a_7.dot    e= 1286 new   -> TIMEOUT
+[728/900] Human_DCSTAMP_orthologues_DNA_l_500_a_6.dot      e= 1296 pre41 -> TIMEOUT
+[728/900] Human_DCSTAMP_orthologues_DNA_l_500_a_6.dot      e= 1296 pre42 -> TIMEOUT
+[728/900] Human_DCSTAMP_orthologues_DNA_l_500_a_6.dot      e= 1296 new   -> TIMEOUT
+[729/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_6.dot    e= 1300 pre41 -> TIMEOUT
+[729/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_6.dot    e= 1300 pre42 -> TIMEOUT
+[729/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_6.dot    e= 1300 new   -> TIMEOUT
+[730/900] Human_ZRANB3_orthologues_AA_l_500_a_5.dot        e= 1303 pre41 -> TIMEOUT
+[730/900] Human_ZRANB3_orthologues_AA_l_500_a_5.dot        e= 1303 pre42 -> TIMEOUT
+[730/900] Human_ZRANB3_orthologues_AA_l_500_a_5.dot        e= 1303 new   -> TIMEOUT
+[731/900] Human_SLC38A9_orthologues_AA_l_500_a_4.dot       e= 1308 pre41 -> TIMEOUT
+[731/900] Human_SLC38A9_orthologues_AA_l_500_a_4.dot       e= 1308 pre42 -> TIMEOUT
+[731/900] Human_SLC38A9_orthologues_AA_l_500_a_4.dot       e= 1308 new   -> TIMEOUT
+[732/900] Human_LCP1_orthologues_DNA_l_500_a_6.dot         e= 1312 pre41 -> TIMEOUT
+[732/900] Human_LCP1_orthologues_DNA_l_500_a_6.dot         e= 1312 pre42 -> TIMEOUT
+[732/900] Human_LCP1_orthologues_DNA_l_500_a_6.dot         e= 1312 new   -> TIMEOUT
+[733/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_6.dot   e= 1317 pre41 -> 13.705s v=1
+[733/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_6.dot   e= 1317 pre42 -> 10.386s v=1
+[733/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_6.dot   e= 1317 new   -> TIMEOUT
+[734/900] Human_FAM53A_orthologues_AA_l_500_a_6.dot        e= 1325 pre41 -> TIMEOUT
+[734/900] Human_FAM53A_orthologues_AA_l_500_a_6.dot        e= 1325 pre42 -> TIMEOUT
+[734/900] Human_FAM53A_orthologues_AA_l_500_a_6.dot        e= 1325 new   -> TIMEOUT
+[735/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_7.dot   e= 1328 pre41 -> 15.854s v=1
+[735/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_7.dot   e= 1328 pre42 -> 10.152s v=1
+[735/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_7.dot   e= 1328 new   -> TIMEOUT
+[736/900] Human_DCSTAMP_orthologues_AA_l_500_a_4.dot       e= 1336 pre41 -> TIMEOUT
+[736/900] Human_DCSTAMP_orthologues_AA_l_500_a_4.dot       e= 1336 pre42 -> TIMEOUT
+[736/900] Human_DCSTAMP_orthologues_AA_l_500_a_4.dot       e= 1336 new   -> TIMEOUT
+[737/900] Human_SLC38A9_orthologues_DNA_l_500_a_5.dot      e= 1339 pre41 -> TIMEOUT
+[737/900] Human_SLC38A9_orthologues_DNA_l_500_a_5.dot      e= 1339 pre42 -> TIMEOUT
+[737/900] Human_SLC38A9_orthologues_DNA_l_500_a_5.dot      e= 1339 new   -> TIMEOUT
+[738/900] Human_BTBD17_orthologues_AA_l_500_a_6.dot        e= 1345 pre41 -> TIMEOUT
+[738/900] Human_BTBD17_orthologues_AA_l_500_a_6.dot        e= 1345 pre42 -> TIMEOUT
+[738/900] Human_BTBD17_orthologues_AA_l_500_a_6.dot        e= 1345 new   -> TIMEOUT
+[739/900] Human_ANGPTL4_orthologues_DNA_l_500_a_5.dot      e= 1347 pre41 -> TIMEOUT
+[739/900] Human_ANGPTL4_orthologues_DNA_l_500_a_5.dot      e= 1347 pre42 -> TIMEOUT
+[739/900] Human_ANGPTL4_orthologues_DNA_l_500_a_5.dot      e= 1347 new   -> TIMEOUT
+[740/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_6.dot  e= 1354 pre41 -> 15.790s v=1
+[740/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_6.dot  e= 1354 pre42 -> 10.106s v=1
+[740/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_6.dot  e= 1354 new   -> TIMEOUT
+[741/900] Human_SHLD2_orthologues_AA_l_500_a_6.dot         e= 1357 pre41 -> TIMEOUT
+[741/900] Human_SHLD2_orthologues_AA_l_500_a_6.dot         e= 1357 pre42 -> TIMEOUT
+[741/900] Human_SHLD2_orthologues_AA_l_500_a_6.dot         e= 1357 new   -> TIMEOUT
+[742/900] Human_TRAM1_orthologues_AA_k_4_l_2000_a_8.dot    e= 1363 pre41 -> TIMEOUT
+[742/900] Human_TRAM1_orthologues_AA_k_4_l_2000_a_8.dot    e= 1363 pre42 -> TIMEOUT
+[742/900] Human_TRAM1_orthologues_AA_k_4_l_2000_a_8.dot    e= 1363 new   -> TIMEOUT
+[743/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_6.dot    e= 1365 pre41 -> TIMEOUT
+[743/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_6.dot    e= 1365 pre42 -> TIMEOUT
+[743/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_6.dot    e= 1365 new   -> TIMEOUT
+[744/900] Human_ANGPTL4_orthologues_AA_l_500_a_5.dot       e= 1371 pre41 -> TIMEOUT
+[744/900] Human_ANGPTL4_orthologues_AA_l_500_a_5.dot       e= 1371 pre42 -> TIMEOUT
+[744/900] Human_ANGPTL4_orthologues_AA_l_500_a_5.dot       e= 1371 new   -> TIMEOUT
+[745/900] Human_CEP57L1_orthologues_AA_l_500_a_5.dot       e= 1371 pre41 -> TIMEOUT
+[745/900] Human_CEP57L1_orthologues_AA_l_500_a_5.dot       e= 1371 pre42 -> TIMEOUT
+[745/900] Human_CEP57L1_orthologues_AA_l_500_a_5.dot       e= 1371 new   -> TIMEOUT
+[746/900] Human_GGT6_orthologues_AA_l_500_a_5.dot          e= 1377 pre41 -> TIMEOUT
+[746/900] Human_GGT6_orthologues_AA_l_500_a_5.dot          e= 1377 pre42 -> TIMEOUT
+[746/900] Human_GGT6_orthologues_AA_l_500_a_5.dot          e= 1377 new   -> TIMEOUT
+[747/900] Human_GGT6_orthologues_AA_l_500_a_6.dot          e= 1377 pre41 -> TIMEOUT
+[747/900] Human_GGT6_orthologues_AA_l_500_a_6.dot          e= 1377 pre42 -> TIMEOUT
+[747/900] Human_GGT6_orthologues_AA_l_500_a_6.dot          e= 1377 new   -> TIMEOUT
+[748/900] Human_ZRANB3_orthologues_AA_l_500_a_6.dot        e= 1383 pre41 -> TIMEOUT
+[748/900] Human_ZRANB3_orthologues_AA_l_500_a_6.dot        e= 1383 pre42 -> TIMEOUT
+[748/900] Human_ZRANB3_orthologues_AA_l_500_a_6.dot        e= 1383 new   -> TIMEOUT
+[749/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_7.dot    e= 1406 pre41 -> TIMEOUT
+[749/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_7.dot    e= 1406 pre42 -> TIMEOUT
+[749/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_7.dot    e= 1406 new   -> TIMEOUT
+[750/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_8.dot   e= 1421 pre41 -> 14.400s v=1
+[750/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_8.dot   e= 1421 pre42 -> 9.367s v=1
+[750/900] Human_BTBD17_orthologues_AA_k_3_l_2000_a_8.dot   e= 1421 new   -> TIMEOUT
+[751/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_6.dot   e= 1430 pre41 -> TIMEOUT
+[751/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_6.dot   e= 1430 pre42 -> TIMEOUT
+[751/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_6.dot   e= 1430 new   -> TIMEOUT
+[752/900] Human_SLC38A9_orthologues_DNA_l_500_a_6.dot      e= 1442 pre41 -> TIMEOUT
+[752/900] Human_SLC38A9_orthologues_DNA_l_500_a_6.dot      e= 1442 pre42 -> TIMEOUT
+[752/900] Human_SLC38A9_orthologues_DNA_l_500_a_6.dot      e= 1442 new   -> TIMEOUT
+[753/900] Human_DCSTAMP_orthologues_AA_l_500_a_5.dot       e= 1453 pre41 -> TIMEOUT
+[753/900] Human_DCSTAMP_orthologues_AA_l_500_a_5.dot       e= 1453 pre42 -> TIMEOUT
+[753/900] Human_DCSTAMP_orthologues_AA_l_500_a_5.dot       e= 1453 new   -> TIMEOUT
+[754/900] Human_SLC38A9_orthologues_AA_l_500_a_5.dot       e= 1465 pre41 -> TIMEOUT
+[754/900] Human_SLC38A9_orthologues_AA_l_500_a_5.dot       e= 1465 pre42 -> TIMEOUT
+[754/900] Human_SLC38A9_orthologues_AA_l_500_a_5.dot       e= 1465 new   -> TIMEOUT
+[755/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_7.dot    e= 1482 pre41 -> TIMEOUT
+[755/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_7.dot    e= 1482 pre42 -> TIMEOUT
+[755/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_7.dot    e= 1482 new   -> TIMEOUT
+[756/900] Human_ANGPTL4_orthologues_DNA_l_500_a_6.dot      e= 1490 pre41 -> TIMEOUT
+[756/900] Human_ANGPTL4_orthologues_DNA_l_500_a_6.dot      e= 1490 pre42 -> TIMEOUT
+[756/900] Human_ANGPTL4_orthologues_DNA_l_500_a_6.dot      e= 1490 new   -> TIMEOUT
+[757/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_8.dot    e= 1506 pre41 -> TIMEOUT
+[757/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_8.dot    e= 1506 pre42 -> TIMEOUT
+[757/900] Human_TRAM1_orthologues_AA_k_5_l_2000_a_8.dot    e= 1506 new   -> TIMEOUT
+[758/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_6.dot     e= 1524 pre41 -> 14.949s v=1
+[758/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_6.dot     e= 1524 pre42 -> 9.587s v=1
+[758/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_6.dot     e= 1524 new   -> TIMEOUT
+[759/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_6.dot     e= 1525 pre41 -> 15.612s v=1
+[759/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_6.dot     e= 1525 pre42 -> 9.830s v=1
+[759/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_6.dot     e= 1525 new   -> TIMEOUT
+[760/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_7.dot     e= 1540 pre41 -> 15.331s v=1
+[760/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_7.dot     e= 1540 pre42 -> 9.710s v=1
+[760/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_7.dot     e= 1540 new   -> TIMEOUT
+[761/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_8.dot    e= 1547 pre41 -> TIMEOUT
+[761/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_8.dot    e= 1547 pre42 -> TIMEOUT
+[761/900] Human_SPA17_orthologues_AA_k_4_l_2000_a_8.dot    e= 1547 new   -> TIMEOUT
+[762/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_8.dot     e= 1555 pre41 -> 15.505s v=1
+[762/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_8.dot     e= 1555 pre42 -> 9.671s v=1
+[762/900] Human_LCP1_orthologues_AA_k_3_l_2000_a_8.dot     e= 1555 new   -> TIMEOUT
+[763/900] Human_SLC38A9_orthologues_AA_l_500_a_6.dot       e= 1561 pre41 -> TIMEOUT
+[763/900] Human_SLC38A9_orthologues_AA_l_500_a_6.dot       e= 1561 pre42 -> TIMEOUT
+[763/900] Human_SLC38A9_orthologues_AA_l_500_a_6.dot       e= 1561 new   -> TIMEOUT
+[764/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_7.dot    e= 1568 pre41 -> TIMEOUT
+[764/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_7.dot    e= 1568 pre42 -> TIMEOUT
+[764/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_7.dot    e= 1568 new   -> TIMEOUT
+[765/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_6.dot   e= 1572 pre41 -> TIMEOUT
+[765/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_6.dot   e= 1572 pre42 -> TIMEOUT
+[765/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_6.dot   e= 1572 new   -> TIMEOUT
+[766/900] Human_ANGPTL4_orthologues_AA_l_500_a_6.dot       e= 1578 pre41 -> TIMEOUT
+[766/900] Human_ANGPTL4_orthologues_AA_l_500_a_6.dot       e= 1578 pre42 -> TIMEOUT
+[766/900] Human_ANGPTL4_orthologues_AA_l_500_a_6.dot       e= 1578 new   -> TIMEOUT
+[767/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_7.dot  e= 1581 pre41 -> 17.801s v=1
+[767/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_7.dot  e= 1581 pre42 -> 11.285s v=1
+[767/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_7.dot  e= 1581 new   -> TIMEOUT
+[768/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_6.dot     e= 1583 pre41 -> 17.088s v=1
+[768/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_6.dot     e= 1583 pre42 -> 10.936s v=1
+[768/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_6.dot     e= 1583 new   -> TIMEOUT
+[769/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_6.dot  e= 1597 pre41 -> 16.778s v=1
+[769/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_6.dot  e= 1597 pre42 -> 10.800s v=1
+[769/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_6.dot  e= 1597 new   -> TIMEOUT
+[770/900] Human_CEP57L1_orthologues_AA_l_500_a_6.dot       e= 1597 pre41 -> TIMEOUT
+[770/900] Human_CEP57L1_orthologues_AA_l_500_a_6.dot       e= 1597 pre42 -> TIMEOUT
+[770/900] Human_CEP57L1_orthologues_AA_l_500_a_6.dot       e= 1597 new   -> TIMEOUT
+[771/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_6.dot  e= 1598 pre41 -> 17.143s v=1
+[771/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_6.dot  e= 1598 pre42 -> 11.423s v=1
+[771/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_6.dot  e= 1598 new   -> TIMEOUT
+[772/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_6.dot  e= 1598 pre41 -> 18.575s v=1
+[772/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_6.dot  e= 1598 pre42 -> 12.403s v=1
+[772/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_6.dot  e= 1598 new   -> TIMEOUT
+[773/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_7.dot     e= 1616 pre41 -> 17.169s v=1
+[773/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_7.dot     e= 1616 pre42 -> 10.834s v=1
+[773/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_7.dot     e= 1616 new   -> TIMEOUT
+[774/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_6.dot    e= 1630 pre41 -> 17.421s v=1
+[774/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_6.dot    e= 1630 pre42 -> 11.151s v=1
+[774/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_6.dot    e= 1630 new   -> TIMEOUT
+[775/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_8.dot     e= 1633 pre41 -> 17.806s v=1
+[775/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_8.dot     e= 1633 pre42 -> 11.255s v=1
+[775/900] Human_CLPX_orthologues_AA_k_3_l_2000_a_8.dot     e= 1633 new   -> TIMEOUT
+[776/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_8.dot    e= 1645 pre41 -> TIMEOUT
+[776/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_8.dot    e= 1645 pre42 -> TIMEOUT
+[776/900] Human_SPA17_orthologues_AA_k_5_l_2000_a_8.dot    e= 1645 new   -> TIMEOUT
+[777/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_7.dot   e= 1648 pre41 -> TIMEOUT
+[777/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_7.dot   e= 1648 pre42 -> TIMEOUT
+[777/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_7.dot   e= 1648 new   -> TIMEOUT
+[778/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_6.dot  e= 1676 pre41 -> 19.710s v=1
+[778/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_6.dot  e= 1676 pre42 -> 13.179s v=1
+[778/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_6.dot  e= 1676 new   -> TIMEOUT
+[779/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_8.dot  e= 1698 pre41 -> 20.445s v=1
+[779/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_8.dot  e= 1698 pre42 -> 13.602s v=1
+[779/900] Human_SLC22A2_orthologues_AA_k_3_l_2000_a_8.dot  e= 1698 new   -> TIMEOUT
+[780/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_7.dot  e= 1709 pre41 -> 19.008s v=1
+[780/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_7.dot  e= 1709 pre42 -> 12.958s v=1
+[780/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_7.dot  e= 1709 new   -> TIMEOUT
+[781/900] Human_DCSTAMP_orthologues_AA_l_500_a_6.dot       e= 1721 pre41 -> TIMEOUT
+[781/900] Human_DCSTAMP_orthologues_AA_l_500_a_6.dot       e= 1721 pre42 -> TIMEOUT
+[781/900] Human_DCSTAMP_orthologues_AA_l_500_a_6.dot       e= 1721 new   -> TIMEOUT
+[782/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_7.dot  e= 1723 pre41 -> 19.970s v=1
+[782/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_7.dot  e= 1723 pre42 -> 13.707s v=1
+[782/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_7.dot  e= 1723 new   -> TIMEOUT
+[783/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_8.dot  e= 1765 pre41 -> 19.318s v=1
+[783/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_8.dot  e= 1765 pre42 -> 13.228s v=1
+[783/900] Human_ANGPTL4_orthologues_AA_k_3_l_2000_a_8.dot  e= 1765 new   -> TIMEOUT
+[784/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_7.dot    e= 1767 pre41 -> 20.068s v=1
+[784/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_7.dot    e= 1767 pre42 -> 13.805s v=1
+[784/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_7.dot    e= 1767 new   -> TIMEOUT
+[785/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_6.dot   e= 1769 pre41 -> TIMEOUT
+[785/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_6.dot   e= 1769 pre42 -> TIMEOUT
+[785/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_6.dot   e= 1769 new   -> TIMEOUT
+[786/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_8.dot   e= 1774 pre41 -> TIMEOUT
+[786/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_8.dot   e= 1774 pre42 -> TIMEOUT
+[786/900] Human_FAM53A_orthologues_AA_k_4_l_2000_a_8.dot   e= 1774 new   -> TIMEOUT
+[787/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_6.dot    e= 1777 pre41 -> 21.949s v=1
+[787/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_6.dot    e= 1777 pre42 -> 15.131s v=1
+[787/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_6.dot    e= 1777 new   -> TIMEOUT
+[788/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_7.dot  e= 1779 pre41 -> 20.188s v=1
+[788/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_7.dot  e= 1779 pre42 -> 14.117s v=1
+[788/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_7.dot  e= 1779 new   -> TIMEOUT
+[789/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_6.dot  e= 1787 pre41 -> TIMEOUT
+[789/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_6.dot  e= 1787 pre42 -> TIMEOUT
+[789/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_6.dot  e= 1787 new   -> TIMEOUT
+[790/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_7.dot   e= 1791 pre41 -> TIMEOUT
+[790/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_7.dot   e= 1791 pre42 -> TIMEOUT
+[790/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_7.dot   e= 1791 new   -> TIMEOUT
+[791/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_8.dot    e= 1802 pre41 -> 20.141s v=1
+[791/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_8.dot    e= 1802 pre42 -> 14.020s v=1
+[791/900] Human_STAU2_orthologues_AA_k_3_l_2000_a_8.dot    e= 1802 new   -> TIMEOUT
+[792/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_7.dot     e= 1803 pre41 -> 21.200s v=1
+[792/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_7.dot     e= 1803 pre42 -> 14.183s v=1
+[792/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_7.dot     e= 1803 new   -> TIMEOUT
+[793/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_8.dot  e= 1820 pre41 -> 22.620s v=1
+[793/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_8.dot  e= 1820 pre42 -> 15.294s v=1
+[793/900] Human_DCSTAMP_orthologues_AA_k_3_l_2000_a_8.dot  e= 1820 new   -> TIMEOUT
+[794/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_7.dot    e= 1821 pre41 -> 23.645s v=1
+[794/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_7.dot    e= 1821 pre42 -> 15.974s v=1
+[794/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_7.dot    e= 1821 new   -> TIMEOUT
+[795/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_7.dot  e= 1831 pre41 -> 22.377s v=1
+[795/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_7.dot  e= 1831 pre42 -> 15.246s v=1
+[795/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_7.dot  e= 1831 new   -> TIMEOUT
+[796/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_7.dot   e= 1833 pre41 -> TIMEOUT
+[796/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_7.dot   e= 1833 pre42 -> TIMEOUT
+[796/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_7.dot   e= 1833 new   -> TIMEOUT
+[797/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_8.dot  e= 1853 pre41 -> 21.421s v=1
+[797/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_8.dot  e= 1853 pre42 -> 14.636s v=1
+[797/900] Human_CEP57L1_orthologues_AA_k_3_l_2000_a_8.dot  e= 1853 new   -> TIMEOUT
+[798/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_8.dot    e= 1879 pre41 -> 24.591s v=1
+[798/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_8.dot    e= 1879 pre42 -> 16.578s v=1
+[798/900] Human_TRPC1_orthologues_AA_k_3_l_2000_a_8.dot    e= 1879 new   -> TIMEOUT
+[799/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_6.dot  e= 1913 pre41 -> TIMEOUT
+[799/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_6.dot  e= 1913 pre42 -> TIMEOUT
+[799/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_6.dot  e= 1913 new   -> TIMEOUT
+[800/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_6.dot   e= 1928 pre41 -> TIMEOUT
+[800/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_6.dot   e= 1928 pre42 -> TIMEOUT
+[800/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_6.dot   e= 1928 new   -> TIMEOUT
+[801/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_8.dot   e= 1953 pre41 -> TIMEOUT
+[801/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_8.dot   e= 1953 pre42 -> TIMEOUT
+[801/900] Human_BTBD17_orthologues_AA_k_4_l_2000_a_8.dot   e= 1953 new   -> TIMEOUT
+[802/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_7.dot   e= 1953 pre41 -> TIMEOUT
+[802/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_7.dot   e= 1953 pre42 -> TIMEOUT
+[802/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_7.dot   e= 1953 new   -> TIMEOUT
+[803/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_6.dot     e= 1975 pre41 -> TIMEOUT
+[803/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_6.dot     e= 1975 pre42 -> TIMEOUT
+[803/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_6.dot     e= 1975 new   -> TIMEOUT
+[804/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_8.dot   e= 1988 pre41 -> TIMEOUT
+[804/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_8.dot   e= 1988 pre42 -> TIMEOUT
+[804/900] Human_FAM53A_orthologues_AA_k_5_l_2000_a_8.dot   e= 1988 new   -> TIMEOUT
+[805/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_6.dot     e= 1995 pre41 -> TIMEOUT
+[805/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_6.dot     e= 1995 pre42 -> TIMEOUT
+[805/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_6.dot     e= 1995 new   -> TIMEOUT
+[806/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_8.dot     e= 2005 pre41 -> 25.629s v=1
+[806/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_8.dot     e= 2005 pre42 -> 17.272s v=1
+[806/900] Human_GGT6_orthologues_AA_k_3_l_2000_a_8.dot     e= 2005 new   -> TIMEOUT
+[807/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_8.dot  e= 2016 pre41 -> 26.068s v=1
+[807/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_8.dot  e= 2016 pre42 -> 17.378s v=1
+[807/900] Human_SLC38A9_orthologues_AA_k_3_l_2000_a_8.dot  e= 2016 new   -> TIMEOUT
+[808/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_6.dot     e= 2043 pre41 -> TIMEOUT
+[808/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_6.dot     e= 2043 pre42 -> TIMEOUT
+[808/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_6.dot     e= 2043 new   -> TIMEOUT
+[809/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_6.dot     e= 2046 pre41 -> TIMEOUT
+[809/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_6.dot     e= 2046 pre42 -> TIMEOUT
+[809/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_6.dot     e= 2046 new   -> TIMEOUT
+[810/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_7.dot     e= 2082 pre41 -> TIMEOUT
+[810/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_7.dot     e= 2082 pre42 -> TIMEOUT
+[810/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_7.dot     e= 2082 new   -> TIMEOUT
+[811/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_8.dot     e= 2114 pre41 -> TIMEOUT
+[811/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_8.dot     e= 2114 pre42 -> TIMEOUT
+[811/900] Human_LCP1_orthologues_AA_k_4_l_2000_a_8.dot     e= 2114 new   -> TIMEOUT
+[812/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_6.dot  e= 2131 pre41 -> TIMEOUT
+[812/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_6.dot  e= 2131 pre42 -> TIMEOUT
+[812/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_6.dot  e= 2131 new   -> TIMEOUT
+[813/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_6.dot     e= 2142 pre41 -> TIMEOUT
+[813/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_6.dot     e= 2142 pre42 -> TIMEOUT
+[813/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_6.dot     e= 2142 new   -> TIMEOUT
+[814/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_8.dot   e= 2150 pre41 -> TIMEOUT
+[814/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_8.dot   e= 2150 pre42 -> TIMEOUT
+[814/900] Human_BTBD17_orthologues_AA_k_5_l_2000_a_8.dot   e= 2150 new   -> TIMEOUT
+[815/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_6.dot   e= 2152 pre41 -> 28.650s v=1
+[815/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_6.dot   e= 2152 pre42 -> 19.382s v=1
+[815/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_6.dot   e= 2152 new   -> TIMEOUT
+[816/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_7.dot     e= 2158 pre41 -> TIMEOUT
+[816/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_7.dot     e= 2158 pre42 -> TIMEOUT
+[816/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_7.dot     e= 2158 new   -> TIMEOUT
+[817/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_6.dot    e= 2161 pre41 -> TIMEOUT
+[817/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_6.dot    e= 2161 pre42 -> TIMEOUT
+[817/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_6.dot    e= 2161 new   -> TIMEOUT
+[818/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_7.dot  e= 2183 pre41 -> TIMEOUT
+[818/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_7.dot  e= 2183 pre42 -> TIMEOUT
+[818/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_7.dot  e= 2183 new   -> TIMEOUT
+[819/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_6.dot  e= 2187 pre41 -> TIMEOUT
+[819/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_6.dot  e= 2187 pre42 -> TIMEOUT
+[819/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_6.dot  e= 2187 new   -> TIMEOUT
+[820/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_8.dot     e= 2194 pre41 -> TIMEOUT
+[820/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_8.dot     e= 2194 pre42 -> TIMEOUT
+[820/900] Human_CLPX_orthologues_AA_k_4_l_2000_a_8.dot     e= 2194 new   -> TIMEOUT
+[821/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_6.dot  e= 2216 pre41 -> TIMEOUT
+[821/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_6.dot  e= 2216 pre42 -> TIMEOUT
+[821/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_6.dot  e= 2216 new   -> TIMEOUT
+[822/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_6.dot     e= 2244 pre41 -> TIMEOUT
+[822/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_6.dot     e= 2244 pre42 -> TIMEOUT
+[822/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_6.dot     e= 2244 new   -> TIMEOUT
+[823/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_6.dot  e= 2262 pre41 -> TIMEOUT
+[823/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_6.dot  e= 2262 pre42 -> TIMEOUT
+[823/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_6.dot  e= 2262 new   -> TIMEOUT
+[824/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_6.dot    e= 2271 pre41 -> TIMEOUT
+[824/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_6.dot    e= 2271 pre42 -> TIMEOUT
+[824/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_6.dot    e= 2271 new   -> TIMEOUT
+[825/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_6.dot    e= 2280 pre41 -> TIMEOUT
+[825/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_6.dot    e= 2280 pre42 -> TIMEOUT
+[825/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_6.dot    e= 2280 new   -> TIMEOUT
+[826/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_6.dot  e= 2290 pre41 -> TIMEOUT
+[826/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_6.dot  e= 2290 pre42 -> TIMEOUT
+[826/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_6.dot  e= 2290 new   -> TIMEOUT
+[827/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_7.dot     e= 2301 pre41 -> TIMEOUT
+[827/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_7.dot     e= 2301 pre42 -> TIMEOUT
+[827/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_7.dot     e= 2301 new   -> TIMEOUT
+[828/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_7.dot     e= 2336 pre41 -> TIMEOUT
+[828/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_7.dot     e= 2336 pre42 -> TIMEOUT
+[828/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_7.dot     e= 2336 new   -> TIMEOUT
+[829/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_7.dot     e= 2342 pre41 -> TIMEOUT
+[829/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_7.dot     e= 2342 pre42 -> TIMEOUT
+[829/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_7.dot     e= 2342 new   -> TIMEOUT
+[830/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_8.dot     e= 2342 pre41 -> TIMEOUT
+[830/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_8.dot     e= 2342 pre42 -> TIMEOUT
+[830/900] Human_LCP1_orthologues_AA_k_5_l_2000_a_8.dot     e= 2342 new   -> TIMEOUT
+[831/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_7.dot    e= 2342 pre41 -> TIMEOUT
+[831/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_7.dot    e= 2342 pre42 -> TIMEOUT
+[831/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_7.dot    e= 2342 new   -> TIMEOUT
+[832/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_7.dot  e= 2345 pre41 -> TIMEOUT
+[832/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_7.dot  e= 2345 pre42 -> TIMEOUT
+[832/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_7.dot  e= 2345 new   -> TIMEOUT
+[833/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_8.dot  e= 2363 pre41 -> TIMEOUT
+[833/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_8.dot  e= 2363 pre42 -> TIMEOUT
+[833/900] Human_SLC22A2_orthologues_AA_k_4_l_2000_a_8.dot  e= 2363 new   -> TIMEOUT
+[834/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_6.dot  e= 2367 pre41 -> TIMEOUT
+[834/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_6.dot  e= 2367 pre42 -> TIMEOUT
+[834/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_6.dot  e= 2367 new   -> TIMEOUT
+[835/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_6.dot    e= 2369 pre41 -> 30.623s v=1
+[835/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_6.dot    e= 2369 pre42 -> 22.616s v=1
+[835/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_6.dot    e= 2369 new   -> TIMEOUT
+[836/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_6.dot  e= 2372 pre41 -> TIMEOUT
+[836/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_6.dot  e= 2372 pre42 -> TIMEOUT
+[836/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_6.dot  e= 2372 new   -> TIMEOUT
+[837/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_7.dot  e= 2378 pre41 -> TIMEOUT
+[837/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_7.dot  e= 2378 pre42 -> TIMEOUT
+[837/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_7.dot  e= 2378 new   -> TIMEOUT
+[838/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_8.dot     e= 2391 pre41 -> TIMEOUT
+[838/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_8.dot     e= 2391 pre42 -> TIMEOUT
+[838/900] Human_CLPX_orthologues_AA_k_5_l_2000_a_8.dot     e= 2391 new   -> TIMEOUT
+[839/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_6.dot    e= 2405 pre41 -> TIMEOUT
+[839/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_6.dot    e= 2405 pre42 -> TIMEOUT
+[839/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_6.dot    e= 2405 new   -> TIMEOUT
+[840/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_7.dot  e= 2417 pre41 -> TIMEOUT
+[840/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_7.dot  e= 2417 pre42 -> TIMEOUT
+[840/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_7.dot  e= 2417 new   -> TIMEOUT
+[841/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_7.dot    e= 2420 pre41 -> TIMEOUT
+[841/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_7.dot    e= 2420 pre42 -> TIMEOUT
+[841/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_7.dot    e= 2420 new   -> TIMEOUT
+[842/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_7.dot     e= 2423 pre41 -> TIMEOUT
+[842/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_7.dot     e= 2423 pre42 -> TIMEOUT
+[842/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_7.dot     e= 2423 new   -> TIMEOUT
+[843/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_8.dot    e= 2445 pre41 -> TIMEOUT
+[843/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_8.dot    e= 2445 pre42 -> TIMEOUT
+[843/900] Human_TRPC1_orthologues_AA_k_4_l_2000_a_8.dot    e= 2445 new   -> TIMEOUT
+[844/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_7.dot    e= 2463 pre41 -> 32.048s v=1
+[844/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_7.dot    e= 2463 pre42 -> 25.056s v=1
+[844/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_7.dot    e= 2463 new   -> TIMEOUT
+[845/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_7.dot   e= 2465 pre41 -> 33.291s v=1
+[845/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_7.dot   e= 2465 pre42 -> 25.234s v=1
+[845/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_7.dot   e= 2465 new   -> TIMEOUT
+[846/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_8.dot  e= 2468 pre41 -> TIMEOUT
+[846/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_8.dot  e= 2468 pre42 -> TIMEOUT
+[846/900] Human_ANGPTL4_orthologues_AA_k_4_l_2000_a_8.dot  e= 2468 new   -> TIMEOUT
+[847/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_8.dot    e= 2485 pre41 -> TIMEOUT
+[847/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_8.dot    e= 2485 pre42 -> TIMEOUT
+[847/900] Human_STAU2_orthologues_AA_k_4_l_2000_a_8.dot    e= 2485 new   -> TIMEOUT
+[848/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_7.dot    e= 2489 pre41 -> TIMEOUT
+[848/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_7.dot    e= 2489 pre42 -> TIMEOUT
+[848/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_7.dot    e= 2489 new   -> TIMEOUT
+[849/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_6.dot  e= 2496 pre41 -> TIMEOUT
+[849/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_6.dot  e= 2496 pre42 -> TIMEOUT
+[849/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_6.dot  e= 2496 new   -> TIMEOUT
+[850/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_7.dot  e= 2508 pre41 -> TIMEOUT
+[850/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_7.dot  e= 2508 pre42 -> TIMEOUT
+[850/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_7.dot  e= 2508 new   -> TIMEOUT
+[851/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_7.dot  e= 2560 pre41 -> TIMEOUT
+[851/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_7.dot  e= 2560 pre42 -> TIMEOUT
+[851/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_7.dot  e= 2560 new   -> TIMEOUT
+[852/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_8.dot  e= 2568 pre41 -> TIMEOUT
+[852/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_8.dot  e= 2568 pre42 -> TIMEOUT
+[852/900] Human_SLC22A2_orthologues_AA_k_5_l_2000_a_8.dot  e= 2568 new   -> TIMEOUT
+[853/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_7.dot  e= 2575 pre41 -> TIMEOUT
+[853/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_7.dot  e= 2575 pre42 -> TIMEOUT
+[853/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_7.dot  e= 2575 new   -> TIMEOUT
+[854/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_7.dot    e= 2584 pre41 -> TIMEOUT
+[854/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_7.dot    e= 2584 pre42 -> TIMEOUT
+[854/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_7.dot    e= 2584 new   -> TIMEOUT
+[855/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_8.dot  e= 2609 pre41 -> TIMEOUT
+[855/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_8.dot  e= 2609 pre42 -> TIMEOUT
+[855/900] Human_DCSTAMP_orthologues_AA_k_4_l_2000_a_8.dot  e= 2609 new   -> TIMEOUT
+[856/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_8.dot   e= 2618 pre41 -> 37.798s v=1
+[856/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_8.dot   e= 2618 pre42 -> 28.012s v=1
+[856/900] Human_FHIP1B_orthologues_AA_k_3_l_2000_a_8.dot   e= 2618 new   -> TIMEOUT
+[857/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_8.dot    e= 2620 pre41 -> TIMEOUT
+[857/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_8.dot    e= 2620 pre42 -> TIMEOUT
+[857/900] Human_TRPC1_orthologues_AA_k_5_l_2000_a_8.dot    e= 2620 new   -> TIMEOUT
+[858/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_7.dot  e= 2650 pre41 -> TIMEOUT
+[858/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_7.dot  e= 2650 pre42 -> TIMEOUT
+[858/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_7.dot  e= 2650 new   -> TIMEOUT
+[859/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_8.dot  e= 2661 pre41 -> TIMEOUT
+[859/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_8.dot  e= 2661 pre42 -> TIMEOUT
+[859/900] Human_ANGPTL4_orthologues_AA_k_5_l_2000_a_8.dot  e= 2661 new   -> TIMEOUT
+[860/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_8.dot    e= 2665 pre41 -> TIMEOUT
+[860/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_8.dot    e= 2665 pre42 -> TIMEOUT
+[860/900] Human_STAU2_orthologues_AA_k_5_l_2000_a_8.dot    e= 2665 new   -> TIMEOUT
+[861/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_8.dot  e= 2730 pre41 -> TIMEOUT
+[861/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_8.dot  e= 2730 pre42 -> TIMEOUT
+[861/900] Human_CEP57L1_orthologues_AA_k_4_l_2000_a_8.dot  e= 2730 new   -> TIMEOUT
+[862/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_8.dot    e= 2735 pre41 -> 38.540s v=1
+[862/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_8.dot    e= 2735 pre42 -> 28.120s v=1
+[862/900] Human_SHLD2_orthologues_AA_k_3_l_2000_a_8.dot    e= 2735 new   -> TIMEOUT
+[863/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_8.dot     e= 2741 pre41 -> TIMEOUT
+[863/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_8.dot     e= 2741 pre42 -> TIMEOUT
+[863/900] Human_GGT6_orthologues_AA_k_4_l_2000_a_8.dot     e= 2741 new   -> TIMEOUT
+[864/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_7.dot  e= 2774 pre41 -> TIMEOUT
+[864/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_7.dot  e= 2774 pre42 -> TIMEOUT
+[864/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_7.dot  e= 2774 new   -> TIMEOUT
+[865/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_6.dot   e= 2819 pre41 -> 41.046s v=1
+[865/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_6.dot   e= 2819 pre42 -> 31.746s v=1
+[865/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_6.dot   e= 2819 new   -> TIMEOUT
+[866/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_7.dot  e= 2821 pre41 -> TIMEOUT
+[866/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_7.dot  e= 2821 pre42 -> TIMEOUT
+[866/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_7.dot  e= 2821 new   -> TIMEOUT
+[867/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_8.dot     e= 2870 pre41 -> TIMEOUT
+[867/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_8.dot     e= 2870 pre42 -> TIMEOUT
+[867/900] Human_GGT6_orthologues_AA_k_5_l_2000_a_8.dot     e= 2870 new   -> TIMEOUT
+[868/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_8.dot  e= 2890 pre41 -> TIMEOUT
+[868/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_8.dot  e= 2890 pre42 -> TIMEOUT
+[868/900] Human_SLC38A9_orthologues_AA_k_4_l_2000_a_8.dot  e= 2890 new   -> TIMEOUT
+[869/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_8.dot  e= 2892 pre41 -> TIMEOUT
+[869/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_8.dot  e= 2892 pre42 -> TIMEOUT
+[869/900] Human_DCSTAMP_orthologues_AA_k_5_l_2000_a_8.dot  e= 2892 new   -> TIMEOUT
+[870/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_8.dot  e= 2971 pre41 -> TIMEOUT
+[870/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_8.dot  e= 2971 pre42 -> TIMEOUT
+[870/900] Human_CEP57L1_orthologues_AA_k_5_l_2000_a_8.dot  e= 2971 new   -> TIMEOUT
+[871/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_7.dot   e= 3002 pre41 -> 43.548s v=1
+[871/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_7.dot   e= 3002 pre42 -> 35.151s v=1
+[871/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_7.dot   e= 3002 new   -> TIMEOUT
+[872/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_8.dot   e= 3129 pre41 -> 47.681s v=1
+[872/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_8.dot   e= 3129 pre42 -> 37.366s v=1
+[872/900] Human_ZRANB3_orthologues_AA_k_3_l_2000_a_8.dot   e= 3129 new   -> TIMEOUT
+[873/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_8.dot  e= 3203 pre41 -> TIMEOUT
+[873/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_8.dot  e= 3203 pre42 -> TIMEOUT
+[873/900] Human_SLC38A9_orthologues_AA_k_5_l_2000_a_8.dot  e= 3203 new   -> TIMEOUT
+[874/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_6.dot   e= 3250 pre41 -> TIMEOUT
+[874/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_6.dot   e= 3250 pre42 -> TIMEOUT
+[874/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_6.dot   e= 3250 new   -> TIMEOUT
+[875/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_6.dot    e= 3420 pre41 -> TIMEOUT
+[875/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_6.dot    e= 3420 pre42 -> TIMEOUT
+[875/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_6.dot    e= 3420 new   -> TIMEOUT
+[876/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_6.dot   e= 3517 pre41 -> TIMEOUT
+[876/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_6.dot   e= 3517 pre42 -> TIMEOUT
+[876/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_6.dot   e= 3517 new   -> TIMEOUT
+[877/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_6.dot    e= 3554 pre41 -> 54.913s v=1
+[877/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_6.dot    e= 3554 pre42 -> 46.362s v=1
+[877/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_6.dot    e= 3554 new   -> TIMEOUT
+[878/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_7.dot    e= 3636 pre41 -> 56.491s v=1
+[878/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_7.dot    e= 3636 pre42 -> 47.347s v=1
+[878/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_7.dot    e= 3636 new   -> TIMEOUT
+[879/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_7.dot    e= 3641 pre41 -> TIMEOUT
+[879/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_7.dot    e= 3641 pre42 -> TIMEOUT
+[879/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_7.dot    e= 3641 new   -> TIMEOUT
+[880/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_6.dot    e= 3665 pre41 -> TIMEOUT
+[880/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_6.dot    e= 3665 pre42 -> TIMEOUT
+[880/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_6.dot    e= 3665 new   -> TIMEOUT
+[881/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_8.dot    e= 3725 pre41 -> 58.115s v=1
+[881/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_8.dot    e= 3725 pre42 -> 49.631s v=1
+[881/900] Human_DOCK4_orthologues_AA_k_3_l_2000_a_8.dot    e= 3725 new   -> TIMEOUT
+[882/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_7.dot    e= 3918 pre41 -> TIMEOUT
+[882/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_7.dot    e= 3918 pre42 -> TIMEOUT
+[882/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_7.dot    e= 3918 new   -> TIMEOUT
+[883/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_7.dot   e= 3958 pre41 -> TIMEOUT
+[883/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_7.dot   e= 3958 pre42 -> TIMEOUT
+[883/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_7.dot   e= 3958 new   -> TIMEOUT
+[884/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_8.dot    e= 4249 pre41 -> TIMEOUT
+[884/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_8.dot    e= 4249 pre42 -> TIMEOUT
+[884/900] Human_SHLD2_orthologues_AA_k_4_l_2000_a_8.dot    e= 4249 new   -> TIMEOUT
+[885/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_7.dot   e= 4332 pre41 -> TIMEOUT
+[885/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_7.dot   e= 4332 pre42 -> TIMEOUT
+[885/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_7.dot   e= 4332 new   -> TIMEOUT
+[886/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_8.dot   e= 4417 pre41 -> TIMEOUT
+[886/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_8.dot   e= 4417 pre42 -> TIMEOUT
+[886/900] Human_FHIP1B_orthologues_AA_k_4_l_2000_a_8.dot   e= 4417 new   -> TIMEOUT
+[887/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_6.dot   e= 4418 pre41 -> TIMEOUT
+[887/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_6.dot   e= 4418 pre42 -> TIMEOUT
+[887/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_6.dot   e= 4418 new   -> TIMEOUT
+[888/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_8.dot    e= 4620 pre41 -> TIMEOUT
+[888/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_8.dot    e= 4620 pre42 -> TIMEOUT
+[888/900] Human_SHLD2_orthologues_AA_k_5_l_2000_a_8.dot    e= 4620 new   -> TIMEOUT
+[889/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_6.dot   e= 4845 pre41 -> TIMEOUT
+[889/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_6.dot   e= 4845 pre42 -> TIMEOUT
+[889/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_6.dot   e= 4845 new   -> TIMEOUT
+[890/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_7.dot   e= 4891 pre41 -> TIMEOUT
+[890/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_7.dot   e= 4891 pre42 -> TIMEOUT
+[890/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_7.dot   e= 4891 new   -> TIMEOUT
+[891/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_8.dot   e= 4896 pre41 -> TIMEOUT
+[891/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_8.dot   e= 4896 pre42 -> TIMEOUT
+[891/900] Human_FHIP1B_orthologues_AA_k_5_l_2000_a_8.dot   e= 4896 new   -> TIMEOUT
+[892/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_8.dot   e= 5221 pre41 -> TIMEOUT
+[892/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_8.dot   e= 5221 pre42 -> TIMEOUT
+[892/900] Human_ZRANB3_orthologues_AA_k_4_l_2000_a_8.dot   e= 5221 new   -> TIMEOUT
+[893/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_7.dot   e= 5426 pre41 -> TIMEOUT
+[893/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_7.dot   e= 5426 pre42 -> TIMEOUT
+[893/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_7.dot   e= 5426 new   -> TIMEOUT
+[894/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_6.dot    e= 5760 pre41 -> TIMEOUT
+[894/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_6.dot    e= 5760 pre42 -> TIMEOUT
+[894/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_6.dot    e= 5760 new   -> TIMEOUT
+[895/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_8.dot   e= 5837 pre41 -> TIMEOUT
+[895/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_8.dot   e= 5837 pre42 -> TIMEOUT
+[895/900] Human_ZRANB3_orthologues_AA_k_5_l_2000_a_8.dot   e= 5837 new   -> TIMEOUT
+[896/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_7.dot    e= 6053 pre41 -> TIMEOUT
+[896/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_7.dot    e= 6053 pre42 -> TIMEOUT
+[896/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_7.dot    e= 6053 new   -> TIMEOUT
+[897/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_6.dot    e= 6254 pre41 -> TIMEOUT
+[897/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_6.dot    e= 6254 pre42 -> TIMEOUT
+[897/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_6.dot    e= 6254 new   -> TIMEOUT
+[898/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_8.dot    e= 6345 pre41 -> TIMEOUT
+[898/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_8.dot    e= 6345 pre42 -> TIMEOUT
+[898/900] Human_DOCK4_orthologues_AA_k_4_l_2000_a_8.dot    e= 6345 new   -> TIMEOUT
+[899/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_7.dot    e= 6636 pre41 -> TIMEOUT
+[899/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_7.dot    e= 6636 pre42 -> TIMEOUT
+[899/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_7.dot    e= 6636 new   -> TIMEOUT
+[900/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_8.dot    e= 7025 pre41 -> TIMEOUT
+[900/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_8.dot    e= 7025 pre42 -> TIMEOUT
+[900/900] Human_DOCK4_orthologues_AA_k_5_l_2000_a_8.dot    e= 7025 new   -> TIMEOUT
+
+wrote benchmark/report_figs/data/ftiming_bytype.raw.jsonl
+wrote benchmark/report_figs/data/ftiming_bytype.csv
+DONE_FTIMING_EXIT_0
