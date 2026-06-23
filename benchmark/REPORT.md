@@ -25,7 +25,7 @@ data file; §9 is the reproduction manifest.
 | **Capability** | graphs the OLD exp baseline could decide at all | timed out on **159 / 931** | **931 / 931** | Fig 3 |
 | **Performance — `-f`** | total `-f` time, DOCK4 DNA k=5 (1041 edges) | 15.2 s (pre-4.1) | **6.6 s** (≈ **2.3×**) | Fig 7, `data/micro.setup_solve.csv` |
 | **Performance — `-f`** | encoding *setup* time, same graph | 2.1 s | **0.14 s** (≈ **14×**) | Fig 7 |
-| **Performance — `-f`** | encoding asymptotics (cross-group A2 / within-group A3) | O(E²) / O(E_l²) | **O(E+L) / O(D_l²+E_l)** | §4 |
+| **Performance — `-f`** | encoding size in SMT atoms (validated ≡ z3 `s.assertions()`) | O(E²) (fit `∝E^2.00`, all types) | **median ≈13× fewer** (up to ~300×); sub-quadratic `∝E^1.57` where the A3 block fires | §4.0, Fig "atoms", `data/atom_counts.csv` |
 | **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **1.3–2.2×** (DNA via A3, AA via A2; 0 regressions) | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
@@ -209,6 +209,41 @@ fewer atoms (this report's verification caught it; §4.2/§5). The **`D_l < E_l/
 restricts the block to the regime where it genuinely helps, so all-distinct *and* merely-dense
 groups fall back to the verified pairwise loop.
 
+### 4.0 The mechanism, measured directly: encoding size in atoms (Fig “atoms”)
+
+![Fig atoms](report_figs/Fatoms_encoding.png)
+
+Before any wall-clock number, we can measure the sparsification *itself*. `atom_count.py` computes —
+analytically, from each graph's label/endpoint structure — exactly how many `s.add(...)` assertions
+each generation emits under `-f`, mirroring `smt.cpp` line for line. The count is **validated to be
+exact**: on a 12-graph calibration set it equals z3's own `s.assertions().size()` from an
+instrumented build (`recognizer_linux_instr`) to the atom, the only residual being a shared
+`n+1`-assertion range/`distinct` baseline identical across all three binaries. The counts over all
+**900 biological graphs** (`data/atom_counts.csv`) fit clean power laws in the edge count `E`:
+
+| type | pre-4.1 | this work | atom reduction at the largest graph | what carries it |
+|---|--:|--:|--:|---|
+| De Bruijn **DNA** | `∝ E^2.00` | **`∝ E^1.57`** | `E=1049`: 549,676 → 22,843 (**24×**) | A3 block fires (`D/E≈0.27`) — an **asymptotic** drop |
+| De Bruijn **AA** | `∝ E^2.00` | `∝ E^1.74` | `E=7025`: 24.7 M → 1.48 M (**17×**) | A2 only (block off, `D/E≈0.78`) — a **constant-factor** drop |
+| RevDet **DNA** | `∝ E^2.00` | `∝ E^1.94` | `E=1490`: 1.11 M → 293 k (**3.8×**) | few labels ⇒ little A2; block off |
+| RevDet **AA** | `∝ E^2.00` | `∝ E^1.80` | `E=1721`: 1.48 M → 102 k (**15×**) | A2 (20-letter alphabet) |
+
+This is the honest, quantitative shape of the improvement. The old encoding is **`∝ E²` on every
+type** — the dense all-pairs baseline. The new encoding is genuinely **sub-quadratic only where the
+A3 block fires** (few-label DNA: `E^1.57`); on the 20-letter amino-acid graphs the block stays off
+and the win is a large **constant factor** from the A2 sparsification, not a change of exponent (the
+fit stays near `E^1.8`–`E^2.0`). Panel (C) shows where the atoms live: pre-4.1 is dominated by the
+cross-group A2 term on AA and by the within-group A3 term on DNA; the new encoding shrinks whichever
+dominates.
+
+**The crucial caveat — atoms are not wall time.** The formula shrinks by a **median ≈13×** (per-type
+medians 3.8–16×; up to ~300× on the largest many-label graphs), and the *encoding setup* time shrinks
+in step (≈ 14× on the headline graph, §4.1). But the **total** `-f` wall time falls only
+≈ 2× (§4.1, §4.5), because z3's **solve** is the bottleneck and its cost is not proportional to the
+atom count — a smaller formula helps the solver, but does not shrink the underlying NP-hard search by
+the same factor. So the sparsification's first-order effect is to make *building the problem* nearly
+free; the solver speedup is a real but second-order benefit.
+
 ### 4.1 Setup/solve split on the headline graphs (Fig 7)
 
 ![Fig 7](report_figs/F7_setup_solve.png)
@@ -270,23 +305,24 @@ gone; the non-WG curve is a near-vertical step at 1.0 = neutral fallback). Fig 6
 
 ![Fig 7b](report_figs/F7b_memory.png)
 
-Peak resident set size (`/usr/bin/time -v`, `data/micro.mem.csv`) tells a more nuanced story than
-the time numbers. On the headline DNA k=5 graphs the NEW encoding uses **more** memory, not less:
+Peak resident set size (`/usr/bin/time -v`) depends on **which** sparsification is active, and splits
+into two honest regimes. **(1) Where the A3 block fires** — low-`D/E` graphs, the headline DOCK4/TRPC1
+k=5 (`D/E≈0.27`) — the new encoding pays for the block's auxiliary integer variables (`#mn_/#mx_`)
+with ≈2× more RAM. That is the genuine space-for-time trade:
 
 | graph | pre-4.1 | pre-4.2 | **NEW** |
 |---|--:|--:|--:|
 | DOCK4 DNA k=5 (1041 edges) | 0.66 GB | 0.66 GB | **1.21 GB** |
 | TRPC1 DNA k=5 (1049 edges) | 0.67 GB | 0.67 GB | **1.29 GB** |
 
-This is expected and reported as-is: the sparse forms trade a quadratic *number of constraints* for a
-linear number of **auxiliary integer variables** (`#lo_/#hi_`, `#mn_/#mx_`). On graphs small enough
-that the dense `O(E²)` constraint set never explodes (E≈1000 here), those aux variables widen z3's
-IDL variable domain and raise peak RSS by ≈2× — while still cutting setup ≈14× and total time ≈2×.
-The memory picture only *inverts* on much larger graphs, where the dense `O(E²)`/`O(E_l²)` constraint
-count is what blows up RAM; but those are precisely the all-distinct-endpoint cases where `-f` does
-not finish for any generation within the timeout (§4.4), so there is no clean finished-vs-finished
-memory comparison to plot there. **Takeaway:** Phase 4.1/4.2 are a time/space *trade*, paying
-moderate extra memory on tractable graphs to buy a large setup-time reduction — not a memory win.
+**(2) Where the block is off** — higher-`D/E` graphs, the k=6 De Bruijn DNA ladder of Fig 7b
+(`D/E≈0.6–0.85`, `data/micro.mem_ladder.csv`) — there are *no* A3 aux variables, and the sparse A2
+form **replaces** pre-4.1's dense `O(E²)` cross-group constraints with `O(E)` ones. So here the new
+encoding is **no heavier than pre-4.1** (comparable, and up to ~15–20% lighter on some rungs — e.g.
+e=739: 1.88 GB vs 1.59 GB) and indistinguishable from pre-4.2 — none of the ≈2× block-firing penalty.
+The memory effect is therefore a **~2× trade only when the A3 block fires, and no cost at all when it
+does not** — not the unqualified 2× a single headline graph implies. Either way the time wins (setup ≈14×, total ≈2×) hold; the genuine
+limit is z3 *solve* on the all-distinct-endpoint dense cases where `-f` does not finish at all (§4.4).
 
 ### 4.4 The honest limit: all-distinct, dense groups
 
@@ -355,6 +391,26 @@ many-label (AA) regime**, and together they deliver ~1.8–1.9× on De Bruijn gr
 well-powered RevDet cells are the non-WG ones; (ii) every break-even cell is a *true* break-even
 (NEW ≡ OLD by construction where the guard keeps A3 off), not a measured slowdown.
 
+#### 4.5.1 The division of labor, and the guard that decides it (Figs “attr”, “guard”)
+
+![Fig attr](report_figs/Fattr_attribution.png)
+
+The attribution figure decomposes the *total* per-type speedup into its two multiplicative steps —
+the **A2 step** (pre-4.1 → pre-4.2) and the **A3 step** (pre-4.2 → this work) — with the measured
+median total marked as a diamond (it lands on top of the stack, validating the decomposition). It
+reads off cleanly: De Bruijn DNA is almost all **A3** (1.01× · 1.76×), every other type is almost all
+**A2** (De Bruijn AA 1.89× · 1.01×, RevDet AA 2.16× · 1.00×). 
+
+![Fig guard](report_figs/Fguard_de.png)
+
+*Why* the split falls this way is the `D/E` guard, and it is fully mechanical (`data/atom_counts.csv`):
+**(A)** the per-graph mean `D/E` (over label groups) clusters at **≈ 0.27 for De Bruijn DNA** — below
+the `D < E/2` line, so the A3 block fires — and at **≈ 0.78–0.83 for the other three types**, above
+the line, so the block stays off and A3 is a true break-even. **(B)** the per-type A3 speedup tracks
+`D/E` exactly: only the low-`D/E` De Bruijn DNA point lifts off 1.0×. So the per-type speedup table is
+not a list of empirical curiosities — it is the `D < E/2` guard, applied to the alphabet-driven
+endpoint multiplicity of each construction.
+
 ---
 
 ## §5 Scalability — how large a graph can each algorithm recognize?
@@ -400,11 +456,21 @@ on this `QF_IDL` encoding, the same for both. Fig 10 makes this concrete — on 
 NEW `-f` time curves essentially **coincide** and terminate at the same point (median 177 s vs 182 s
 at the wall, within noise). They coincide *because* `complete` is dense (`D/E ≈ 0.70`), so Phase 4.3's
 tightened guard correctly keeps the A3 block **off** and NEW falls back to the verified pairwise loop
-— making NEW ≡ OLD here by construction. The block's speedup is visible on the sparse De Bruijn graphs
-(`D/E ≈ 0.25`, §4.2), not on this synthetic dense worst case.
+— making NEW ≡ OLD here by construction. **Fig 10c** shows the contrasting case: a real-shaped
+De Bruijn DNA size ladder (`data/ftiming_f_sparse.raw.jsonl`, `-b -f`, R=3, 120 s cap), where the
+sparser encoding *does* pull ahead. Unlike the dense synthetic families, here NEW and pre-4.2 run
+**~1.5× below** pre-4.1 and decide a graph (`e≈1160` / `n≈721`, ≈89 s) that pre-4.1 has already timed
+out on, before all three hit the same 120 s wall at `e≈1491` / `n≈816`. The mechanism at these decided
+sizes is the **cross-group A2** sparsification, not the A3 block: these k=6 graphs have `D/E ≈ 0.6–0.85`
+on the rungs that finish, so the guard keeps A3 *off* (NEW ≈ pre-4.2) and the block engages only on the
+larger rungs that all exceed the budget. So A2 and A3 each dominate different De Bruijn sub-regimes —
+A3 on the lower-`D/E` k=3–5 corpus of §4.5, A2 on this higher-`D/E` k=6 ladder — but either way **the
+encoding lowers the time curve, not the size wall**: the gap below the wall is the speedup; the wall
+itself (the same z3/timeout limit for all three) does not move.
 
 ![Fig 10a](report_figs/F10_old_vs_new_complete.png)
 ![Fig 10b](report_figs/F10_old_vs_new_dnfa.png)
+![Fig 10c](report_figs/F10c_sparse_ceiling.png)
 
 > **Methodology note — a confound this report caught and corrected.** An earlier draft of this table
 > reported `full` (NEW `-f`) capping at **n=384**, below the OLD `-f`'s 832 — which would have wrongly
@@ -599,6 +665,13 @@ python3 benchmark/report_figs/ftiming.py \
     --binaries 'pre41=recognizer/bin/recognizer_pre41,pre42=recognizer/bin/recognizer_linux_old,new=recognizer/bin/recognizer_linux' \
     --corpus 'data/graph/SMT_vs_RHSMT/{DeBruijnG_DNA,DeBruijnG_AA,RevDetG_DNA,RevDetG_AA}' \
     --timeout 120 --replicates 3 --out benchmark/report_figs/data/ftiming_bytype
+# S3c encoding size in atoms (§4.0, Fig "atoms"/"attr"/"guard") — analytical, no run; validated
+#     exactly against recognizer_linux_instr (s.assertions().size())
+python3 benchmark/report_figs/atom_count.py \
+    --corpus 'data/graph/SMT_vs_RHSMT/DeBruijnG_DNA,data/graph/SMT_vs_RHSMT/DeBruijnG_AA,data/graph/SMT_vs_RHSMT/RevDetG_DNA,data/graph/SMT_vs_RHSMT/RevDetG_AA' \
+    --out benchmark/report_figs/data/atom_counts.csv
+# S3d sparse-family OLD-vs-NEW -f ladder + memory ladder (§4.3, §5 Fig 10c) — De Bruijn DNA, tmux
+bash benchmark/report_figs/run_f_sparse_ladder.sh
 # S4 setup/solve split + peak RSS, S5 repair blow-up dump
 bash benchmark/report_figs/run_micro.sh
 # scalability limit test (600 s timeout, R=3)
@@ -614,7 +687,8 @@ python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practi
 
 **Figures** (render with the spliceai python):
 ```bash
-~/miniconda3/envs/spliceai/bin/python benchmark/report_figs/plot_report.py   # F1–F7b, F11, F12, F15
+~/miniconda3/envs/spliceai/bin/python benchmark/report_figs/plot_report.py   # F1–F15 incl. Fatoms/Fattr/Fguard/F10c
+~/miniconda3/envs/spliceai/bin/python benchmark/report_figs/compose_figs.py   # composite rfig_*.png → website assets
 ~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
     --results benchmark/limit_test/results                                    # F8–F10 (600 s)
 ~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
@@ -627,8 +701,10 @@ python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practi
 | F1 false-accepts | `data/corr_buggy.log`, `data/corr_new.log`, `data/exp_unsound.log` | `plot_report.py` |
 | F2 verdict agreement | `data/static_metrics.json` (← `VERDICT_AGREEMENT.md`) | `plot_report.py` |
 | F3 capability | `data/static_metrics.json` (← `PHASE3_IMPACT.md`) | `plot_report.py` |
+| Fatoms / Fattr / Fguard (§4.0, §4.5.1) | `data/atom_counts.csv` (+ `ftiming_bytype.raw.jsonl` for attr/guard) | `atom_count.py` → `plot_report.py` |
 | F4–F6 `-f` scatter/ECDF/cactus | `data/ftiming_dna2.raw.jsonl` (post-4.3 fair re-run; AA via §4.4 probe) | `plot_report.py` |
-| F7 / F7b setup-solve / memory | `data/micro.setup_solve.csv` / `data/micro.mem.csv` | `plot_report.py` |
+| F7 / F7b setup-solve / memory ladder | `data/micro.setup_solve.csv` / `data/micro.mem_ladder.csv` | `plot_report.py` |
+| F10c sparse `-f` ceiling (§5) | `data/ftiming_f_sparse.raw.jsonl` | `plot_report.py` |
 | F8–F10 scalability | `limit_test/results/summary/limit_summary.csv` + `raw/runs.jsonl` | `plot_limit.py` |
 | F11 repair blow-up | `data/repair_records.json` | `plot_report.py` |
 | F12 per-type `-f` speedup | `data/ftiming_bytype.raw.jsonl` | `plot_report.py` |

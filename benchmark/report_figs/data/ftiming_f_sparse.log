@@ -1,0 +1,44 @@
+START_SPARSE_LADDER 2026-06-23T00:53:33Z
+TIMING sweep begin
+binaries : ['new', 'pre42', 'pre41']
+graphs   : 11  (edge range 340..2996)
+timeout  : 120.0s   replicates 3
+
+[1/11] DOCK4_DNA_k_6_l_50_a_8.dot                       e=  340 new   -> 3.813s v=1
+[1/11] DOCK4_DNA_k_6_l_50_a_8.dot                       e=  340 pre42 -> 3.788s v=1
+[1/11] DOCK4_DNA_k_6_l_50_a_8.dot                       e=  340 pre41 -> 5.660s v=1
+[2/11] DOCK4_DNA_k_6_l_80_a_8.dot                       e=  532 new   -> 13.485s v=1
+[2/11] DOCK4_DNA_k_6_l_80_a_8.dot                       e=  532 pre42 -> 14.491s v=1
+[2/11] DOCK4_DNA_k_6_l_80_a_8.dot                       e=  532 pre41 -> 20.193s v=1
+[3/11] DOCK4_DNA_k_6_l_120_a_8.dot                      e=  739 new   -> 29.876s v=1
+[3/11] DOCK4_DNA_k_6_l_120_a_8.dot                      e=  739 pre42 -> 28.909s v=1
+[3/11] DOCK4_DNA_k_6_l_120_a_8.dot                      e=  739 pre41 -> 43.173s v=1
+[4/11] DOCK4_DNA_k_6_l_160_a_8.dot                      e=  918 new   -> 52.988s v=1
+[4/11] DOCK4_DNA_k_6_l_160_a_8.dot                      e=  918 pre42 -> 53.237s v=1
+[4/11] DOCK4_DNA_k_6_l_160_a_8.dot                      e=  918 pre41 -> 79.974s v=1
+[5/11] DOCK4_DNA_k_6_l_220_a_8.dot                      e= 1160 new   -> 88.737s v=1
+[5/11] DOCK4_DNA_k_6_l_220_a_8.dot                      e= 1160 pre42 -> 89.669s v=1
+[5/11] DOCK4_DNA_k_6_l_220_a_8.dot                      e= 1160 pre41 -> TIMEOUT
+[6/11] DOCK4_DNA_k_6_l_300_a_8.dot                      e= 1491 new   -> TIMEOUT
+[6/11] DOCK4_DNA_k_6_l_300_a_8.dot                      e= 1491 pre42 -> TIMEOUT
+[6/11] DOCK4_DNA_k_6_l_300_a_8.dot                      e= 1491 pre41 -> TIMEOUT
+[7/11] DOCK4_DNA_k_6_l_400_a_8.dot                      e= 1795 new   -> TIMEOUT
+[7/11] DOCK4_DNA_k_6_l_400_a_8.dot                      e= 1795 pre42 -> TIMEOUT
+[7/11] DOCK4_DNA_k_6_l_400_a_8.dot                      e= 1795 pre41 -> TIMEOUT
+[8/11] DOCK4_DNA_k_6_l_500_a_8.dot                      e= 2061 new   -> TIMEOUT
+[8/11] DOCK4_DNA_k_6_l_500_a_8.dot                      e= 2061 pre42 -> TIMEOUT
+[8/11] DOCK4_DNA_k_6_l_500_a_8.dot                      e= 2061 pre41 -> TIMEOUT
+[9/11] DOCK4_DNA_k_6_l_600_a_8.dot                      e= 2322 new   -> TIMEOUT
+[9/11] DOCK4_DNA_k_6_l_600_a_8.dot                      e= 2322 pre42 -> TIMEOUT
+[9/11] DOCK4_DNA_k_6_l_600_a_8.dot                      e= 2322 pre41 -> TIMEOUT
+[10/11] DOCK4_DNA_k_6_l_800_a_8.dot                      e= 2679 new   -> TIMEOUT
+[10/11] DOCK4_DNA_k_6_l_800_a_8.dot                      e= 2679 pre42 -> TIMEOUT
+[10/11] DOCK4_DNA_k_6_l_800_a_8.dot                      e= 2679 pre41 -> TIMEOUT
+[11/11] DOCK4_DNA_k_6_l_1000_a_8.dot                     e= 2996 new   -> TIMEOUT
+[11/11] DOCK4_DNA_k_6_l_1000_a_8.dot                     e= 2996 pre42 -> TIMEOUT
+[11/11] DOCK4_DNA_k_6_l_1000_a_8.dot                     e= 2996 pre41 -> TIMEOUT
+
+wrote benchmark/report_figs/data/ftiming_f_sparse.raw.jsonl
+wrote benchmark/report_figs/data/ftiming_f_sparse.csv
+TIMING sweep done rc=0
+MEMORY sweep begin

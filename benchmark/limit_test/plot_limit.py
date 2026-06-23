@@ -18,19 +18,24 @@ import json
 import os
 from collections import defaultdict
 
+import sys
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "report_figs"))
+import style as S  # noqa: E402
+S.apply_style()
 
-ALGO_STYLE = {  # consistent colors/markers across figures
-    "smt":      ("#1f77b4", "o", "default-SMT"),
-    "perm":     ("#2ca02c", "s", "permutation"),
-    "full":     ("#d62728", "^", "full -f (NEW)"),
-    "full-old": ("#ff7f0e", "v", "full -f (OLD)"),
-    "exp":      ("#9467bd", "D", "exponential (GT)"),
+ALGO_STYLE = {  # one visual language with the §4 figures: same binary => same color
+    "smt":      ("#2166ac", "o", "default SMT"),
+    "perm":     ("#7f7f7f", "s", "permutation"),
+    "full":     (S.BIN["new"], "^", "full -f (this work)"),
+    "full-old": (S.BIN["pre42"], "v", "full -f (pre-4.2)"),
+    "exp":      ("#bdbdbd", "D", "exponential ref."),
     "wheelerize": ("#8c564b", "P", "repair (wheelerize)"),
 }
 
@@ -129,11 +134,11 @@ def plot_size_vs_time(runs, T, outdir, bio_band=None):
             continue
         if bio_band:
             lo, med, hi = bio_band
-            ax.axvspan(lo, hi, color="#2ca02c", alpha=0.10, zorder=0,
+            ax.axvspan(lo, hi, color=S.BAND_TEAL, alpha=0.10, zorder=0,
                        label=f"real MSA graphs (n={lo}–{hi:.0f})")
-            ax.axvline(med, color="#2ca02c", ls=":", lw=1.2, alpha=0.8)
+            ax.axvline(med, color=S.BAND_TEAL, ls=":", lw=1.2, alpha=0.8)
         if T:
-            ax.axhline(T, ls="--", color="gray", lw=1, label=f"timeout T={T:g}s")
+            ax.axhline(T, ls=S.WALL_LS, color=S.WALL_GRAY, lw=1, label=f"timeout T={T:g}s")
         ax.set_yscale("log")
         ax.set_xscale("log", base=2)
         ax.set_xlabel("graph size  (nodes, log₂)")
@@ -153,29 +158,37 @@ def plot_limits_bar(summary, outdir):
         print("limits_bar skipped (no summary yet; run still in progress)")
         return
     families = sorted({r["family"] for r in summary})
+    fam_color = {"complete": "#1b9e77", "dnfa": "#2166ac", "random-dag": "#7f7f7f"}
     algos = [a for a in ALGO_STYLE if any(r["algo"] == a for r in summary)]
     fig, ax = plt.subplots(figsize=(10, 5.5))
     width = 0.8 / max(1, len(families))
     x = np.arange(len(algos))
     for fi, family in enumerate(families):
-        heights, hatches = [], []
+        heights, hatches, kinds = [], [], []
         for algo in algos:
             row = next((r for r in summary if r["algo"] == algo and r["family"] == family), None)
             if row is None or row["limit_n"] in ("None", "", None):
-                heights.append(0)
-                hatches.append("")
+                heights.append(0); hatches.append(""); kinds.append("")
                 continue
             heights.append(float(row["limit_n"]))
             hatches.append("//" if row["kind"] == "CAPPED" else "")
-        bars = ax.bar(x + fi * width, heights, width, label=family)
-        for b, h in zip(bars, hatches):
+            kinds.append(row["kind"])
+        bars = ax.bar(x + fi * width, heights, width, label=family,
+                      color=fam_color.get(family, "#888"))
+        for b, h, k in zip(bars, hatches, kinds):
             if h:
                 b.set_hatch(h)
+            if k == "CAPPED":
+                ax.text(b.get_x() + b.get_width() / 2, b.get_height(), "cap", ha="center",
+                        va="bottom", fontsize=7, color=S.WALL_GRAY)
+            elif k == "THRESHOLD":
+                ax.text(b.get_x() + b.get_width() / 2, b.get_height(), "↑", ha="center",
+                        va="bottom", fontsize=9, color=S.WALL_GRAY)
     ax.set_yscale("log")
     ax.set_xticks(x + width * (len(families) - 1) / 2)
     ax.set_xticklabels([ALGO_STYLE[a][2] for a in algos], rotation=20, ha="right", fontsize=8)
     ax.set_ylabel("largest decided / repaired n  (log)")
-    ax.set_title("Recognition & repair size limits  (hatched = capability cap, not timeout)")
+    ax.set_title("Recognition & repair size limits  (cap = solver capability wall; ↑ = timeout-bounded)")
     ax.legend(title="family", fontsize=8)
     ax.grid(True, axis="y", which="both", alpha=0.25)
     p = os.path.join(outdir, "limits_bar.png")
@@ -196,14 +209,20 @@ def plot_old_vs_new(runs, T, outdir):
         for algo, pts in (("full-old", old), ("full", new)):
             color, marker, label = ALGO_STYLE[algo]
             ax.plot([p[0] for p in pts], [p[1] for p in pts],
-                    marker=marker, color=color, label=label, lw=1.8, ms=5)
+                    marker=marker, color=color, label=label, lw=2.0, ms=5)
+        # the shared z3 "unknown" ceiling: the largest n either curve reaches before z3 gives up
+        wall_n = max([p[0] for p in new] + [p[0] for p in old])
+        ax.axvline(wall_n, ls=S.WALL_LS, color=S.WALL_GRAY, lw=1.2)
+        ax.text(wall_n, ax.get_ylim()[1], " z3 returns unknown\n (solver wall, identical OLD/NEW)",
+                ha="right", va="top", fontsize=8, color=S.WALL_GRAY)
         if T:
-            ax.axhline(T, ls="--", color="gray", lw=1, label=f"timeout T={T:g}s")
+            ax.axhline(T, ls=(0, (1, 2)), color=S.WALL_GRAY, lw=1, alpha=0.6,
+                       label=f"timeout T={T:g}s")
         ax.set_yscale("log")
         ax.set_xscale("log", base=2)
         ax.set_xlabel("graph size  (nodes, log₂)")
         ax.set_ylabel("median wall time (s, log)")
-        ax.set_title(f"Phase-4.2 effect on `-f`: OLD vs NEW  ({family})")
+        ax.set_title(f"-f time, prior vs this work — {family}")
         ax.grid(True, which="both", alpha=0.25)
         ax.legend(fontsize=8)
         p = os.path.join(outdir, f"old_vs_new_f__{family}.png")
