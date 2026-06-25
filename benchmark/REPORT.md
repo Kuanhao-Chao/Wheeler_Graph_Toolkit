@@ -29,7 +29,8 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **median 1.79×** (geomean 1.77×, up to 3.5×); 1.3–2.2× per type (DNA via A3, AA via A2); **100% non-regressing** | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
-| **Repair — minimal** | smallest lossless repair vs the trie, on real non-WG gene graphs | trie blows up median **2.3×** over input | **median 2.17× smaller than the trie** (min-size ≈ 1.1× input; **median 1 node split**); exact == brute-force optimum, **0/269 invariant failures** | §6.1, Fig “repair-min”, `data/repair_revdet.csv` |
+| **Repair — minimal** | smallest lossless repair vs the trie, on real non-WG gene graphs | trie is the maximal split | **median ≈5× smaller than the trie** (up to 27.7×; median 4 node splits); `refine` == exact optimum on **99/99** graphs; **0 failures over a 353-graph corpus** (incl. 144 pytest) | §6.1–6.2, Fig “repair-comp”, `repair_exp/data/` |
+| **Repair — speed/scale** | fast `refine` vs the §6.1 greedy; size ceiling per method | greedy: trie ≤107 (47 s at trie 128) | **`refine`: trie ≤880, ~13× past exact, 0.01 s at trie 128**; bound = path-string trie blow-up (intrinsic) | §6.2, `repair_exp/data/scaling.csv` |
 | **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
 
 **One-paragraph version.** The OLD recognizer's permutation backends *false-accepted* non-Wheeler
@@ -654,6 +655,55 @@ min-size targets the minimal *deterministic* Wheeler graph (a smaller nondetermi
 left open). The exact solver is for small graphs; the greedy scales to moderate ones (recognizer-decided
 merges), with the trie always available as the guaranteed fallback.
 
+### 6.2 A faster algorithm, a unit-test suite, and a comprehensive benchmark (Fig “repair-comp”)
+
+![Fig repair-comp](repair_exp/Frepair_comprehensive.png)
+
+§6.1's greedy is correct but slow — it starts at the maximal-split trie and *merges down*, calling the
+recognizer once per candidate merge (`O(t²)` subprocesses; 47 s at trie ≈ 128). Since the minimal answer
+is near the *coarse* end (min-edits is usually a handful of splits), the right direction is the reverse.
+
+**The `refine` algorithm (`repair/minimize.py:refine`).** Start at the coarsest legal partition (the
+Nerode classes for min-size, the origin classes for min-edits) and **split toward the trie** until
+Wheeler. The decision test is an **in-process co-lexicographic order check**: position each block by the
+minimum co-lex rank of its members' incoming strings (the empty-string root → position 0, giving A1 for
+free); if that order satisfies A1/A2/A3 a Wheeler witness exists (a sound ACCEPT for *any* n), and if it
+fails, the violating head blocks name the block to split. Every intermediate is lossless (a refinement of
+the gate, a coarsening of the always-Wheeler trie), so the loop terminates by monotone refinement — not by
+the violation vanishing — and a bounded merge-back cleanup tightens the result. Cost: **`O(s·t²)`
+in-process with zero subprocesses in the loop** (`s` = splits needed, typically ~1), versus the greedy's
+`O(t²)` recognizer calls. Measured: a trie-128 RevDet graph drops from **47 s (greedy) to 0.01 s
+(refine)** at identical quality.
+
+**Unit tests (`repair/tests/`, `pytest.ini`).** A structured `pytest` suite (run with
+`python3 -m pytest`, which has both pytest and z3) covers every public function across `dfa`, `minimize`,
+`exhaustive_fold`, and `verify_repair`, plus edge cases (empty / single / parallel-edge / multi-source /
+nondeterministic graphs) and **regression pins** for the canonical optima — including the subtle
+diamond case where the minimal DFA (3 nodes) is *not* Wheeler so min-size is 4, and the classic 4-node
+conflict that needs exactly one split. **144 tests pass.**
+
+**Comprehensive benchmark** (`repair_exp/run_repair_corpus.py`, `scaling.py`; Fig “repair-comp”). A
+**353-graph** corpus — 175 controlled random DAGs (few- and many-label, size-laddered), **98 real RevDet
+gene graphs** (DNA and protein), and 80 already-Wheeler baselines — was repaired by all four methods
+(trie / refine / greedy / exact, each gated by trie size) with **every output checked against the five
+invariants**. Results:
+- **Correctness:** 0 invariant failures and 0 cases of a heuristic beating the exact optimum across all
+  353 graphs; **refine == exact on 99/99** graphs where the exact solver ran, and refine == greedy on
+  180/181. Already-Wheeler baselines repaired as **0-edit no-ops (78/78)**.
+- **Effect (panels D, E):** on the real gene graphs the minimal repair is a **median 5.1× smaller than the
+  trie** (up to 27.7×), needing a **median of 4 node splits**; the reduction is largest for the few-label
+  DNA graphs whose trie blows up most.
+- **Scaling + memory (panels A–C):** within a 60 s budget the per-method **ceilings are exact ≤ 68-node
+  trie, greedy ≤ 107, refine ≤ 880** — refine handles a **~13× larger trie than exact (~8× larger than
+  greedy)** and far faster, at comparable peak memory. The shared wall above that is **fundamental**: the
+  path-string **trie itself blows up** (exponentially in path count) for large biological graphs, which
+  bounds *every* trie-based lossless repair (the existing trie repair included), not `refine` specifically.
+- **Optimality (panel F):** wherever the exact optimum is computable, `refine` lands exactly on it.
+
+So the minimal repair is now both fast (orders of magnitude past the first version) and exhaustively
+verified, with the honest scaling limit characterized: it is the language's path-string trie, not the
+search, that ultimately bounds lossless node-splitting repair.
+
 ---
 
 ## §7 From MSA to Wheeler graph — constructions, practicality, and a turnkey CLI
@@ -785,10 +835,13 @@ python3 benchmark/limit_test/limit_test.py --timeout 3600 --replicates 2 \
 python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practicality.csv
 # S7 minimal repair (§6.1): exact==exhaustive differential, then corpus (random + real RevDet)
 python3 repair/test_minimize.py --n 400 --seed 1                # property-based: 0 failures
-python3 benchmark/repair_exp/run_repair_corpus.py --source random --n 300 \
-    --out benchmark/repair_exp/data/repair_random.csv
-python3 benchmark/repair_exp/run_repair_corpus.py --source revdet --n 150 --trie-cap 80 \
-    --out benchmark/repair_exp/data/repair_revdet.csv
+# S8 minimal-repair unit suite (§6.2): pytest under python3 (has pytest + z3) — 144 tests
+python3 -m pytest repair/tests
+# S9 comprehensive benchmark (§6.2): all 4 methods over random/revdet/wg + the scaling study
+python3 benchmark/repair_exp/run_repair_corpus.py --source random --n 250 --out benchmark/repair_exp/data/corpus_random.csv
+python3 benchmark/repair_exp/run_repair_corpus.py --source revdet --n 200 --out benchmark/repair_exp/data/corpus_revdet.csv
+python3 benchmark/repair_exp/run_repair_corpus.py --source wg     --n 80  --out benchmark/repair_exp/data/corpus_wg.csv
+python3 benchmark/repair_exp/scaling.py --budget 60 --out benchmark/repair_exp/data/scaling.csv
 ```
 
 **Figures** (render with the spliceai python):
@@ -800,7 +853,7 @@ python3 benchmark/repair_exp/run_repair_corpus.py --source revdet --n 150 --trie
 ~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
     --results benchmark/limit_test/results_1hr \
     --bio-csv benchmark/report_figs/data/msa_practicality.csv                 # F13–F14 (1 h, real-MSA band)
-~/miniconda3/envs/spliceai/bin/python benchmark/repair_exp/plot_repair.py     # Fig “repair-min” (§6.1)
+~/miniconda3/envs/spliceai/bin/python benchmark/repair_exp/plot_repair.py     # Fig “repair-comp” (§6.2)
 ```
 
 | Figure | Data file | Generator |
@@ -815,6 +868,7 @@ python3 benchmark/repair_exp/run_repair_corpus.py --source revdet --n 150 --trie
 | F8–F10 scalability | `limit_test/results/summary/limit_summary.csv` + `raw/runs.jsonl` | `plot_limit.py` |
 | F11 repair blow-up | `data/repair_records.json` | `plot_report.py` |
 | repair-min (§6.1) minimal repair | `repair_exp/data/repair_revdet.csv`, `repair_exp/data/repair_random.csv` | `repair_exp/plot_repair.py` |
+| repair-comp (§6.2) benchmark+scaling | `repair_exp/data/corpus_{random,revdet,wg}.csv`, `repair_exp/data/scaling.csv` | `repair_exp/plot_repair.py` |
 | F12 per-type `-f` speedup | `data/ftiming_bytype.raw.jsonl` | `plot_report.py` |
 | F15 MSA practicality | `data/msa_practicality.csv` | `plot_report.py` |
 
