@@ -226,18 +226,22 @@ void digraph::solve_smt() {
         // (rlimit/tactic tuning) can move the wall. One machine-readable line on stderr.
         int n_fixed = 0;
         for (int i = 0; i < _nodes_num; ++i) if (fixed[i]) ++n_fixed;
-        long conflicts = -1, decisions = -1, restarts = -1, propagations = -1;
+        long conflicts = 0, decisions = 0, propagations = 0, allocs = -1, rlimit = -1;
         double zmem = -1;
         stats st = s.statistics();
         for (unsigned i = 0; i < st.size(); ++i) {
             string k = st.key(i);
+            for (auto& ch : k) if (ch == ' ') ch = '-';   // key() uses spaces; normalize to dashes
             double val = st.is_uint(i) ? (double) st.uint_value(i) : st.double_value(i);
-            if (k == "conflicts") conflicts = (long) val;
-            else if (k == "decisions") decisions = (long) val;
-            else if (k == "restarts") restarts = (long) val;
-            else if (k == "propagations") propagations = (long) val;
-            else if (k == "max memory") zmem = val;
+            // z3's QF_IDL solver reports SAT-core stats under the "sat-" prefix.
+            if (k == "sat-conflicts" || k == "conflicts") conflicts += (long) val;
+            else if (k == "sat-decisions" || k == "decisions") decisions += (long) val;
+            else if (k.rfind("sat-propagations", 0) == 0 || k == "propagations") propagations += (long) val;
+            else if (k == "num-allocs") allocs = (long) val;
+            else if (k == "rlimit-count") rlimit = (long) val;
+            else if (k == "max-memory" || k == "max memory") zmem = val;
         }
+        if (getenv("WGT_FULLSTATS")) cerr << "PROFILE_FULLSTATS\n" << st << endl;
         string rstr = (res == sat) ? "sat" : (res == unsat ? "unsat" : "unknown");
         string ru = (res == unknown) ? s.reason_unknown() : "";
         cerr << "PROFILE smt nodes=" << _nodes_num
@@ -247,8 +251,8 @@ void digraph::solve_smt() {
              << " setup_s=" << setup_s << " solve_s=" << solve_s
              << " result=" << rstr
              << " conflicts=" << conflicts << " decisions=" << decisions
-             << " restarts=" << restarts << " propagations=" << propagations
-             << " zmem_mb=" << zmem
+             << " propagations=" << propagations << " allocs=" << allocs
+             << " rlimit=" << rlimit << " zmem_mb=" << zmem
              << " reason_unknown=\"" << ru << "\"" << endl;
     }
 
