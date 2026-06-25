@@ -246,6 +246,158 @@ def greedy(T, label_rank, mode="size", int_mode=False, backend="rec"):
 
 
 # --------------------------------------------------------------------------------------------
+# Fast heuristic: refine-from-coarse. Start at the coarsest legal partition (Nerode classes for
+# min-size; origin classes for min-edits) and SPLIT toward the trie until Wheeler. The decision
+# test is an in-process co-lexicographic order check: position each block by the min co-lex rank
+# of its trie members' incoming strings (root = empty string = position 0, giving A1 for free).
+# If that order satisfies the three axioms, a Wheeler witness exists (sound ACCEPT, any n); if it
+# violates one, the offending head blocks tell us where to split. Every intermediate is lossless
+# (a refinement of the gate, a coarsening of the always-Wheeler trie => termination). The result
+# is a fast upper bound, tightened by a bounded merge-back cleanup.  Cost: O(s * t^2) in-process,
+# ZERO subprocesses (s = splits needed, empirically ~1), vs the greedy's O(t^2) recognizer calls.
+# --------------------------------------------------------------------------------------------
+def colex_rank(T, label_rank):
+    """trie id -> co-lex rank of its incoming string (co-lex compares the LAST label first).
+    The empty-string root sorts first (rank 0), which makes the root block A1-first for free."""
+    key = [tuple(label_rank[c] for c in reversed(T.string[t])) for t in range(T.n)]
+    rank = [0] * T.n
+    for r, t in enumerate(sorted(range(T.n), key=lambda t: key[t])):
+        rank[t] = r
+    return rank
+
+
+def _block_pos(T, block_of, colex):
+    """Position of each block = its rank (by minimum member co-lex) among all blocks."""
+    mn = {}
+    for t in range(T.n):
+        b = block_of[t]
+        if b not in mn or colex[t] < mn[b]:
+            mn[b] = colex[t]
+    return {b: i for i, b in enumerate(sorted(mn, key=lambda b: mn[b]))}
+
+
+def _colex_check(T, block_of, colex, label_rank):
+    """None if the quotient is Wheeler under the co-lex order; else (axiom, head1, head2)."""
+    _, bedges, _, _ = dfa.quotient(T, block_of)
+    if not bedges:
+        return None
+    bpos = _block_pos(T, block_of, colex)
+    indeg = {}
+    allb = set()
+    for (u, v, _) in bedges:
+        indeg[v] = indeg.get(v, 0) + 1
+        allb.add(u)
+        allb.add(v)
+    zero = [b for b in allb if indeg.get(b, 0) == 0]
+    posn = [b for b in allb if indeg.get(b, 0) > 0]
+    if zero and posn and max(bpos[b] for b in zero) >= min(bpos[b] for b in posn):
+        return ("A1", None, None)
+    E = [(u, v, label_rank[l]) for (u, v, l) in bedges]
+    for i in range(len(E)):
+        u1, v1, a1 = E[i]
+        for j in range(len(E)):
+            if i == j:
+                continue
+            u2, v2, a2 = E[j]
+            if a1 < a2 and not (bpos[v1] < bpos[v2]):
+                return ("A2", v1, v2)
+            if a1 == a2 and bpos[u1] < bpos[u2] and not (bpos[v1] <= bpos[v2]):
+                return ("A3", v1, v2)
+    return None
+
+
+def wheeler_via_colex_order(T, block_of, colex, label_rank):
+    """Public: (is_wheeler_under_colex, violation_or_None). A True is a sound Wheeler witness."""
+    v = _colex_check(T, block_of, colex, label_rank)
+    return (v is None), v
+
+
+def _members(block_of, n):
+    from collections import defaultdict
+    m = defaultdict(list)
+    for t in range(n):
+        m[block_of[t]].append(t)
+    return m
+
+
+def _split_block_colex(block_of, B, colex, next_id):
+    """Split block B into two by co-lex order at the median; second half gets a fresh id."""
+    members = sorted((t for t in range(len(block_of)) if block_of[t] == B), key=lambda t: colex[t])
+    second = set(members[len(members) // 2:])
+    return ([next_id if (block_of[t] == B and t in second) else block_of[t]
+             for t in range(len(block_of))], next_id + 1)
+
+
+def refine(T, label_rank, mode="size", cleanup=True, cleanup_max=64):
+    """Refine-from-coarse minimal Wheeler repair (fast). Returns the same dict shape as exact().
+    The optional merge-back cleanup is O(blocks^4); it is skipped when the refined partition has
+    more than `cleanup_max` blocks (where it both rarely helps and would dominate runtime)."""
+    if mode == "size":
+        class_of, ncls = dfa.nerode_classes(T)
+    elif mode == "edits":
+        class_of, ncls = dfa.origin_classes(T)
+    else:
+        raise ValueError(mode)
+    if not T.edges:
+        return {"nodes": 1, "block_of": [0] * T.n, "method": f"refine-{mode}",
+                "edits": 0 if mode == "edits" else None}
+
+    colex = colex_rank(T, label_rank)
+    block_of = list(class_of)
+    next_id = max(block_of) + 1
+    for _ in range(T.n + 2):                     # bounded by reaching the trie (always Wheeler)
+        viol = _colex_check(T, block_of, colex, label_rank)
+        if viol is None:
+            break
+        _, h1, h2 = viol
+        mem = _members(block_of, T.n)
+        B = next((b for b in (h1, h2) if b is not None and len(mem.get(b, [])) >= 2), None)
+        if B is None:                            # split any non-singleton (guarantees progress)
+            cand = [b for b, m in mem.items() if len(m) >= 2]
+            if not cand:
+                break                            # already the trie: cannot happen with a violation
+            B = max(cand, key=lambda b: len(mem[b]))
+        block_of, next_id = _split_block_colex(block_of, B, colex, next_id)
+
+    if cleanup and len(set(block_of)) <= cleanup_max:
+        block_of = _merge_back(T, block_of, class_of, colex, label_rank)
+    nb = len(set(block_of))
+    out = {"nodes": nb, "block_of": block_of, "method": f"refine-{mode}"}
+    if mode == "edits":
+        out["edits"] = nb - ncls
+    return out
+
+
+def _merge_back(T, block_of, class_of, colex, label_rank):
+    """Bounded cleanup: merge refinement-created blocks within a gate class when the merge stays
+    Wheeler (co-lex test). Only touches the few blocks refinement produced -- cheap."""
+    from collections import defaultdict
+    cls_of_block = {}
+    for t in range(T.n):
+        cls_of_block.setdefault(block_of[t], class_of[t])
+    changed = True
+    while changed:
+        changed = False
+        by_class = defaultdict(list)
+        for b in set(block_of):
+            by_class[cls_of_block[b]].append(b)
+        for blist in by_class.values():
+            done = False
+            for i in range(len(blist)):
+                for j in range(i + 1, len(blist)):
+                    trial = [blist[i] if x == blist[j] else x for x in block_of]
+                    if _colex_check(T, trial, colex, label_rank) is None:
+                        block_of = trial
+                        changed = done = True
+                        break
+                if done:
+                    break
+            if done:
+                break
+    return block_of
+
+
+# --------------------------------------------------------------------------------------------
 # Convenience: load a DOT, run exact min-size and min-edits, return everything.
 # --------------------------------------------------------------------------------------------
 def repair_exact(path, int_mode=False, timeout_ms=10000):
@@ -271,21 +423,57 @@ def write_repair(T, block_of, out_path):
     return out_path
 
 
+def repair(T, label_rank, mode, method, timeout_ms=10000):
+    """Dispatch one (method, mode) repair over a prebuilt trie. method in {exact,greedy,refine}."""
+    if method == "exact":
+        return exact(T, label_rank, mode, timeout_ms)
+    if method == "greedy":
+        return greedy(T, label_rank, mode)
+    if method == "refine":
+        return refine(T, label_rank, mode)
+    raise ValueError(method)
+
+
 if __name__ == "__main__":
     import argparse
-    ap = argparse.ArgumentParser(description="Exact minimal Wheeler-graph repair (Z3).")
+    import json
+    import time
+    ap = argparse.ArgumentParser(description="Minimal Wheeler-graph repair (exact Z3 / greedy / refine).")
     ap.add_argument("dot")
     ap.add_argument("--int", action="store_true")
+    ap.add_argument("--method", choices=["exact", "greedy", "refine"], default=None,
+                    help="run ONE method (both objectives); default runs exact (both) verbosely")
     ap.add_argument("--mode", choices=["size", "edits", "both"], default="both")
-    ap.add_argument("--out", default=None, help="write the (min-size) repaired DOT here")
+    ap.add_argument("--out", default=None, help="write the repaired DOT here (first mode)")
+    ap.add_argument("--json", action="store_true", help="machine-readable output (for the benchmark)")
     ap.add_argument("--timeout-ms", type=int, default=10000)
     args = ap.parse_args()
-    r = repair_exact(args.dot, args.int, args.timeout_ms)
-    print(f"input    : {r['in_nodes']} nodes, {r['in_edges']} edges")
-    print(f"trie     : {r['trie_nodes']} nodes")
-    print(f"min-size : {r['min_size_nodes']} nodes")
-    print(f"min-edits: {r['min_edits_nodes']} nodes  ({r['min_edits']} duplications)")
-    if args.out:
-        block = r["min_size_block"] if args.mode != "edits" else r["min_edits_block"]
-        write_repair(r["T"], block, args.out)
-        print(f"wrote {args.out}")
+
+    nodes, sources, out_adj, edges = dfa.build_graph(args.dot)
+    if not dfa.is_acyclic(nodes, out_adj):
+        raise SystemExit("input is cyclic; out of scope for lossless node-splitting repair")
+    label_rank = bo.rank_labels(edges, args.int)
+    T = dfa.determinize(sources, out_adj)
+    modes = ["size", "edits"] if args.mode == "both" else [args.mode]
+    method = args.method or "exact"
+
+    res = {}
+    for m in modes:
+        t0 = time.time()
+        r = repair(T, label_rank, m, method, args.timeout_ms)
+        res[m] = {"nodes": r["nodes"], "edits": r.get("edits"), "seconds": round(time.time() - t0, 4)}
+        if args.out and m == modes[0]:
+            write_repair(T, r["block_of"], args.out)
+
+    if args.json:
+        print(json.dumps({"dot": args.dot, "method": method, "in_nodes": len(nodes),
+                          "in_edges": len(edges), "trie_nodes": T.n, "modes": res}))
+    else:
+        print(f"input    : {len(nodes)} nodes, {len(edges)} edges   (method={method})")
+        print(f"trie     : {T.n} nodes")
+        for m in modes:
+            tag = "min-size " if m == "size" else "min-edits"
+            extra = f"  ({res[m]['edits']} duplications)" if m == "edits" else ""
+            print(f"{tag}: {res[m]['nodes']} nodes{extra}   [{res[m]['seconds']}s]")
+        if args.out:
+            print(f"wrote {args.out}")

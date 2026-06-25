@@ -129,10 +129,24 @@ def diff_one(edges, int_mode=False, timeout_ms=10000, max_trie=8):
         if not ok:
             return "FAIL", f"{tag} output invariant: {why}"
 
+    # 5. refine heuristic (fast, refine-from-coarse): same guarantees as greedy
+    fs = mz.refine(T, label_rank, "size")
+    fe = mz.refine(T, label_rank, "edits")
+    if fs["nodes"] < rs["nodes"]:
+        return "FAIL", f"refine-size {fs['nodes']} < exact {rs['nodes']} (impossible)"
+    if fe["nodes"] < re["nodes"]:
+        return "FAIL", f"refine-edits {fe['nodes']} < exact {re['nodes']} (impossible)"
+    for tag, r in (("refine-size", fs), ("refine-edits", fe)):
+        ok, why = check_output(T, r["block_of"], label_rank, in_strings, in_labels)
+        if not ok:
+            return "FAIL", f"{tag} output invariant: {why}"
+
     gap_s = gs["nodes"] - rs["nodes"]
     gap_e = ge["nodes"] - re["nodes"]
-    return "OK", (f"size={rs['nodes']}(g+{gap_s}) edits={re['nodes']}({re['edits']},g+{gap_e}) "
-                  f"trie={T.n}")
+    rgap_s = fs["nodes"] - rs["nodes"]
+    rgap_e = fe["nodes"] - re["nodes"]
+    return "OK", (f"size={rs['nodes']}(g+{gap_s},r+{rgap_s}) "
+                  f"edits={re['nodes']}({re['edits']},g+{gap_e},r+{rgap_e}) trie={T.n}")
 
 
 def run_random(n_iter, seed=1, int_mode=False):
