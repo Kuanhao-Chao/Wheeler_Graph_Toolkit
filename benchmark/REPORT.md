@@ -29,6 +29,7 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **median 1.79×** (geomean 1.77×, up to 3.5×); 1.3–2.2× per type (DNA via A3, AA via A2); **100% non-regressing** | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
+| **Repair — minimal** | smallest lossless repair vs the trie, on real non-WG gene graphs | trie blows up median **2.3×** over input | **median 2.17× smaller than the trie** (min-size ≈ 1.1× input; **median 1 node split**); exact == brute-force optimum, **0/269 invariant failures** | §6.1, Fig “repair-min”, `data/repair_revdet.csv` |
 | **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
 
 **One-paragraph version.** The OLD recognizer's permutation backends *false-accepted* non-Wheeler
@@ -598,7 +599,60 @@ cluster = merging, a >1.0 tail = genuine node-splitting).
 > **Read the ratio correctly.** Blow-up `<1` is **merging**, not compression of information: nodes
 > that spell the same string are merged, so the *node count* can drop while the represented
 > path-string **set** is preserved exactly (multiplicity and node identity are not). Ratios `>1` are
-> genuine node-splitting. This first version is not minimal (minimal node-splitting is future work).
+> genuine node-splitting. The trie is the *maximal* split; §6.1 makes it minimal.
+
+### 6.1 Minimal-change repair (Phase 5.2) — the smallest fix, two ways (Fig “repair-min”)
+
+![Fig repair-min](repair_exp/Frepair_minimal.png)
+
+The trie always works but is the **maximal** split — on real graphs it is 2–5× larger than necessary.
+Phase 5.2 (`repair/minimize.py`, `repair/dfa.py`) computes a **minimal** lossless repair on two honest
+axes: **min-size** (the *smallest* Wheeler graph spelling the exact same string set) and **min-edits**
+(the *fewest node-duplications of the original* that make it Wheeler — the repair that stays closest to
+the input).
+
+**How.** Determinize the DAG into the trie `T` of its path-string language; both repairs are *quotients*
+of `T` (merging trie nodes, which only shrinks it). A merge preserves the language **iff** the two nodes
+have the same right-language (Nerode equivalence); for min-edits a merge is additionally allowed only
+within one original node. So min-size merges by Nerode class and min-edits by origin — and because
+same-origin nodes always share a right-language, **min-size ≤ size(min-edits)** by construction. Each
+objective is solved two ways: **exactly** via a Z3 incremental-feasibility encoding (smallest `k` for
+which `T` has a Wheeler quotient of `≤ k` nodes — provably optimal) for small graphs, and a **greedy**
+within-class merge from the trie (accept any merge that keeps it Wheeler) for scale. A subtlety the
+verification surfaced: the **minimal DFA can itself be non-Wheeler** (it re-merges a split conflict back
+into the original non-WG graph), so min-size is the coarsest quotient that is *both* language-preserving
+*and* Wheeler — strictly between the minimal DFA and the trie. Recognition being NP-complete, finding it
+is hard in general; hence exact-for-small, greedy-for-scale.
+
+**Correctness comes first, and is triple-checked.**
+1. An **independent exhaustive folder** (`repair/exhaustive_fold.py`) enumerates *every* legal fold and
+   brute-oracle-filters the Wheeler ones to get the true optimum on tiny graphs; the Z3 optimum **equals
+   it on every graph tested**, and the greedy is **never below it**.
+2. A property-based differential (`repair/test_minimize.py`) over **~1,850** random DAGs (string and
+   integer labels) plus a 9-case adversarial battery (already-WG, single/parallel edges, deep chain,
+   wide fan-out, multi-source, nondeterministic original, the classic 4-node conflict): Z3 == exhaustive
+   and greedy ≥ exact, **0 failures**.
+3. Every emitted graph passes **five per-output invariants** (`repair/verify_repair.py`): the C++
+   recognizer accepts it; the brute oracle accepts it (n ≤ 9); its emitted node order independently
+   re-validates against the three axioms (any *n*, via `check_order.py`); the path-string set is
+   identical to the input; the label set is identical. Across the 269-graph corpus below: **0 invariant
+   failures, 0 cases of greedy beating the exact optimum.**
+
+**Results** (`data/repair_random.csv`, `data/repair_revdet.csv`, Fig “repair-min”). The greedy matched
+the Z3 optimum on **210 / 210** graphs where both ran (panel D). On **235** random non-WG DAGs the
+minimal repair is a median **0.80×** the input size — min-size routinely drops *below* the input through
+cross-original merges — and 107 of them needed ≥ 1 split. On **34** non-Wheeler graphs built from real
+Ensembl gene MSAs (RevDet), the minimal repair is **median 2.17× smaller than the trie** (up to 4.16×):
+the trie inflates these graphs a median 2.32× over the input, whereas the minimal repair adds only
+**≈ 10 %** (median 1.10× the input), and **min-edits is a median of just one node split** (max 10; 31/34
+need ≥ 1). The practical headline: *a non-Wheeler gene graph can usually be made Wheeler by duplicating a
+single node, and the smallest Wheeler graph for it is barely larger than the original* — both far below
+the trie's blow-up.
+
+**Scope.** Lossless node-splitting on DAGs (cycles → infinite language, out of scope, as for the trie).
+min-size targets the minimal *deterministic* Wheeler graph (a smaller nondeterministic one may exist —
+left open). The exact solver is for small graphs; the greedy scales to moderate ones (recognizer-decided
+merges), with the trie always available as the guaranteed fallback.
 
 ---
 
@@ -729,6 +783,12 @@ python3 benchmark/limit_test/limit_test.py --timeout 3600 --replicates 2 \
     --families complete,dnfa --algorithms smt --out benchmark/limit_test/results_1hr
 # S6 MSA → Wheeler-graph practicality (50 Ensembl gene MSAs × 3 constructions × k/a, l-capped)
 python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practicality.csv
+# S7 minimal repair (§6.1): exact==exhaustive differential, then corpus (random + real RevDet)
+python3 repair/test_minimize.py --n 400 --seed 1                # property-based: 0 failures
+python3 benchmark/repair_exp/run_repair_corpus.py --source random --n 300 \
+    --out benchmark/repair_exp/data/repair_random.csv
+python3 benchmark/repair_exp/run_repair_corpus.py --source revdet --n 150 --trie-cap 80 \
+    --out benchmark/repair_exp/data/repair_revdet.csv
 ```
 
 **Figures** (render with the spliceai python):
@@ -740,6 +800,7 @@ python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practi
 ~/miniconda3/envs/spliceai/bin/python benchmark/limit_test/plot_limit.py \
     --results benchmark/limit_test/results_1hr \
     --bio-csv benchmark/report_figs/data/msa_practicality.csv                 # F13–F14 (1 h, real-MSA band)
+~/miniconda3/envs/spliceai/bin/python benchmark/repair_exp/plot_repair.py     # Fig “repair-min” (§6.1)
 ```
 
 | Figure | Data file | Generator |
@@ -753,6 +814,7 @@ python3 pipeline/msa_practicality.py --out benchmark/report_figs/data/msa_practi
 | F10c sparse `-f` ceiling (§5) | `data/ftiming_f_sparse.raw.jsonl` | `plot_report.py` |
 | F8–F10 scalability | `limit_test/results/summary/limit_summary.csv` + `raw/runs.jsonl` | `plot_limit.py` |
 | F11 repair blow-up | `data/repair_records.json` | `plot_report.py` |
+| repair-min (§6.1) minimal repair | `repair_exp/data/repair_revdet.csv`, `repair_exp/data/repair_random.csv` | `repair_exp/plot_repair.py` |
 | F12 per-type `-f` speedup | `data/ftiming_bytype.raw.jsonl` | `plot_report.py` |
 | F15 MSA practicality | `data/msa_practicality.csv` | `plot_report.py` |
 

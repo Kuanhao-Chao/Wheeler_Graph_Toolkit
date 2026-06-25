@@ -1,0 +1,36 @@
+  [10] rand_10.dot: in=3 trie=3 gsize=3 gedits=1 t=0.0s  (elapsed 5s)
+  [20] rand_20.dot: in=5 trie=4 gsize=3 gedits=0 t=0.0s  (elapsed 12s)
+  [30] rand_30.dot: in=5 trie=4 gsize=4 gedits=0 t=0.0s  (elapsed 21s)
+  [40] rand_41.dot: in=6 trie=4 gsize=4 gedits=0 t=0.0s  (elapsed 27s)
+  [50] rand_51.dot: in=9 trie=5 gsize=5 gedits=0 t=0.0s  (elapsed 34s)
+  [60] rand_61.dot: in=7 trie=9 gsize=8 gedits=1 t=0.23s  (elapsed 42s)
+  [70] rand_71.dot: in=10 trie=21 gsize=15 gedits=5 t=0.7s  (elapsed 51s)
+  [80] rand_81.dot: in=7 trie=4 gsize=4 gedits=0 t=0.0s  (elapsed 59s)
+  [90] rand_91.dot: in=10 trie=6 gsize=6 gedits=0 t=0.0s  (elapsed 63s)
+  [100] rand_101.dot: in=8 trie=10 gsize=7 gedits=0 t=0.96s  (elapsed 70s)
+  [110] rand_111.dot: in=3 trie=2 gsize=2 gedits=0 t=0.0s  (elapsed 74s)
+  [120] rand_121.dot: in=7 trie=5 gsize=4 gedits=0 t=0.0s  (elapsed 77s)
+  [130] rand_131.dot: in=4 trie=3 gsize=3 gedits=0 t=0.0s  (elapsed 83s)
+  [140] rand_141.dot: in=11 trie=6 gsize=6 gedits=0 t=0.0s  (elapsed 103s)
+  [150] rand_151.dot: in=6 trie=4 gsize=4 gedits=0 t=0.0s  (elapsed 112s)
+  [160] rand_161.dot: in=3 trie=3 gsize=3 gedits=0 t=0.0s  (elapsed 122s)
+  [170] rand_171.dot: in=9 trie=16 gsize=7 gedits=0 t=0.3s  (elapsed 133s)
+  [180] rand_181.dot: in=6 trie=5 gsize=5 gedits=0 t=0.0s  (elapsed 141s)
+  [190] rand_191.dot: in=6 trie=8 gsize=8 gedits=3 t=0.05s  (elapsed 144s)
+  [200] rand_201.dot: in=6 trie=5 gsize=5 gedits=0 t=0.0s  (elapsed 150s)
+  [210] rand_211.dot: in=6 trie=6 gsize=5 gedits=1 t=0.0s  (elapsed 156s)
+  [220] rand_222.dot: in=11 trie=9 gsize=9 gedits=0 t=0.0s  (elapsed 162s)
+  [230] rand_232.dot: in=10 trie=7 gsize=7 gedits=0 t=0.0s  (elapsed 170s)
+  [240] rand_242.dot: in=9 trie=7 gsize=7 gedits=0 t=0.0s  (elapsed 175s)
+  [250] rand_252.dot: in=6 trie=10 gsize=6 gedits=0 t=0.03s  (elapsed 178s)
+  [260] rand_263.dot: in=4 trie=4 gsize=3 gedits=0 t=0.0s  (elapsed 186s)
+  [270] rand_273.dot: in=5 trie=4 gsize=4 gedits=1 t=0.0s  (elapsed 191s)
+  [280] rand_283.dot: in=10 trie=5 gsize=5 gedits=0 t=0.0s  (elapsed 200s)
+  [290] rand_294.dot: in=7 trie=4 gsize=4 gedits=0 t=0.0s  (elapsed 206s)
+  [300] rand_304.dot: in=11 trie=20 gsize=13 gedits=4 t=0.54s  (elapsed 224s)
+
+DONE: processed 300 non-WG graphs -> benchmark/repair_exp/data/repair_random.csv
+  verification failures: 0
+  consistency failures (greedy<exact): 0
+  trie/greedy-size reduction: median 1.00x  max 3.12x
+  greedy min-edits (node duplications): median 0  max 21

@@ -1,0 +1,9 @@
+  [10] RevDet_a9.dot: in=19 trie=44 gsize=20 gedits=1 t=1.53s  (elapsed 45s)
+  [20] RevDet_a7.dot: in=17 trie=70 gsize=18 gedits=1 t=5.16s  (elapsed 97s)
+  [30] RevDet_a6.dot: in=14 trie=40 gsize=15 gedits=1 t=1.93s  (elapsed 133s)
+
+DONE: processed 34 non-WG graphs -> benchmark/repair_exp/data/repair_revdet.csv
+  verification failures: 0
+  consistency failures (greedy<exact): 0
+  trie/greedy-size reduction: median 2.20x  max 4.16x
+  greedy min-edits (node duplications): median 1  max 10
