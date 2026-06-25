@@ -1,0 +1,6 @@
+  [25] DeBruijn_k_10_a40.dot type=DeBruijn in=114 trie=162 refine_size=103 (elapsed 14s)
+  [50] DeBruijn_k_5_a17.dot type=DeBruijn in=58 trie=74 refine_size=54 (elapsed 33s)
+  [75] Human_LEAP2_orthologues_DNA_l_161_a_3.dot type=Trie in=466 trie=466 refine_size=460 (elapsed 60s)
+
+DONE: 80 graphs -> benchmark/repair_exp/data/corpus_wg.csv
+  verification failures: 0   consistency failures: 0

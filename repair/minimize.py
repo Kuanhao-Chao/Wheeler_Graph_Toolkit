@@ -424,7 +424,13 @@ def write_repair(T, block_of, out_path):
 
 
 def repair(T, label_rank, mode, method, timeout_ms=10000):
-    """Dispatch one (method, mode) repair over a prebuilt trie. method in {exact,greedy,refine}."""
+    """Dispatch one (method, mode) repair over a prebuilt trie.
+    method in {trie, exact, greedy, refine}."""
+    if method == "trie":                      # the existing maximal-split repair (always Wheeler)
+        out = {"nodes": T.n, "block_of": list(range(T.n)), "method": "trie"}
+        if mode == "edits":
+            out["edits"] = T.n - dfa.origin_classes(T)[1]
+        return out
     if method == "exact":
         return exact(T, label_rank, mode, timeout_ms)
     if method == "greedy":
@@ -441,7 +447,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Minimal Wheeler-graph repair (exact Z3 / greedy / refine).")
     ap.add_argument("dot")
     ap.add_argument("--int", action="store_true")
-    ap.add_argument("--method", choices=["exact", "greedy", "refine"], default=None,
+    ap.add_argument("--method", choices=["trie", "exact", "greedy", "refine"], default=None,
                     help="run ONE method (both objectives); default runs exact (both) verbosely")
     ap.add_argument("--mode", choices=["size", "edits", "both"], default="both")
     ap.add_argument("--out", default=None, help="write the repaired DOT here (first mode)")

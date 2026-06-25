@@ -1,0 +1,21 @@
+   n   trie             trie           refine           greedy            exact
+   6     12   trie:DECI/0.0s refine:DECI/0.001s greedy:DECI/0.158s exact:DECI/0.641s
+   9     13   trie:DECI/0.0s refine:DECI/0.001s greedy:DECI/0.781s exact:DECI/0.55s
+  12     26   trie:DECI/0.0s refine:DECI/0.001s greedy:DECI/0.554s exact:DECI/1.377s
+  18     68   trie:DECI/0.0s refine:DECI/0.288s greedy:DECI/4.593s exact:DECI/24.817s
+  23     52   trie:DECI/0.0s refine:DECI/0.009s greedy:DECI/1.81s exact:DECI/7.378s
+  33    107   trie:DECI/0.0s refine:DECI/0.022s greedy:DECI/13.156s exact:TIME/60.0s
+  42    255   trie:DECI/0.0s refine:DECI/0.094s greedy:TIME/60.0s       exact:skip
+  61    168   trie:DECI/0.0s refine:DECI/0.073s      greedy:skip       exact:skip
+  79    268   trie:DECI/0.0s refine:DECI/0.18s      greedy:skip       exact:skip
+ 109    333   trie:DECI/0.0s refine:DECI/0.287s      greedy:skip       exact:skip
+ 140    452   trie:DECI/0.0s refine:DECI/0.557s      greedy:skip       exact:skip
+ 183    618   trie:DECI/0.0s refine:DECI/1.238s      greedy:skip       exact:skip
+ 261    880   trie:DECI/0.0s refine:DECI/3.716s      greedy:skip       exact:skip
+
+=== ceilings (largest trie decided within budget) ===
+  trie    : in_nodes<= 261, trie<= 880
+  refine  : in_nodes<= 261, trie<= 880
+  greedy  : in_nodes<= 33, trie<= 107
+  exact   : in_nodes<= 23, trie<= 68
+DONE -> benchmark/repair_exp/data/scaling.csv

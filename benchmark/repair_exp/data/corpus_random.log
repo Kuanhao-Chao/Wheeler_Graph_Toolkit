@@ -1,0 +1,18 @@
+  TIMEOUT rand_8.dot
+  [25] rand_31.dot type=random in=12 trie=38 refine_size=19 (elapsed 64s)
+  TIMEOUT rand_56.dot
+  [50] rand_67.dot type=random in=22 trie=348 refine_size=319 (elapsed 133s)
+  TIMEOUT rand_95.dot
+  [75] rand_101.dot type=random in=22 trie=10 refine_size=10 (elapsed 196s)
+  TIMEOUT rand_118.dot
+  [100] rand_139.dot type=random in=16 trie=121 refine_size=40 (elapsed 268s)
+  TIMEOUT rand_147.dot
+  [125] rand_178.dot type=random in=22 trie=11 refine_size=11 (elapsed 331s)
+  TIMEOUT rand_195.dot
+  TIMEOUT rand_201.dot
+  [150] rand_215.dot type=random in=9 trie=12 refine_size=9 (elapsed 412s)
+  TIMEOUT rand_236.dot
+  [175] rand_250.dot type=random in=16 trie=181 refine_size=109 (elapsed 465s)
+
+DONE: 175 graphs -> benchmark/repair_exp/data/corpus_random.csv
+  verification failures: 0   consistency failures: 0

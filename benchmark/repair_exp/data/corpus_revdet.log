@@ -1,0 +1,6 @@
+  [25] RevDet_a10.dot type=RevDet in=26 trie=889 refine_size=165 (elapsed 74s)
+  [50] RevDet_a5.dot type=RevDet in=18 trie=124 refine_size=23 (elapsed 136s)
+  [75] RevDet_a14.dot type=RevDet in=31 trie=2509 refine_size=242 (elapsed 216s)
+
+DONE: 98 graphs -> benchmark/repair_exp/data/corpus_revdet.csv
+  verification failures: 0   consistency failures: 0

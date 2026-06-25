@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """
-run_repair_corpus.py -- minimal Wheeler-graph repair experiment over a corpus.
+run_repair_corpus.py -- comprehensive minimal Wheeler-graph repair benchmark.
 
-For each non-Wheeler DAG it records the repaired size under three methods and verifies every
-output with the 5 invariants (repair/verify_repair.py):
-  * trie       (existing repair/wheelerize.py: maximal split, always Wheeler)
-  * greedy     (repair/minimize.greedy: within-gate merge from the trie)  -- min-size & min-edits
-  * exact (Z3) (repair/minimize.exact) when the trie is small enough      -- provable optimum
+For every input graph it runs up to four repair methods, each gated by trie size:
+  trie   (repair/wheelerize: maximal split, always Wheeler)     -- any trie
+  refine (repair/minimize.refine: fast refine-from-coarse)      -- trie <= --refine-cap
+  greedy (repair/minimize.greedy: merge-from-trie)              -- trie <= --greedy-cap
+  exact  (repair/minimize.exact: Z3, provably optimal)          -- trie <= --exact-cap
+and VERIFIES every produced graph with the 5 invariants (repair/verify_repair). It records
+per-method size/edits/wall + verification + the (type, alphabet, size) tags, one CSV row per graph.
 
-Sources:
-  --source random : random labeled DAGs (n in [--nmin,--nmax], 1..3 labels)
-  --source revdet : committed non-WG RevDet gene graphs under data/graph/RevDetGraph/
+Sources (mix for type x alphabet x size coverage):
+  --source random : controlled random DAGs over a size ladder, few-label ("DNA-like") and
+                    many-label ("AA-like").
+  --source revdet : committed real RevDet gene graphs (data/graph/RevDetGraph/), DNA vs protein.
+  --source wg     : already-Wheeler baselines (De Bruijn / Trie committed DOTs) -> must be 0-edit.
 
-Writes one CSV row per processed graph. Graphs whose trie exceeds --trie-cap are skipped (greedy
-cost grows with trie size); a per-graph SIGALRM timeout guards pathological cases.
-
-Run under python3 (z3). Intended for detached tmux for the full corpus.
+Run under python3 (z3). Long runs in detached tmux. A per-graph SIGALRM guards pathological cases.
 """
 
 import argparse
@@ -24,6 +25,7 @@ import glob
 import os
 import random
 import signal
+import subprocess
 import sys
 import time
 
@@ -48,7 +50,6 @@ def _alarm(signum, frame):
 
 
 def recognizer_verdict(path, int_mode):
-    import subprocess
     rc = subprocess.run([REC, path] + (["-i"] if int_mode else []), capture_output=True).returncode
     return {1: "WG", 255: "nonWG"}.get(rc, f"rc{rc}")
 
@@ -61,123 +62,154 @@ def write_input_dot(edges, path):
         f.write("}\n")
 
 
-def gen_random_dag(rng, n, nl, int_mode, prob=0.45):
-    labs = [str(k) for k in range(nl)] if int_mode else list("abcdefghij"[:nl])
+def gen_random_dag(rng, n, nl, int_mode, prob):
+    labs = [str(k) for k in range(nl)] if int_mode else list("abcdefghijklmnopqrst"[:nl])
     return [(f"v{i}", f"v{j}", rng.choice(labs))
             for i in range(n) for j in range(i + 1, n) if rng.random() < prob]
 
 
-def process(in_dot, int_mode, trie_cap, exact_cap, tmp):
-    """Return a result dict, or None to skip."""
+def classify(path, source):
+    """Return (type, alphabet)."""
+    p = path.lower()
+    if source == "random":
+        return ("random", "")
+    if "revdet" in p:
+        return ("RevDet", "protein" if "protein" in p or "/aa" in p or "_aa" in p else "DNA")
+    if "debruijn" in p:
+        return ("DeBruijn", "protein" if "aa" in p else "DNA")
+    if "trie" in p:
+        return ("Trie", "protein" if "aa" in p else "DNA")
+    return (source, "")
+
+
+def process(in_dot, int_mode, caps, tmp, ttag, atag):
     nodes, sources, out_adj, edges = dfa.build_graph(in_dot)
     if not edges or not dfa.is_acyclic(nodes, out_adj):
         return None
-    label_rank = bo.rank_labels(edges, int_mode)
+    rank = bo.rank_labels(edges, int_mode)
     try:
-        T = dfa.determinize(sources, out_adj, max_nodes=trie_cap * 4)
+        T = dfa.determinize(sources, out_adj, max_nodes=caps["trie"])
     except RuntimeError:
         return {"skip": "trie_overflow"}
-    if T.n > trie_cap:
-        return {"skip": f"trie>{trie_cap}"}
 
-    row = {"graph": os.path.basename(in_dot), "in_nodes": len(nodes), "in_edges": len(edges),
+    row = {"graph": os.path.basename(in_dot), "source": ttag if ttag in ("random",) else None,
+           "type": ttag, "alphabet": atag, "in_nodes": len(nodes), "in_edges": len(edges),
            "det": int(dfa.is_deterministic(out_adj)), "trie_nodes": T.n,
            "verdict_in": recognizer_verdict(in_dot, int_mode)}
 
-    t0 = time.time()
-    gs = mz.greedy(T, label_rank, "size", int_mode)
-    ge = mz.greedy(T, label_rank, "edits", int_mode)
-    row["t_greedy"] = round(time.time() - t0, 2)
-    row["greedy_size"] = gs["nodes"]
-    row["greedy_edits_nodes"] = ge["nodes"]
-    row["greedy_edits"] = ge["edits"]
-
-    row["exact_size"] = ""
-    row["exact_edits"] = ""
-    row["t_exact"] = ""
-    if T.n <= exact_cap:
+    # run each method (gated by trie size), verify every output
+    methods = [("trie", caps["trie"]), ("refine", caps["refine"]),
+               ("greedy", caps["greedy"]), ("exact", caps["exact"])]
+    for name, cap in methods:
+        row[f"{name}_size"] = row[f"{name}_edits"] = row[f"t_{name}"] = row[f"verify_{name}"] = ""
+        if T.n > cap:
+            continue
         t0 = time.time()
-        rs = mz.exact(T, label_rank, "size", timeout_ms=8000)
-        re = mz.exact(T, label_rank, "edits", timeout_ms=8000)
-        row["t_exact"] = round(time.time() - t0, 2)
-        row["exact_size"] = rs["nodes"]
-        row["exact_edits"] = re["nodes"]
+        if name == "trie":
+            block = list(range(T.n))
+            sz = T.n
+            edt = T.n - dfa.origin_classes(T)[1]
+        else:
+            rsz = mz.repair(T, rank, "size", name)
+            red = mz.repair(T, rank, "edits", name)
+            block = rsz["block_of"]
+            sz = rsz["nodes"]
+            edt = red["edits"]
+        dt = time.time() - t0
+        out = os.path.join(tmp, f"{name}.dot")
+        mz.write_repair(T, block, out)
+        ok, _ = vr.verify(in_dot, out, int_mode)
+        # also verify the min-edits output for non-trie methods
+        if name not in ("trie",):
+            oute = os.path.join(tmp, f"{name}_e.dot")
+            mz.write_repair(T, red["block_of"], oute)
+            ok2, _ = vr.verify(in_dot, oute, int_mode)
+            ok = ok and ok2
+        row[f"{name}_size"] = sz
+        row[f"{name}_edits"] = edt
+        row[f"t_{name}"] = round(dt, 3)
+        row[f"verify_{name}"] = int(ok)
 
-    # verify trie + both greedy outputs with the 5 invariants
-    trie_dot = os.path.join(tmp, "trie.dot")
-    gs_dot = os.path.join(tmp, "gs.dot")
-    ge_dot = os.path.join(tmp, "ge.dot")
-    mz.write_repair(T, list(range(T.n)), trie_dot)
-    mz.write_repair(T, gs["block_of"], gs_dot)
-    mz.write_repair(T, ge["block_of"], ge_dot)
-    ok_t, _ = vr.verify(in_dot, trie_dot, int_mode)
-    ok_s, _ = vr.verify(in_dot, gs_dot, int_mode)
-    ok_e, _ = vr.verify(in_dot, ge_dot, int_mode)
-    row["verify_trie"] = int(ok_t)
-    row["verify_gsize"] = int(ok_s)
-    row["verify_gedits"] = int(ok_e)
-    row["verify_ok"] = int(ok_t and ok_s and ok_e)
-    # consistency vs exact (greedy must never beat the optimum)
+    # consistency: heuristics never below exact (when exact ran)
     row["consistent"] = 1
-    if row["exact_size"] != "" and (gs["nodes"] < row["exact_size"] or ge["nodes"] < row["exact_edits"]):
-        row["consistent"] = 0
+    if row["exact_size"] != "":
+        for h in ("refine", "greedy"):
+            if row[f"{h}_size"] != "" and row[f"{h}_size"] < row["exact_size"]:
+                row["consistent"] = 0
     return row
+
+
+COLS = ["graph", "type", "alphabet", "in_nodes", "in_edges", "det", "verdict_in", "trie_nodes",
+        "trie_size", "refine_size", "greedy_size", "exact_size",
+        "refine_edits", "greedy_edits", "exact_edits",
+        "t_trie", "t_refine", "t_greedy", "t_exact",
+        "verify_trie", "verify_refine", "verify_greedy", "verify_exact", "consistent"]
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--source", choices=["random", "revdet"], required=True)
-    ap.add_argument("--n", type=int, default=200, help="graphs to process")
+    ap.add_argument("--source", choices=["random", "revdet", "wg"], required=True)
+    ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--seed", type=int, default=1)
-    ap.add_argument("--nmin", type=int, default=3)
-    ap.add_argument("--nmax", type=int, default=9)
     ap.add_argument("--int", action="store_true")
-    ap.add_argument("--trie-cap", type=int, default=80)
-    ap.add_argument("--exact-cap", type=int, default=20)
-    ap.add_argument("--per-graph-timeout", type=int, default=90)
+    ap.add_argument("--trie-cap", type=int, default=6000)
+    ap.add_argument("--refine-cap", type=int, default=6000)
+    ap.add_argument("--greedy-cap", type=int, default=70)   # greedy is the slow method (cross-check only)
+    ap.add_argument("--exact-cap", type=int, default=22)
+    ap.add_argument("--per-graph-timeout", type=int, default=180)
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
-    int_mode = args.int  # RevDet gene graphs use string labels (A/C/G/T, amino acids)
-    # UNIQUE per-run scratch dir: concurrent runs must NOT share trie/gs/ge.dot (clobbering them
-    # between write and verify produces spurious verification failures).
+    int_mode = args.int
+    caps = {"trie": args.trie_cap, "refine": args.refine_cap,
+            "greedy": args.greedy_cap, "exact": args.exact_cap}
     import tempfile
-    tmp = tempfile.mkdtemp(prefix="repair_", dir=HERE)
+    tmp = tempfile.mkdtemp(prefix="repaircorpus_", dir=HERE)
     signal.signal(signal.SIGALRM, _alarm)
 
-    # build the work list of input DOT paths
-    work = []
+    work = []   # list of (path, type_tag, alphabet_tag, only_nonwg)
     if args.source == "random":
         rng = random.Random(args.seed)
-        for i in range(args.n * 3):   # over-generate; many will be trivial/WG
-            n = rng.randint(args.nmin, args.nmax)
-            nl = rng.randint(1, 3)
-            edges = gen_random_dag(rng, n, nl, int_mode)
+        sizes = [5, 7, 9, 12, 16, 22, 30, 42, 60, 85, 120]
+        i = 0
+        while len(work) < args.n:
+            n = rng.choice(sizes)
+            many = rng.random() < 0.5
+            nl = rng.randint(8, 16) if many else rng.randint(1, 3)
+            prob = 0.5 if not many else 0.30
+            edges = gen_random_dag(rng, n, nl, int_mode, prob)
+            i += 1
             if not edges:
                 continue
             p = os.path.join(tmp, f"rand_{i}.dot")
             write_input_dot(edges, p)
-            work.append(p)
-            if len(work) >= args.n:
+            work.append((p, "random", "many-label" if many else "few-label", False))
+            if i > args.n * 6:
                 break
-    else:
-        files = sorted(glob.glob(os.path.join(ROOT, "data/graph/RevDetGraph/**/*.dot"),
-                                 recursive=True))
-        rng = random.Random(args.seed)
-        rng.shuffle(files)
-        work = files  # filtered (non-WG, DAG, trie<=cap) inside process()
+    elif args.source == "revdet":
+        files = glob.glob(os.path.join(ROOT, "data/graph/RevDetGraph/**/*.dot"), recursive=True)
+        random.Random(args.seed).shuffle(files)
+        for f in files:
+            t, a = classify(f, "revdet")
+            work.append((f, t, a, True))
+    else:  # wg baselines (already-Wheeler -> 0-edit no-op)
+        pats = ["data/graph/**/DeBruijn*/**/*.dot", "data/graph/**/[Tt]rie*/**/*.dot"]
+        files = []
+        for pat in pats:
+            files += glob.glob(os.path.join(ROOT, pat), recursive=True)
+        random.Random(args.seed).shuffle(files)
+        for f in files:
+            t, a = classify(f, "wg")
+            work.append((f, t, a, False))
 
-    rows = []
-    nfail = 0
-    ncons = 0
-    processed = 0
+    rows, nfail, ncons, processed = [], 0, 0, 0
     t_start = time.time()
-    for p in work:
+    for (p, t, a, only_nonwg) in work:
         if processed >= args.n:
             break
         try:
             signal.alarm(args.per_graph_timeout)
-            r = process(p, int_mode, args.trie_cap, args.exact_cap, tmp)
+            r = process(p, int_mode, caps, tmp, t, a)
             signal.alarm(0)
         except _Timeout:
             print(f"  TIMEOUT {os.path.basename(p)}", flush=True)
@@ -187,41 +219,32 @@ def main():
             continue
         if r is None or "skip" in r:
             continue
-        if args.source == "revdet" and r["verdict_in"] != "nonWG":
-            continue  # only repair genuinely non-WG inputs
+        if only_nonwg and r["verdict_in"] != "nonWG":
+            continue
         rows.append(r)
         processed += 1
-        if not r["verify_ok"]:
+        # a verify failure on ANY method that ran is a hard failure
+        vfails = [m for m in ("trie", "refine", "greedy", "exact")
+                  if r[f"verify_{m}"] == 0]
+        if vfails:
             nfail += 1
-            print(f"  *** VERIFY FAIL: {r['graph']}", flush=True)
+            print(f"  *** VERIFY FAIL {r['graph']}: {vfails}", flush=True)
         if not r["consistent"]:
             ncons += 1
-            print(f"  *** INCONSISTENT (greedy<exact): {r['graph']}", flush=True)
-        if processed % 10 == 0:
-            print(f"  [{processed}] {r['graph']}: in={r['in_nodes']} trie={r['trie_nodes']} "
-                  f"gsize={r['greedy_size']} gedits={r['greedy_edits']} "
-                  f"t={r['t_greedy']}s  (elapsed {time.time()-t_start:.0f}s)", flush=True)
+            print(f"  *** INCONSISTENT (heuristic<exact): {r['graph']}", flush=True)
+        if processed % 25 == 0:
+            print(f"  [{processed}] {r['graph']} type={r['type']} in={r['in_nodes']} "
+                  f"trie={r['trie_nodes']} refine_size={r['refine_size']} "
+                  f"(elapsed {time.time()-t_start:.0f}s)", flush=True)
 
-    cols = ["graph", "in_nodes", "in_edges", "det", "verdict_in", "trie_nodes",
-            "greedy_size", "greedy_edits_nodes", "greedy_edits",
-            "exact_size", "exact_edits", "t_greedy", "t_exact",
-            "verify_trie", "verify_gsize", "verify_gedits", "verify_ok", "consistent"]
     with open(args.out, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols)
+        w = csv.DictWriter(f, fieldnames=COLS)
         w.writeheader()
         for r in rows:
-            w.writerow({c: r.get(c, "") for c in cols})
+            w.writerow({c: r.get(c, "") for c in COLS})
 
-    print(f"\nDONE: processed {processed} non-WG graphs -> {args.out}")
-    print(f"  verification failures: {nfail}")
-    print(f"  consistency failures (greedy<exact): {ncons}")
-    if rows:
-        red = [r["trie_nodes"] / r["greedy_size"] for r in rows if r["greedy_size"]]
-        red.sort()
-        print(f"  trie/greedy-size reduction: median {red[len(red)//2]:.2f}x  "
-              f"max {red[-1]:.2f}x")
-        eds = sorted(r["greedy_edits"] for r in rows)
-        print(f"  greedy min-edits (node duplications): median {eds[len(eds)//2]}  max {eds[-1]}")
+    print(f"\nDONE: {processed} graphs -> {args.out}")
+    print(f"  verification failures: {nfail}   consistency failures: {ncons}")
     import shutil
     shutil.rmtree(tmp, ignore_errors=True)
 

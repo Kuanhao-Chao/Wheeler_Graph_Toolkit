@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """
-plot_repair.py -- figures for minimal Wheeler-graph repair (Phase 5).
+plot_repair.py -- comprehensive analysis figure for minimal Wheeler-graph repair.
 
-Reads benchmark/repair_exp/data/repair_{revdet,random}.csv and renders a 4-panel figure:
-  (A) Repaired size vs input size: trie (existing) blows up; minimal repair stays near the input.
-  (B) Pareto -- min-size vs min-edits per graph (min-size <= min-edits, on/above the diagonal).
-  (C) Size reduction of the minimal repair over the trie (ECDF) + node-duplication distribution.
-  (D) Optimality -- greedy vs exact (Z3) where exact is feasible: greedy lands on the optimum.
+Reads benchmark/repair_exp/data/{corpus_random,corpus_revdet,corpus_wg,scaling}.csv and renders a
+6-panel figure covering the four analysis facets:
+  (A) scaling      : repair wall time vs trie size, per method (log-log).
+  (B) ceilings     : largest trie each method decides within budget (bar).
+  (C) memory       : peak RSS vs trie size, per method.
+  (D) type x alpha : trie-vs-minimal size reduction by graph type/alphabet.
+  (E) edits        : minimal repair node-duplications (#splits) distribution by category.
+  (F) optimality   : refine (and greedy) vs the exact Z3 optimum -- points on the diagonal.
 
-Render with ~/miniconda3/envs/spliceai/bin/python (matplotlib). Reuses report_figs/style.py.
+Render with ~/miniconda3/envs/spliceai/bin/python. Reuses report_figs/style.py.
 """
 
 import csv
@@ -26,129 +29,131 @@ import style as S  # noqa: E402
 S.apply_style()
 
 DATA = os.path.join(HERE, "data")
-TRIE_C = S.BIN["pre41"]      # existing trie repair (light purple, the baseline)
-SIZE_C = S.BIN["new"]        # minimal min-size (dark purple, this work)
-EDIT_C = S.GEN_COLOR["revdet"]  # min-edits accent (orange)
-EXACT_C = "#000000"
+MCOL = {"trie": S.BIN["pre41"], "greedy": S.BIN["pre42"], "refine": S.BIN["new"], "exact": "#000000"}
+MLAB = {"trie": "trie (existing)", "greedy": "greedy", "refine": "refine (this work)", "exact": "exact (Z3)"}
 
 
 def load(name):
-    path = os.path.join(DATA, name)
-    if not os.path.exists(path):
-        return []
-    rows = []
-    for r in csv.DictReader(open(path)):
-        if r.get("verdict_in") != "nonWG":
-            continue
-        def gi(k):
-            v = r.get(k, "")
-            return int(v) if v not in ("", None) else None
-        rows.append({
-            "in": gi("in_nodes"), "trie": gi("trie_nodes"),
-            "gsize": gi("greedy_size"), "gedit_n": gi("greedy_edits_nodes"),
-            "gedit": gi("greedy_edits"), "exsize": gi("exact_size"),
-            "exedit": gi("exact_edits"), "verify": gi("verify_ok"),
-        })
-    return rows
+    p = os.path.join(DATA, name)
+    return list(csv.DictReader(open(p))) if os.path.exists(p) else []
+
+
+def num(x):
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return None
 
 
 def main():
-    rev = load("repair_revdet.csv")
-    rnd = load("repair_random.csv")
-    allr = rev + rnd
-    if not allr:
-        print("no data yet; run run_repair_corpus.py first")
-        return
-    nfail = sum(1 for r in allr if r["verify"] == 0)
-    print(f"loaded {len(allr)} non-WG graphs ({len(rev)} RevDet, {len(rnd)} random); "
-          f"verify failures = {nfail}")
+    rnd = [r for r in load("corpus_random.csv")]
+    rev = [r for r in load("corpus_revdet.csv")]
+    wg = [r for r in load("corpus_wg.csv")]
+    scal = load("scaling.csv")
+    corpus = rnd + rev + wg
+    print(f"loaded corpus: {len(rnd)} random + {len(rev)} revdet + {len(wg)} wg; scaling rows {len(scal)}")
 
-    fig, ax = plt.subplots(2, 2, figsize=(11, 9))
+    fig, ax = plt.subplots(2, 3, figsize=(16, 9.5))
 
-    # (A) repaired size vs input size
+    # (A) scaling: wall vs trie per method
     a = ax[0, 0]
-    for rows, mk, lab in ((rev, "o", "RevDet (gene)"), (rnd, "^", "random")):
-        if not rows:
-            continue
-        x = [r["in"] for r in rows]
-        a.scatter(x, [r["trie"] for r in rows], s=18, c=TRIE_C, marker=mk, alpha=0.55)
-        a.scatter(x, [r["gsize"] for r in rows], s=18, c=SIZE_C, marker=mk, alpha=0.8)
-    mx = max(r["trie"] for r in allr) + 2
-    a.plot([0, mx], [0, mx], color=S.REF_GRAY, lw=1, ls="--", label="y = x (no change)")
-    a.scatter([], [], c=TRIE_C, marker="s", label="trie repair (existing)")
-    a.scatter([], [], c=SIZE_C, marker="s", label="minimal repair (min-size)")
-    a.set_xlabel("input nodes")
-    a.set_ylabel("repaired nodes")
-    a.set_title("Repaired size: trie blows up, minimal stays near input")
+    for m in ("trie", "refine", "greedy", "exact"):
+        pts = [(num(r["trie_nodes"]), num(r["wall_s"])) for r in scal
+               if r["method"] == m and r["status"] == "DECIDED" and num(r["trie_nodes"]) and num(r["wall_s"]) is not None]
+        pts = [(t, max(w, 1e-4)) for t, w in pts if t]
+        if pts:
+            pts.sort()
+            a.plot([t for t, _ in pts], [w for _, w in pts], "o-", color=MCOL[m], ms=4, label=MLAB[m])
+    a.set_xscale("log"); a.set_yscale("log")
+    a.set_xlabel("trie size (path-string count)"); a.set_ylabel("repair wall time (s)")
+    a.set_title("(A) Scaling: time vs trie size")
     a.legend(fontsize=8, loc="upper left")
-    S.panel_tag(a, "A")
 
-    # (B) Pareto: min-size vs min-edits
+    # (B) ceilings: max trie decided per method
     b = ax[0, 1]
-    for rows, mk, c in ((rev, "o", EDIT_C), (rnd, "^", "#999999")):
-        if not rows:
+    ceil = {}
+    for m in ("exact", "greedy", "refine", "trie"):
+        dec = [num(r["trie_nodes"]) for r in scal if r["method"] == m and r["status"] == "DECIDED" and num(r["trie_nodes"])]
+        ceil[m] = max(dec) if dec else 0
+    ms = ["exact", "greedy", "refine", "trie"]
+    b.bar(range(len(ms)), [ceil[m] for m in ms], color=[MCOL[m] for m in ms])
+    for i, m in enumerate(ms):
+        b.text(i, ceil[m], f" {int(ceil[m])}", ha="center", va="bottom", fontsize=9)
+    b.set_xticks(range(len(ms))); b.set_xticklabels([MLAB[m].split()[0] for m in ms], fontsize=8)
+    b.set_yscale("log"); b.set_ylabel("largest trie decided in budget")
+    b.set_title("(B) Per-method ceiling")
+
+    # (C) memory: RSS vs trie
+    c = ax[0, 2]
+    for m in ("trie", "refine", "greedy", "exact"):
+        pts = [(num(r["trie_nodes"]), num(r["rss_kb"])) for r in scal
+               if r["method"] == m and r["status"] == "DECIDED" and num(r["trie_nodes"]) and num(r["rss_kb"])]
+        if pts:
+            pts.sort()
+            c.plot([t for t, _ in pts], [k / 1024 for _, k in pts], "o-", color=MCOL[m], ms=4, label=MLAB[m])
+    c.set_xscale("log")
+    c.set_xlabel("trie size"); c.set_ylabel("peak RSS (MB)")
+    c.set_title("(C) Memory vs trie size")
+    c.legend(fontsize=8, loc="upper left")
+
+    # (D) type x alphabet reduction (trie / refine size)
+    d = ax[1, 0]
+    cats = []
+    def cat_key(r):
+        t, al = r["type"], r["alphabet"]
+        return f"{t}\n{al}" if al else t
+    groups = {}
+    for r in corpus:
+        if r["verdict_in"] != "nonWG":
             continue
-        b.scatter([r["gsize"] for r in rows], [r["gedit_n"] for r in rows],
-                  s=20, marker=mk, c=c, alpha=0.7,
-                  label=("RevDet" if rows is rev else "random"))
-    mx = max(r["gedit_n"] for r in allr) + 2
-    b.plot([0, mx], [0, mx], color=S.REF_GRAY, lw=1, ls="--", label="min-size = min-edits")
-    b.set_xlabel("min-size nodes")
-    b.set_ylabel("min-edits nodes")
-    b.set_title("Pareto: min-size ≤ min-edits (closest-to-input costs a little)")
-    b.legend(fontsize=8, loc="upper left")
-    S.panel_tag(b, "B")
+        red = num(r["trie_size"]) / num(r["refine_size"]) if num(r["refine_size"]) else None
+        if red:
+            groups.setdefault(cat_key(r), []).append(red)
+    keys = sorted(groups, key=lambda k: -np.median(groups[k]))
+    if keys:
+        d.boxplot([groups[k] for k in keys], labels=keys, showfliers=False)
+        d.axhline(1.0, color=S.REF_GRAY, lw=1)
+        d.set_ylabel("size reduction  trie / minimal (×)")
+        d.set_title("(D) Reduction by type × alphabet (non-WG)")
+        d.tick_params(axis="x", labelsize=7)
 
-    # (C) reduction ECDF (split by source) + edits distribution
-    c = ax[1, 0]
-    for rows, col, lab in ((rev, EDIT_C, "RevDet (gene)"), (rnd, "#999999", "random")):
-        if not rows:
+    # (E) edits distribution by category
+    e = ax[1, 1]
+    egroups = {}
+    for r in corpus:
+        if r["verdict_in"] != "nonWG" or r["refine_edits"] == "":
             continue
-        red = sorted(r["trie"] / r["gsize"] for r in rows if r["gsize"])
-        ys = np.arange(1, len(red) + 1) / len(red)
-        c.step(red, ys, where="post", color=col, lw=2.2, label=lab)
-        med = red[len(red) // 2]
-        c.axvline(med, color=col, ls=S.WALL_LS, lw=1.0)
-        c.text(med, 0.10 if rows is rev else 0.02, f" {med:.2f}×", color=col, fontsize=9)
-    c.axvline(1.0, color=S.REF_GRAY, lw=1)
-    c.set_xlabel("size reduction  trie / minimal  (×)")
-    c.set_ylabel("fraction of graphs ≤ x")
-    c.set_title("Minimal repair is much smaller than the trie")
-    c.legend(fontsize=8, loc="lower right")
-    S.panel_tag(c, "C")
-    # inset: node-duplication (min-edits) distribution
-    ins = c.inset_axes([0.55, 0.18, 0.4, 0.5])
-    eds = [r["gedit"] for r in allr if r["gedit"] is not None]
-    if eds:
-        ins.hist(eds, bins=range(0, max(eds) + 2), color=EDIT_C, alpha=0.85, align="left")
-        ins.set_title("min-edits (splits)", fontsize=8)
-        ins.tick_params(labelsize=7)
+        egroups.setdefault(cat_key(r), []).append(int(r["refine_edits"]))
+    keys2 = sorted(egroups, key=lambda k: -np.median(egroups[k]))
+    if keys2:
+        e.boxplot([egroups[k] for k in keys2], labels=keys2, showfliers=False)
+        e.set_ylabel("minimal repair: node duplications (#splits)")
+        e.set_title("(E) Edits to repair, by category")
+        e.tick_params(axis="x", labelsize=7)
 
-    # (D) optimality: greedy vs exact
-    d = ax[1, 1]
-    ex = [(r["gsize"], r["exsize"], r["gedit_n"], r["exedit"]) for r in allr
-          if r["exsize"] is not None]
-    if ex:
-        gs = [e[0] for e in ex]
-        es = [e[1] for e in ex]
-        ge = [e[2] for e in ex]
-        ee = [e[3] for e in ex]
-        d.scatter(es, gs, s=26, c=SIZE_C, marker="o", alpha=0.7, label="min-size")
-        d.scatter(ee, ge, s=26, c=EDIT_C, marker="s", alpha=0.6, label="min-edits")
-        mx = max(max(gs), max(es)) + 1
-        d.plot([0, mx], [0, mx], color=S.REF_GRAY, lw=1, ls="--", label="greedy = exact")
-        agree = sum(1 for e in ex if e[0] == e[1] and e[2] == e[3])
-        d.set_title(f"Greedy matches the Z3 optimum ({agree}/{len(ex)} graphs)")
-        d.set_xlabel("exact optimum nodes (Z3)")
-        d.set_ylabel("greedy nodes")
-        d.legend(fontsize=8, loc="upper left")
-    else:
-        d.text(0.5, 0.5, "no exact data", ha="center")
-    S.panel_tag(d, "D")
+    # (F) optimality: refine/greedy vs exact
+    f = ax[1, 2]
+    rx = [(num(r["exact_size"]), num(r["refine_size"])) for r in corpus
+          if num(r["exact_size"]) and num(r["refine_size"])]
+    gx = [(num(r["exact_size"]), num(r["greedy_size"])) for r in corpus
+          if num(r["exact_size"]) and num(r["greedy_size"])]
+    if rx:
+        f.scatter([a_ for a_, _ in rx], [b_ for _, b_ in rx], s=26, c=MCOL["refine"], label="refine", alpha=0.7)
+    if gx:
+        f.scatter([a_ for a_, _ in gx], [b_ for _, b_ in gx], s=18, c=MCOL["greedy"], marker="x", label="greedy", alpha=0.7)
+    allv = [v for pair in rx + gx for v in pair]
+    if allv:
+        mx = max(allv) + 1
+        f.plot([0, mx], [0, mx], color=S.REF_GRAY, ls="--", lw=1, label="= exact optimum")
+        agree = sum(1 for a_, b_ in rx if a_ == b_)
+        f.set_title(f"(F) Optimality: heuristic vs exact (refine={agree}/{len(rx)} optimal)")
+    f.set_xlabel("exact optimum nodes"); f.set_ylabel("heuristic nodes")
+    f.legend(fontsize=8, loc="upper left")
 
-    fig.suptitle("Minimal-change Wheeler-graph repair (lossless node-splitting)", fontsize=13)
+    fig.suptitle("Comprehensive minimal Wheeler-graph repair benchmark "
+                 "(faster refine algorithm; correctness-verified)", fontsize=14)
     fig.tight_layout(rect=[0, 0, 1, 0.97])
-    out = os.path.join(HERE, "Frepair_minimal.png")
+    out = os.path.join(HERE, "Frepair_comprehensive.png")
     fig.savefig(out)
     print(f"wrote {out}")
 
