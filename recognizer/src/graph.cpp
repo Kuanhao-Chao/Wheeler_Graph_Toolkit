@@ -226,6 +226,7 @@ void digraph::innodelist_sort_relabel() {
                 prelabels_fixed = false;
             }
         }
+        iter++;
     }
 
     bool WG_valid = true;
@@ -353,6 +354,24 @@ void digraph::innodelist_sort_relabel() {
                 }
             }
         }
+    }
+    if (profile_mode && !full_range_search) {
+        // Residual search-space left for the backend: range-size histogram + GS pass count +
+        // whether the heuristic alone decided the order (no solver). Drives H2/H4/H8 prioritization.
+        size_t max_sz = 0, n_singleton = 0;
+        for (auto& pr : _node_ranges) {
+            size_t sz = (size_t)(pr.first.second - pr.first.first + 1);
+            if (sz > max_sz) max_sz = sz;
+            if (sz == 1) ++n_singleton;
+        }
+        cerr << "PROFILE heuristic nodes=" << _nodes_num
+             << " gs_passes=" << iter
+             << " brackets=" << _node_ranges.size()
+             << " singletons=" << n_singleton
+             << " max_range=" << max_sz
+             << " perm_counter=" << permutation_counter
+             << " decided_by_propagation=" << ((_node_ranges.size() == (size_t)_nodes_num) ? 1 : 0)
+             << endl;
     }
     // Check if done
     bool all_assigned_and_distinct = (_node_ranges.size() == _nodes_num);

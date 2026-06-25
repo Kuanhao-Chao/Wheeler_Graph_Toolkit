@@ -55,6 +55,7 @@ bool benchmark_mode = false;
 bool exhaustive_search = false;
 bool full_range_search = false;
 bool explain_mode = false;
+bool profile_mode = false;
 int permutation_counter = 1;
 clock_t c_start, c_end;
 double cpu_time_used;
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]) {
     // bool verbose_mode;
 
     GArgs args(argc, argv,
-	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;full_range_search;explain;"
+	"debug;help;version;outDir=;verbose;solver=;writeIOL;writeRange;print_invalid;exhaustive_search;label_is_int;benchmark;full_range_search;explain;profile;"
     "exclude=hvpwriebfxs:o:");
 
 	processOptions(args);
@@ -258,6 +259,7 @@ void processOptions(GArgs& args) {
     exhaustive_search = (args.getOpt('e')!=NULL || args.getOpt("exhaustive_search"));
     full_range_search = (args.getOpt('f')!=NULL || args.getOpt("full_range_search"));
     explain_mode = (args.getOpt('x')!=NULL || args.getOpt("explain"));
+    profile_mode = (args.getOpt("profile")!=NULL);
     // Explain mode records axiom violations from the heuristic ordering. Force the SMT backend so
     // the permutation search's pruning checks don't flood the violation list.
     if (explain_mode) solver = "smt";

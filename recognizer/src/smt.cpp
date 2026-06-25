@@ -16,6 +16,7 @@
 using namespace z3;
 
 extern bool benchmark_mode;
+extern bool profile_mode;
 
 void digraph::solve_smt() {
     clock_t start = clock();
@@ -197,6 +198,7 @@ void digraph::solve_smt() {
     clock_t end = clock();
     double elapsed = (double) (end-start) / CLOCKS_PER_SEC;
 
+    double setup_s = elapsed;
     if (!benchmark_mode) {
         cout << "SMT Setup: " << elapsed << " seconds\n";
     }
@@ -213,8 +215,41 @@ void digraph::solve_smt() {
     end = clock();
     elapsed = (double) (end-start) / CLOCKS_PER_SEC;
 
+    double solve_s = elapsed;
     if (!benchmark_mode) {
         cout << "SMT Solve: " << elapsed << " seconds\n";
+    }
+
+    if (profile_mode) {
+        // Localize the -f "unknown" wall and the default solve cost: emit z3's own statistics and,
+        // crucially, its reason_unknown() (rlimit? memory? incomplete?) -- this decides whether H1
+        // (rlimit/tactic tuning) can move the wall. One machine-readable line on stderr.
+        int n_fixed = 0;
+        for (int i = 0; i < _nodes_num; ++i) if (fixed[i]) ++n_fixed;
+        long conflicts = -1, decisions = -1, restarts = -1, propagations = -1;
+        double zmem = -1;
+        stats st = s.statistics();
+        for (unsigned i = 0; i < st.size(); ++i) {
+            string k = st.key(i);
+            double val = st.is_uint(i) ? (double) st.uint_value(i) : st.double_value(i);
+            if (k == "conflicts") conflicts = (long) val;
+            else if (k == "decisions") decisions = (long) val;
+            else if (k == "restarts") restarts = (long) val;
+            else if (k == "propagations") propagations = (long) val;
+            else if (k == "max memory") zmem = val;
+        }
+        string rstr = (res == sat) ? "sat" : (res == unsat ? "unsat" : "unknown");
+        string ru = (res == unknown) ? s.reason_unknown() : "";
+        cerr << "PROFILE smt nodes=" << _nodes_num
+             << " full_range=" << (full_range_search ? 1 : 0)
+             << " fixed=" << n_fixed
+             << " assertions=" << s.assertions().size()
+             << " setup_s=" << setup_s << " solve_s=" << solve_s
+             << " result=" << rstr
+             << " conflicts=" << conflicts << " decisions=" << decisions
+             << " restarts=" << restarts << " propagations=" << propagations
+             << " zmem_mb=" << zmem
+             << " reason_unknown=\"" << ru << "\"" << endl;
     }
 
     if (res == sat) {
