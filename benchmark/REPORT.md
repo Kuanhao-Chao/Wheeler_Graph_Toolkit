@@ -25,8 +25,8 @@ data file; §9 is the reproduction manifest.
 | **Capability** | graphs the OLD exp baseline could decide at all | timed out on **159 / 931** | **931 / 931** | Fig 3 |
 | **Performance — `-f`** | total `-f` time, DOCK4 DNA k=5 (1041 edges) | 15.2 s (pre-4.1) | **6.6 s** (≈ **2.3×**) | Fig 7, `data/micro.setup_solve.csv` |
 | **Performance — `-f`** | encoding *setup* time, same graph | 2.1 s | **0.14 s** (≈ **14×**) | Fig 7 |
-| **Performance — `-f`** | encoding size in SMT atoms (validated ≡ z3 `s.assertions()`) | O(E²) (fit `∝E^2.00`, all types) | **median ≈13× fewer** (up to ~300×); sub-quadratic `∝E^1.57` where the A3 block fires | §4.0, Fig "atoms", `data/atom_counts.csv` |
-| **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **1.3–2.2×** (DNA via A3, AA via A2; 0 regressions) | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
+| **Performance — `-f`** | encoding size in SMT atoms (validated ≡ z3 `s.assertions()`) | O(E²) (fit `∝E^2.00`, all types) | **median 13.4× fewer** (up to **307×**); sub-quadratic `∝E^1.57` where the A3 block fires | §4.0, Fig "atoms", `data/atom_counts.csv` |
+| **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **median 1.79×** (geomean 1.77×, up to 3.5×); 1.3–2.2× per type (DNA via A3, AA via A2); **100% non-regressing** | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 | **Practicality — MSA→WG** | real Ensembl gene MSAs (50 genes) built into graphs and recognized | n/a | **500 / 500 decided in < 1 s**; De Bruijn & trie 100% Wheeler, RevDet 1% | §7, Fig 15, `data/msa_practicality.csv` |
@@ -37,8 +37,9 @@ for every graph it finished and timed out on every non-Wheeler instance, so its 
 were meaningless. The NEW code agrees with an independent n!-enumeration oracle on **2447** graphs
 with **zero** disagreements, and decides non-Wheeler verdicts the OLD baseline was structurally
 incapable of. On top of that — *correctness first, performance second* — the Phase-4 sparse `-f`
-SMT encoding cuts encoding **setup** universally (~14× at k=5) and **total** `-f` time ~2× on the
-largest *Wheeler* DNA graphs. Building this report's sweeps also **caught a regression in the
+SMT encoding cuts encoding **setup** universally (~14× at k=5) and **total** `-f` time by a **median
+1.79× across 682 paired graphs** (geomean 1.77×, up to 3.5×; ~2× on the largest *Wheeler* DNA graphs),
+**with zero regressions**. Building this report's sweeps also **caught a regression in the
 committed Phase 4.2 code** (its block-encoding guard fired too eagerly and slowed z3 on dense /
 non-Wheeler instances); the verification motivated a one-line fix (**Phase 4.3**, `D < E/2` guard,
 re-verified at 0 mismatches over ~9,700 graphs), after which NEW is **≥ OLD on every `-f` graph
@@ -193,6 +194,38 @@ is §5.
 
 ## §4 Performance — sparser `-f` encodings and where they pay off
 
+**The verdict, then the evidence.** The new full-range (`-f`) SMT encoding is **faster, validated to
+the atom, and honestly bounded.** It hands z3 a **median 13.4× smaller** formula (per-type 3.8–15.6×;
+up to **307×** on the largest many-label graphs), whose count is **validated exact** against z3's own
+`s.assertions().size()` from an instrumented build (§4.0) and then applied analytically to all 900
+biological graphs (`data/atom_counts.csv`). A smaller formula makes *building* the problem nearly free
+(**≈14.5× faster setup** on the headline graph) and end-to-end `-f` time **median 1.79× faster**
+(geomean 1.77×, up to 3.5×) across the **682 paired** graphs, **with zero regressions** — NEW is ≥ OLD
+on every graph measured (worst case 0.98× = noise). The two sparsifications are complementary: the
+**A2** cross-group form carries the many-label (amino-acid) regime, while the **A3** within-group block
+adds a further ≈1.77× where it fires (few-label DNA). The honest bounds are equally clear: a smaller
+formula speeds the solver but does **not move the size ceiling** (identical NEW/OLD — z3 returns
+`unknown` at n=832 on the synthetic families — although within a *fixed time budget* NEW decides one
+rung further, §5), and the block costs **≈2× peak RAM only when it fires** (no cost, sometimes lighter,
+when it does not). None of this touches the **default** backend — the production scaler that decides
+4,608 / 3,584-node synthetic graphs in an hour (§5) — and real MSA-derived graphs decide in **under a
+second** (§7).
+
+| finding | result (NEW vs OLD pre-4.1) | evidence |
+|---|---|---|
+| **Encoding size** (SMT atoms) | **median 13.4× fewer** (per-type 3.8–15.6×; up to **307×**); `∝E^1.57` where A3 fires, else a large constant factor; count **validated exact vs z3** (instrumented calibration, §4.0) | §4.0, `atom_counts.csv` |
+| **Encoding setup** | **≈14.5×** faster (DOCK4 k=5: 2.11 → 0.14 s) | §4.1, `micro.setup_solve.csv` |
+| **End-to-end `-f` time** | **median 1.79×** (geomean 1.77×; 1.3–2.2× per type/verdict cell; up to 3.5×); **100% non-regressing** over 682 paired jobs | §4.5, `ftiming_bytype.raw.jsonl` |
+| **Attribution** (A2 vs A3) | A2 carries amino-acid (pre-4.2→NEW ≈1.00× there); A3 adds **1.77×** on De Bruijn DNA | §4.5.1, `ftiming_bytype` + `atom_counts.csv` |
+| **Regression caught + fixed** | Phase 4.3 `D < E/2` guard ⇒ **0 regressions**, neutral on non-WG | §4.2 |
+| **Memory** | **≈2× more only where the A3 block fires**; no cost (often ~15–20% lighter) where it stays off | §4.3, `micro.mem_ladder.csv` |
+| **Size ceiling** | **unchanged** (z3 `unknown` at n=832, NEW = OLD); the encoding lowers the *time curve*, not the *size wall* — but decides one rung further within a fixed budget | §4.4, §5, `ftiming_f_sparse.raw.jsonl` |
+| **Scope** | the **default** backend is untouched (production scaler); real biological graphs decide in <1 s | §5, §7 |
+
+The rest of §4 is the evidence for each row, in order: the mechanism in atoms (§4.0), the setup/solve
+split (§4.1), the corpus-wide distribution and the regression this report caught (§4.2), memory (§4.3),
+the honest all-distinct limit (§4.4), and the per-type division of labor (§4.5).
+
 The `-f` path is where Phase 4.1/4.2 live. It hands the entire order space to z3, so the **encoding
 size** dominates. The two sparsifications:
 
@@ -210,6 +243,8 @@ restricts the block to the regime where it genuinely helps, so all-distinct *and
 groups fall back to the verified pairwise loop.
 
 ### 4.0 The mechanism, measured directly: encoding size in atoms (Fig “atoms”)
+
+*Evidence for the encoding-size finding: the formula itself, counted exactly — before any clock.*
 
 ![Fig atoms](report_figs/Fatoms_encoding.png)
 
@@ -236,8 +271,8 @@ fit stays near `E^1.8`–`E^2.0`). Panel (C) shows where the atoms live: pre-4.1
 cross-group A2 term on AA and by the within-group A3 term on DNA; the new encoding shrinks whichever
 dominates.
 
-**The crucial caveat — atoms are not wall time.** The formula shrinks by a **median ≈13×** (per-type
-medians 3.8–16×; up to ~300× on the largest many-label graphs), and the *encoding setup* time shrinks
+**The crucial caveat — atoms are not wall time.** The formula shrinks by a **median 13.4×** (per-type
+medians 3.8–15.6×; up to **307×** on the largest many-label graphs), and the *encoding setup* time shrinks
 in step (≈ 14× on the headline graph, §4.1). But the **total** `-f` wall time falls only
 ≈ 2× (§4.1, §4.5), because z3's **solve** is the bottleneck and its cost is not proportional to the
 atom count — a smaller formula helps the solver, but does not shrink the underlying NP-hard search by
@@ -245,6 +280,8 @@ the same factor. So the sparsification's first-order effect is to make *building
 free; the solver speedup is a real but second-order benefit.
 
 ### 4.1 Setup/solve split on the headline graphs (Fig 7)
+
+*Evidence that the smaller formula buys time: where the `-f` seconds actually go.*
 
 ![Fig 7](report_figs/F7_setup_solve.png)
 
@@ -262,6 +299,8 @@ pre-4.2 → NEW collapses it (1.88 → 0.14 s). The smaller formula also roughly
 TRPC1 k=5 (1049 edges) shows the same shape (setup 2.24 → 0.16 s, total 15.7 → 8.0 s).
 
 ### 4.2 Distribution across the real corpus — and a regression this report found and fixed (Figs 4–6)
+
+*Evidence for the zero-regressions finding — and the regression that motivated the Phase 4.3 guard.*
 
 ![Fig 4](report_figs/F4_f_scatter_cpu.png)
 
@@ -303,6 +342,8 @@ gone; the non-WG curve is a near-vertical step at 1.0 = neutral fallback). Fig 6
 
 ### 4.3 Memory — an honest space-for-time trade (Fig 7b)
 
+*Evidence for the memory finding: the ≈2× cost is real but regime-dependent, not universal.*
+
 ![Fig 7b](report_figs/F7b_memory.png)
 
 Peak resident set size (`/usr/bin/time -v`) depends on **which** sparsification is active, and splits
@@ -326,6 +367,8 @@ limit is z3 *solve* on the all-distinct-endpoint dense cases where `-f` does not
 
 ### 4.4 The honest limit: all-distinct, dense groups
 
+*The boundary behind the "scope" finding: where `-f` simply does not apply, and the default backend wins.*
+
 When a label group has (near-)all-distinct endpoints, `D_l ≈ E_l`, the guard's `D_l < E_l/2` clause fails and
 the block form correctly **falls back** to the pairwise loop — so there is **no speedup** there. The
 extreme case is DOCK4 **AA** k=5 (6636 edges, 20-letter alphabet → many distinct endpoints):
@@ -343,6 +386,8 @@ up the cases where `-f` *is* tractable (few-label, high-multiplicity graphs) wit
 fact that the default backend is what one runs in practice.
 
 ### 4.5 Per-graph-type `-f` speedup: which sparsification pays where (Fig 12)
+
+*Evidence for the headline 1.79× and the A2/A3 attribution, measured across all four graph types.*
 
 §4.1–4.4 explain the encoding wins on headline graphs; this section measures them **across the four
 biological graph types** to answer Q1 ("how much faster, by graph type"). The 3-point sweep
@@ -372,9 +417,10 @@ regression appears — every type is ≥ break-even.**
 
 ![Fig 12](report_figs/F12_type_speedup.png)
 
-**The total OLD→NEW `-f` speedup is 1.3–2.2× across all four types**, on both WG and non-WG instances —
-never a regression. The more interesting result is *where the two sparsifications pay*, which the A3
-column isolates and which tracks alphabet size exactly:
+**Pooled across all 682 paired graphs the median OLD→NEW `-f` speedup is 1.79× (geomean 1.77×, range
+0.98–3.53×, 100% non-regressing); split by type and verdict it is 1.3–2.2×**, on both WG and non-WG
+instances — never a regression. The more interesting result is *where the two sparsifications pay*,
+which the A3 column isolates and which tracks alphabet size exactly:
 
 - **DNA (4-letter alphabet → few label groups):** the win is the **A3 within-group block**. De Bruijn
   DNA is 1.77× from A3 alone (pre-4.2 → NEW) out of 1.82× total — A2 adds almost nothing, because
