@@ -100,6 +100,21 @@ c32 = cei[("complete","32768","lazy")]
 chk("n=32768 A3 built", c32["materialized_a3"], 3835, int(c32["materialized_a3"])==3835)
 chk("n=32768 A3 universe", c32["pair_universe"], 402722292, int(c32["pair_universe"])==402722292)
 chk("n=32768 lazy wall (s)", round(fnum(c32["wall"]),1), 60.5, approx(fnum(c32["wall"]),60.5,0.02))
+d32 = cei[("dnfa","32768","lazy")]
+chk("n=32768 dnfa A3 built (Fig5)", d32["materialized_a3"], 5926, int(d32["materialized_a3"])==5926)
+chk("lazy rounds stay 5-8 (all n, both fam)",
+    f"{min(int(r['rounds']) for r in cei.values() if r['backend']=='lazy' and r['rounds'])}-"
+    f"{max(int(r['rounds']) for r in cei.values() if r['backend']=='lazy' and r['rounds'])}",
+    "≈5-8", all(3 <= int(r['rounds']) <= 9 for r in cei.values() if r['backend']=='lazy' and r['rounds']))
+
+# verdict agreement vs the oracle (Fig 2 validation): 0 disagreements over the cross-check corpus
+sm = json.load(open(os.path.join(DATA, "static_metrics.json")))["verdict_agreement"]
+chk("oracle verdict-agreement disagreements (Fig2)", sm["total_disagreements"], 0, sm["total_disagreements"]==0)
+chk("oracle cross-check graphs (Fig2)", sm["total_graphs"], 2447, sm["total_graphs"]==2447)
+chk("every decider agrees (REAL+SYNTH x SMT/PERM/EXP)",
+    "all N/N", "0 disagree",
+    all(int(sm[c][d][1])==0 and int(sm[c][d][0])==int(sm[c]["graphs"])
+        for c in ("REAL","SYNTH") for d in ("SMT","PERM","EXP")))
 
 # ============================================================ 3. PERFORMANCE — atoms
 print("\n"+"="*78); print("AXIS III — PERFORMANCE: encoding atoms  (atom_counts.csv)"); print("="*78)

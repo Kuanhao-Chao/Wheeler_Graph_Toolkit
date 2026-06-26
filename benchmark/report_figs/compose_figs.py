@@ -4,11 +4,11 @@ plot_report.py) into the khchao.com site asset tree. No recompositing: each repo
 already one publication-grade matplotlib figure with shared fonts/DPI, so we just copy it.
 
   Fhero.png            -> rfig_hero.png          (§3.0  graphical-abstract scorecard)
-  F1_correctness.png   -> rfig_correctness.png   (§3.1  Axis I — correctness)
+  F2_validation.png    -> rfig_validation.png    (§3.1  Axis I — validation vs the oracle)
   Flazy_ceiling.png    -> rfig_lazy_ceiling.png  (§3.2  Axis II — THE headline)
-  Fatoms_encoding.png  -> rfig_atoms.png         (§3.3  Axis III — the mechanism)
   Fperformance.png     -> rfig_performance.png   (§3.3  Axis III — speed/memory/per-type 2x2)
-  Fpracticality.png    -> rfig_practicality.png  (§3.4  practicality + repair)
+  Fmechanism.png       -> rfig_mechanism.png     (§4    how the speedup works, in depth)
+  Fpracticality.png    -> rfig_practicality.png  (§5    practicality + repair)
 
 The draft blog (wgt-verified) keeps its existing assets; it is not part of the report deploy.
 
@@ -23,12 +23,12 @@ SITE = "/ccb/salz3/kh.chao/Kuanhao-Chao.github.io/src/assets"
 REPORT_DIR = os.path.join(SITE, "reports", "wgt-technical-report")
 
 REPORT_FIGS = {
-    "Fhero.png":           "rfig_hero.png",
-    "F1_correctness.png":  "rfig_correctness.png",
-    "Flazy_ceiling.png":   "rfig_lazy_ceiling.png",
-    "Fatoms_encoding.png": "rfig_atoms.png",
-    "Fperformance.png":    "rfig_performance.png",
-    "Fpracticality.png":   "rfig_practicality.png",
+    "Fhero.png":         "rfig_hero.png",
+    "F2_validation.png": "rfig_validation.png",
+    "Flazy_ceiling.png": "rfig_lazy_ceiling.png",
+    "Fperformance.png":  "rfig_performance.png",
+    "Fmechanism.png":    "rfig_mechanism.png",
+    "Fpracticality.png": "rfig_practicality.png",
 }
 
 

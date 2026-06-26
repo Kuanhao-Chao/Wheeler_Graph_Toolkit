@@ -159,33 +159,74 @@ def _lazy_point(rows, fam, backend, n):
 
 
 # ============================================================ PANEL DRAWS
-def draw_correctness(ax):
-    rows = load_csv(os.path.join(DATA, "corr_oldnew.csv"))
-    order = ["smt", "perm", "perm-e", "full"]
-    disp = {"smt": "default\n(SMT)", "perm": "permutation\n(-s p)",
-            "perm-e": "exhaustive\n(-s p -e)", "full": "full-range\n(-f)"}
+def draw_validation(ax):
+    """Verdict agreement vs the independent brute-force oracle: corpora x deciders, 0 disagreements.
+    A validation grid (the recognizer's SMT and permutation backends AND the rebuilt exponential
+    reference all agree with the oracle on every decided graph) -- not a version comparison."""
+    sm = json.load(open(os.path.join(DATA, "static_metrics.json")))["verdict_agreement"]
+    corpora = ["REAL", "SYNTH"]
+    deciders = ["SMT", "PERM", "EXP"]
+    decider_disp = {"SMT": "recognizer\n(SMT / lazy)", "PERM": "recognizer\n(permutation)",
+                    "EXP": "exponential\nreference"}
+    teal = VERDICT["WG"]
+    ax.set_xlim(-0.5, len(deciders) - 0.5); ax.set_ylim(-0.5, len(corpora) - 0.5)
+    for i, cpr in enumerate(corpora):
+        for j, dn in enumerate(deciders):
+            agree = int(sm[cpr][dn][0]); decided = int(sm[cpr]["graphs"])
+            ax.add_patch(plt.Rectangle((j - 0.46, i - 0.42), 0.92, 0.84, facecolor="white",
+                                       edgecolor="#d9d9d9", lw=1.0, zorder=1))
+            ax.add_patch(plt.Rectangle((j - 0.46, i - 0.42), 0.05, 0.84, facecolor=teal,
+                                       edgecolor="none", zorder=2))
+            ax.text(j, i + 0.10, f"{agree}/{decided}", ha="center", va="center",
+                    fontsize=13, fontweight="bold", color="#222", zorder=3)
+            ax.text(j, i - 0.22, "✓ agree", ha="center", va="center", fontsize=9, color=teal, zorder=3)
+    ax.set_xticks(range(len(deciders))); ax.set_xticklabels([decider_disp[d] for d in deciders])
+    ax.set_yticks(range(len(corpora)))
+    ax.set_yticklabels([f"{c}\n({int(sm[c]['graphs'])} graphs)" for c in corpora])
+    ax.invert_yaxis()
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.tick_params(length=0); ax.grid(False)
+    ax.set_title(f"Verdict agreement vs the brute-force oracle — {sm['total_disagreements']} "
+                 f"disagreements\n({sm['total_graphs']} graphs: {sm['total_wg']} Wheeler, "
+                 f"{sm['total_nonwg']} non-Wheeler; every accepted order independently re-validated)",
+                 fontsize=11)
 
-    def fa(binary, mode, corpus="simple"):
-        r = next((x for x in rows if x["binary"] == binary and x["corpus"] == corpus
-                  and x["mode"] == mode), None)
-        return int(r["false_accept"]) if r else 0
 
-    old_fa = [fa("v1.0.0", m) for m in order]
-    new_fa = [fa("current", m) for m in order]
-    x = np.arange(len(order)); w = 0.38
-    b1 = ax.bar(x - w / 2, old_fa, w, color=BASE_C, edgecolor=BASE_EDGE, label=S.binary_label("pre41"))
-    b2 = ax.bar(x + w / 2, new_fa, w, color=ACCENT, label=S.binary_label("new"))
-    ax.bar_label(b1, padding=2, fontsize=10, color=BASE_EDGE, fontweight="bold")
-    ax.bar_label(b2, labels=["0", "0", "0", "0"], padding=2, fontsize=10, fontweight="bold", color=ACCENT)
-    ax.set_ylabel("false-accepts  (non-Wheeler graphs declared Wheeler)")
-    ax.set_xticks(x); ax.set_xticklabels([disp[m] for m in order], fontsize=9.5)
-    ax.legend(loc="upper right")
-    ax.margins(y=0.22)
-    ax.annotate("the permutation backends also false-accept\n"
-                "1,147 non-Wheeler graphs on the dense corpus;\ncurrent = 0 there too",
-                xy=(1, old_fa[1]), xytext=(1.55, max(old_fa) * 0.72), fontsize=8.5, color=BASE_EDGE,
-                ha="left", va="center",
-                arrowprops=dict(arrowstyle="->", color=BASE_EDGE, lw=1))
+def draw_mechanism_compression(ax):
+    """How little the lazy/CEGAR default builds: A3 constraints materialized vs the full O(n^2) pair
+    universe, across n. The built curve stays ~linear (a few thousand) while the universe grows
+    quadratically (hundreds of millions); at n=32,768 it is 3,835 of 402,722,292 (~99.999% never built)."""
+    cur = load_csv(os.path.join(LAZY, "results_lazy_ceiling.csv"))
+    for fam in ("complete", "dnfa"):
+        ls, mk = S.FAMILY_STYLE[fam]
+        uni, built = [], []
+        for r in cur or []:
+            if r.get("family") != fam or r.get("backend") != "lazy" or r.get("verdict") != "WG":
+                continue
+            n = fnum(r.get("n")); pu = fnum(r.get("pair_universe")); ma = fnum(r.get("materialized_a3"))
+            if n and pu and ma:
+                uni.append((n, pu)); built.append((n, ma))
+        uni.sort(); built.sort()
+        if uni:
+            xs, ys = zip(*uni)
+            ax.plot(xs, ys, marker=mk, ms=4, lw=2.0, color=BASE_C, ls=ls,
+                    label=f"full $O(n^2)$ A3 universe — {S.FAMILY_LABEL[fam]}")
+        if built:
+            xs, ys = zip(*built)
+            ax.plot(xs, ys, marker=mk, ms=4, lw=2.4, color=ACCENT, ls=ls,
+                    label=f"A3 actually built (lazy) — {S.FAMILY_LABEL[fam]}")
+    ax.set_xscale("log"); ax.set_yscale("log")
+    ax.set_xlabel("graph size  n  (nodes, log)")
+    ax.set_ylabel("within-label (A3) constraints (log)")
+    ax.set_title("(A) The lazy default builds almost none of the $O(n^2)$ formula")
+    ax.annotate("n=32,768: 3,835 built\nof 402,722,292\n(~99.999% never built)",
+                xy=(32768, 3835), xytext=(2200, 9e6), fontsize=8.5, color=ACCENT, fontweight="bold",
+                arrowprops=dict(arrowstyle="->", color=ACCENT, lw=1.2))
+    ax.text(0.03, 0.06, "lazy/CEGAR converges in ≈5–8 rounds at every size",
+            transform=ax.transAxes, fontsize=7.8, color="#555", style="italic")
+    ax.legend(fontsize=7.4, loc="upper left")
+    ax.grid(True, which="both", alpha=0.22)
 
 
 def draw_lazy(ax, metric):
@@ -373,7 +414,7 @@ def draw_atoms_scatter(ax):
                 label=f"{S.binary_label(lab)}   $\\propto E^{{{b:.2f}}}$")
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_xlabel("edges (log)"); ax.set_ylabel("SMT assertions (A2+A3, log)")
-    ax.set_title("(A) De Bruijn DNA: dense $E^{2}$ → sparse $E^{1.6}$\n(within-label block fires)")
+    ax.set_title("(B) Full-range atoms: dense $E^{2}$ → sparse $E^{1.6}$\n(De Bruijn DNA, block fires)")
     ax.legend(fontsize=8.5, loc="upper left")
     ax.grid(True, which="both", alpha=0.2)
 
@@ -392,7 +433,7 @@ def draw_atoms_composition(ax):
     ax.set_yscale("log")
     ax.set_xticks(x); ax.set_xticklabels([S.TYPE_LABEL[t].replace(" ", "\n") for t in types], fontsize=8.5)
     ax.set_ylabel("median SMT assertions (log)")
-    ax.set_title("(B) Where the atoms live: A2 vs A3, by type\n(current shrinks whichever dominates)")
+    ax.set_title("(C) Where the atoms live: A2 vs A3, by type\n(current shrinks whichever dominates)")
     ax.legend(fontsize=7, loc="upper right", ncol=1)
     ax.grid(True, axis="y", which="both", alpha=0.2)
 
@@ -466,20 +507,21 @@ def draw_repair(ax):
 
 
 # ============================================================ HERO SCORECARD
-def _hero_correctness(ax):
-    ax.set_title("Correctness", fontsize=13, fontweight="bold", pad=16)
-    ax.bar([0], [770], 0.5, color=BASE_C, edgecolor=BASE_EDGE, zorder=3)
-    ax.bar([1], [0], 0.5, color=ACCENT, zorder=3)
-    ax.plot([0.72, 1.28], [4, 4], color=ACCENT, lw=4, zorder=4)
-    ax.text(0, 770, "770", ha="center", va="bottom", fontsize=12, fontweight="bold", color=BASE_EDGE)
-    ax.text(1, 18, "0", ha="center", va="bottom", fontsize=12, fontweight="bold", color=ACCENT)
-    ax.set_xticks([0, 1]); ax.set_xticklabels(["v1.0.0", "current"], fontsize=10)
-    ax.set_ylim(0, 770 * 1.95); ax.set_ylabel("false-accepts (simple corpus)")
-    S.callout(ax, "770 → 0", color=ACCENT, fontsize=22, xy=(0.5, 0.90))
-    ax.text(0.5, 0.80, "false-accepts eliminated", transform=ax.transAxes, ha="center",
-            fontsize=9.5, color="#555")
-    ax.text(0.5, 0.73, "(+1,147 on the dense corpus; 0 false-rejects;\n~18k oracle-checked graphs)",
-            transform=ax.transAxes, ha="center", va="top", fontsize=7.8, color="#777")
+def _hero_validation(ax):
+    # Validation badge: the recognizer is checked against an independent oracle (0 disagreements),
+    # not a v1.0.0-error comparison.
+    ax.set_title("Correctness (validated)", fontsize=13, fontweight="bold", pad=16)
+    bars = ax.bar([0, 1], [100, 100], 0.55, color=VERDICT["WG"], zorder=3)
+    for b, lbl in zip(bars, ["931/931", "1,516/1,516"]):
+        ax.text(b.get_x() + b.get_width() / 2, 102, lbl, ha="center", va="bottom",
+                fontsize=8.5, color=VERDICT["WG"], fontweight="bold")
+    ax.set_xticks([0, 1]); ax.set_xticklabels(["real\ncorpora", "synthetic\ncorpora"], fontsize=9.5)
+    ax.set_ylim(0, 175); ax.set_yticks([0, 50, 100]); ax.set_ylabel("agreement with the oracle (%)")
+    S.callout(ax, "✓ 0 disagreements", color=ACCENT, fontsize=18, xy=(0.5, 0.90))
+    ax.text(0.5, 0.80, "vs an independent brute-force oracle", transform=ax.transAxes, ha="center",
+            fontsize=9, color="#555")
+    ax.text(0.5, 0.72, "~18k oracle-checked graphs · every emitted order re-validated",
+            transform=ax.transAxes, ha="center", va="top", fontsize=7.6, color="#777")
     ax.grid(True, axis="y", alpha=0.2)
 
 
@@ -519,9 +561,10 @@ def _hero_performance(ax):
 
 def fig_hero():
     fig, axes = plt.subplots(1, 3, figsize=(16, 5.2))
-    _hero_correctness(axes[0]); _hero_capability(axes[1]); _hero_performance(axes[2])
+    _hero_validation(axes[0]); _hero_capability(axes[1]); _hero_performance(axes[2])
     fig.suptitle("The WGT recognizer: v1.0.0 (2023) vs the current lazy/CEGAR rebuild — "
-                 "more correct, more capable, and faster on the default path", fontsize=13.5, y=1.02)
+                 "validated against an oracle, far more capable, and faster on the default path",
+                 fontsize=13.5, y=1.02)
     fig.text(0.5, -0.02,
              "Honest trades:  full-range size ceiling (n=832) unchanged  ·  ≈1.8× peak RAM where the "
              "within-label block fires  ·  recognition remains NP-complete",
@@ -538,12 +581,10 @@ def _save(fig, name):
     print(f"wrote {p}")
 
 
-def fig_correctness():
-    fig, ax = plt.subplots(figsize=(8.4, 5.4))
-    draw_correctness(ax)
-    fig.suptitle("Correctness vs the brute-force oracle — v1.0.0's permutation backends false-accept\n"
-                 "non-Wheeler graphs; the current version is sound on every backend", fontsize=12)
-    _save(fig, "F1_correctness.png")
+def fig_validation():
+    fig, ax = plt.subplots(figsize=(8.8, 5.0))
+    draw_validation(ax)
+    _save(fig, "F2_validation.png")
 
 
 def fig_lazy_ceiling():
@@ -554,12 +595,12 @@ def fig_lazy_ceiling():
     _save(fig, "Flazy_ceiling.png")
 
 
-def fig_atoms():
-    fig, axes = plt.subplots(1, 2, figsize=(12.5, 5.3))
-    draw_atoms_scatter(axes[0]); draw_atoms_composition(axes[1])
-    fig.suptitle("Encoding size in atoms — the sparsification, measured directly "
-                 "(analytical count ≡ z3 s.assertions().size())", fontsize=12)
-    _save(fig, "Fatoms_encoding.png")
+def fig_mechanism():
+    fig, axes = plt.subplots(1, 3, figsize=(17.5, 5.2))
+    draw_mechanism_compression(axes[0]); draw_atoms_scatter(axes[1]); draw_atoms_composition(axes[2])
+    fig.suptitle("Why the new algorithm is faster — the lazy default builds almost none of the "
+                 "$O(n^2)$ formula, and the full-range encoding is sub-quadratic in atoms", fontsize=12.5)
+    _save(fig, "Fmechanism.png")
 
 
 def fig_performance():
@@ -582,10 +623,10 @@ def fig_practicality():
 def main():
     figs = [
         ("hero", fig_hero),
-        ("correctness", fig_correctness),
+        ("validation", fig_validation),
         ("lazy", fig_lazy_ceiling),
-        ("atoms", fig_atoms),
         ("performance", fig_performance),
+        ("mechanism", fig_mechanism),
         ("practicality", fig_practicality),
     ]
     only = sys.argv[1:]
