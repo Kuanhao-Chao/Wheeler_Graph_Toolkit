@@ -46,6 +46,7 @@ MODES = {
     "perm":   ["-i", "-s", "p"],        # permutation backend
     "full":   ["-i", "-f"],            # full-range search (always SMT)
     "perm-e": ["-i", "-s", "p", "-e"],  # exhaustive permutation (the -e accept-on-exhaustion path)
+    "dl":     ["-i", "-s", "dl"],       # native difference-logic propagator (in isolation, no z3 fallback)
 }
 # Modes actually run this invocation (default keeps the historical 3; perm-e opt-in via --modes).
 DEFAULT_MODES = ["smt", "perm", "full"]
@@ -63,6 +64,10 @@ def recognizer_verdict(path, mode_args, timeout=25):
         return 1
     if rc in (255, -1):
         return 0
+    if rc == 0:
+        # The dl pre-solver exits 0 when it cannot decide by propagation alone (a legitimate
+        # non-verdict; production falls back to z3). Other backends never return 0.
+        return "UNDECIDED"
     return ("ERR", rc)
 
 
@@ -134,6 +139,8 @@ def check_graph(path, max_n, modes):
                 mismatches.append(mode)
         elif v == "TIMEOUT":
             anomalies.append(f"{mode}:TIMEOUT")
+        elif v == "UNDECIDED":
+            pass  # legitimate non-verdict (dl pre-solver); not a mismatch, not an anomaly
         else:
             anomalies.append(f"{mode}:{v}")
     return truth, results, mismatches, anomalies

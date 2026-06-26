@@ -190,6 +190,11 @@ class digraph {
         void output_wg_gagie();
 
         void solve_smt();
+        // Native difference-logic / bound-consistency pre-solver (dl_solve.cpp). Decides the
+        // post-heuristic residual by propagation with O(V+E) memory (no O(E^2) z3 encoding).
+        // Returns 1 = Wheeler (order written + WG_checker-validated), -1 = not Wheeler, 0 = undecided
+        // (caller falls back to solve_smt()).
+        int solve_dl();
         void permutation_counter_check(int range_size);
 };
 

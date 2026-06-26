@@ -67,6 +67,17 @@ solver (max_range=1), the fundamental wall is the symmetric `complete`/`dnfa` re
 the `-f` wall is an encoding-size artifact. The WGT design is well-aligned with the theory; the gains to
 chase are fast-path coverage + encoding/solver tuning.
 
+**Round-1 empirical confirmation (native-solver attempt — see `native_dl/NATIVE_DL_SOLVER.md`).** We
+prototyped the most direct attack on (2c): a sound native difference-logic / bound-consistency propagator
+with a trailed randomized-restart search (backend `-s dl`), to decide the residual without materializing
+Z3's O(E²) encoding. It is **verified sound** (0 oracle disagreements over ~12k graphs + all edge cases)
+but does **not** move the ceiling — it decides only to n≈300–400 on `complete`/`dnfa` (3–9× *below* Z3)
+before its search explodes, because Z3's QF_IDL **theory propagation** already makes the search trivial
+where hand-rolled bounds propagation does not. The other (2c) lever, encoding compression, was likewise
+already shown to regress on the `complete` family (the block A3 form, `smt.cpp:121`). So the binding
+constraint is search-guided-by-propagation, which Z3 does near-optimally: **strong empirical evidence
+that, for the symmetric worst case, we are at the practical limit.**
+
 ## Primary sources
 Gagie–Manzini–Sirén (TCS 2017); Gibney–Thankachan (ESA 2019 / Algorithmica 2022, arXiv:1902.01960);
 Opatrný (SICOMP 1979); Alanko–D'Agostino–Policriti–Prezza (SODA 2020, arXiv:1902.01088; Wheeler

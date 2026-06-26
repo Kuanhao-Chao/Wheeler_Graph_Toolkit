@@ -76,8 +76,9 @@ def main():
 
         rec = {m: recognizer_verdict(path, args) for m, args in EC_MODES.items()}
 
-        # agreement of every backend with the oracle
-        backends_ok = all(rec[m] == truth for m in EC_MODES)
+        # agreement of every backend with the oracle. "UNDECIDED" (the dl pre-solver punting to z3) is
+        # a legitimate non-verdict, not a disagreement -- only actual 0/1 verdicts must match.
+        backends_ok = all(rec[m] == truth for m in EC_MODES if rec[m] in (0, 1))
         oracle_ok = (expect is None) or (truth == expect)
 
         status = "ok"

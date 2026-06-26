@@ -187,7 +187,21 @@ int main(int argc, char* argv[]) {
     if (full_range_search) {
         g.solve_smt();
     } else {
-        if (!solver.compare("default") || !solver.compare("smt")) {
+        if (!solver.compare("dl")) {
+            // Native difference-logic propagator, in isolation (no z3 fallback) -- used to verify the
+            // propagator's verdicts against the oracle. 0 = undecided => report and exit 0 (a non-verdict,
+            // distinct from non-WG); the production path (default/-f) falls back to z3 instead.
+            int r = g.solve_dl();
+            if (r == 1) {
+                if (!benchmark_mode) cout << "(v) solved by DL" << endl;
+                g.valid_wheeler_graph();
+            } else if (r == -1) {
+                g.invalid_wheeler_graph("DL: it is not a wheeler graph", true);
+            } else {
+                if (!benchmark_mode) cout << "(?) DL undecided" << endl;
+                g.exit_program(0);
+            }
+        } else if (!solver.compare("default") || !solver.compare("smt")) {
             g.solve_smt();
         } else if (!solver.compare("p") || (permutation_counter < PERMUTATION_CUTOFF) || exhaustive_search) {
             g.permutation_start();
@@ -248,7 +262,7 @@ void processOptions(GArgs& args) {
     if (s == NULL) {
         solver = "default";
     } else {
-        if (strcmp(s, "smt")==0 || strcmp(s, "p")==0) solver = s;
+        if (strcmp(s, "smt")==0 || strcmp(s, "p")==0 || strcmp(s, "dl")==0) solver = s;
         else solver = "default";
     }
 
