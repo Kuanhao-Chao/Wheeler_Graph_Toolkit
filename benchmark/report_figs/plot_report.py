@@ -102,51 +102,48 @@ def _short(name):
 
 # ============================================================ CORRECTNESS
 def fig1_correctness():
-    buggy = parse_difftest_log(os.path.join(DATA, "corr_buggy.log"))
-    new = parse_difftest_log(os.path.join(DATA, "corr_new.log"))
-    exp_uns = parse_exp_log(os.path.join(DATA, "exp_unsound.log"))
-    exp_hon = parse_exp_log(os.path.join(DATA, "exp_honest.log"))
-    if not buggy or not new:
-        print("F1 skipped (need corr_buggy.log + corr_new.log)")
-        return
+    # Clean two-way correctness from corr_oldnew.csv (differential vs the brute-force oracle): per-backend
+    # false-accepts for v1.0.0 (the last stable GitHub release) vs current. Uses the "simple" corpus.
+    rows = load_csv(os.path.join(DATA, "corr_oldnew.csv"))
+    if not rows:
+        print("F1 skipped (need corr_oldnew.csv)"); return
+    corpus = "simple"
+    nonwg = next((r["nonWG"] for r in rows if r["corpus"] == corpus), "?")
+
+    def fa(binary, mode):
+        r = next((x for x in rows if x["binary"] == binary and x["corpus"] == corpus
+                  and x["mode"] == mode), None)
+        return int(r["false_accept"]) if r else 0
+
     order = ["smt", "perm", "perm-e", "full"]
-    labels = [m for m in order if m in buggy["modes"]]
-    old_fa = [buggy["modes"][m]["fa"] for m in labels]
-    new_fa = [new["modes"].get(m, {"fa": 0})["fa"] for m in labels]
     disp = {"smt": "default SMT", "perm": "permutation\n(-s p)",
             "perm-e": "exhaustive\n(-s p -e)", "full": "full-range\n(-f)"}
-    xlab = [disp.get(m, m) for m in labels]
-    if exp_uns is not None:
-        xlab.append("exponential\n(GT baseline)")
-        old_fa.append(exp_uns.get("fa", 0))
-        new_fa.append(exp_hon.get("fa", 0) if exp_hon else 0)
+    xlab = [disp[m] for m in order]
+    old_fa = [fa("v1.0.0", m) for m in order]
+    new_fa = [fa("current", m) for m in order]
 
-    x = np.arange(len(xlab))
-    w = 0.38
-    fig, ax = plt.subplots(figsize=(9.5, 5.2))
+    x = np.arange(len(xlab)); w = 0.38
+    fig, ax = plt.subplots(figsize=(9.0, 5.2))
     b1 = ax.bar(x - w / 2, old_fa, w, color="#bdbdbd", hatch="//", edgecolor="#7a7a7a",
-                label="before hardening")
-    b2 = ax.bar(x + w / 2, new_fa, w, color=VERDICT["WG"], label="after hardening (this work)")
+                label="v1.0.0 (2023 release)")
+    b2 = ax.bar(x + w / 2, new_fa, w, color=VERDICT["WG"], label="current (this work)")
     ax.bar_label(b1, padding=2, fontsize=9, color="#7a7a7a")
     ax.bar_label(b2, padding=2, fontsize=9, fontweight="bold", color=VERDICT["WG"])
-    # delta callouts on the two load-bearing 950-bars
     for xi, o, n in zip(x, old_fa, new_fa):
         if o >= 100 and n == 0:
             ax.annotate(f"−{o}", xy=(xi - w / 2, o), xytext=(xi - w / 2, o * 0.62),
                         ha="center", fontsize=10, fontweight="bold", color="#7a7a7a")
-    nonwg_b = buggy["meta"].get("nonwg", "?")
-    nonwg_e = exp_uns.get("nonwg", "?") if exp_uns else "?"
     ax.set_ylabel("false-accepts  (non-WG graphs declared Wheeler)")
-    ax.set_title("Correctness: every backend reaches zero false-accepts after hardening")
-    ax.text(0.5, 0.97, f"recognizer corpus: {nonwg_b} non-WG · exponential corpus: {nonwg_e} in-cap non-WG",
+    ax.set_title("Correctness vs the brute-force oracle: v1.0.0's permutation backends\n"
+                 "false-accept non-Wheeler graphs; current is sound on every backend")
+    ax.text(0.5, 0.97, f"reject-heavy corpus: {nonwg} non-Wheeler graphs (oracle-checked, n≤7)",
             transform=ax.transAxes, ha="center", va="top", fontsize=8.5, color="#555")
-    ax.set_xticks(x)
-    ax.set_xticklabels(xlab, fontsize=9)
+    ax.set_xticks(x); ax.set_xticklabels(xlab, fontsize=9)
     ax.legend(loc="upper right")
     ax.margins(y=0.20)
     p = os.path.join(OUT, "F1_false_accepts.png")
     fig.tight_layout(); fig.savefig(p); plt.close(fig)
-    print(f"wrote {p}  (OLD fa={old_fa}, NEW fa={new_fa})")
+    print(f"wrote {p}  (v1.0.0 fa={old_fa}, current fa={new_fa})")
 
 
 def fig2_verdict_matrix():
@@ -239,33 +236,28 @@ def fig3_capability():
 
 # ============================================================ ftiming loaders (unchanged)
 def load_ftiming():
-    dna_file = ("ftiming_dna2.raw.jsonl"
-                if os.path.exists(os.path.join(DATA, "ftiming_dna2.raw.jsonl"))
-                else "ftiming_dna.raw.jsonl")
+    # Clean two-way -f timing: the regenerated ftiming_oldnew.raw.jsonl carries exactly two binary
+    # labels -- pre41 = v1.0.0 (recognizer_main, dense -f) and new = current -- over all four corpora.
+    path = os.path.join(DATA, "ftiming_oldnew.raw.jsonl")
+    if not os.path.exists(path):
+        return []
     per_graph = {}
-    for tag, fn, T in (("DNA", dna_file, TIMEOUT_DNA),
-                       ("AA", "ftiming_aa.raw.jsonl", TIMEOUT_AA)):
-        path = os.path.join(DATA, fn)
-        if not os.path.exists(path):
+    for line in open(path):
+        line = line.strip()
+        if not line:
             continue
-        with open(path) as fh:
-            for line in fh:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    rec = json.loads(line)
-                except ValueError:
-                    continue
-                g = per_graph.setdefault(rec["dot"], {"name": rec["name"], "edges": str(rec["edges"]),
-                                                      "_corpus": tag, "_timeout": T})
-                lab = rec["label"]
-                g[f"{lab}_wall"] = ("" if rec.get("median_wall") is None
-                                    else f"{rec['median_wall']:.6f}")
-                g[f"{lab}_cpu"] = ("" if rec.get("median_cpu") is None
-                                   else f"{rec['median_cpu']:.0f}")
-                g[f"{lab}_status"] = rec.get("status", "")
-                g[f"{lab}_verdict"] = ("" if rec.get("verdict") is None else str(rec["verdict"]))
+        try:
+            rec = json.loads(line)
+        except ValueError:
+            continue
+        tag = "AA" if "_AA/" in rec["dot"] else "DNA"
+        g = per_graph.setdefault(rec["dot"], {"name": rec["name"], "edges": str(rec["edges"]),
+                                              "_corpus": tag, "_timeout": 120.0})
+        lab = rec["label"]
+        g[f"{lab}_wall"] = ("" if rec.get("median_wall") is None else f"{rec['median_wall']:.6f}")
+        g[f"{lab}_cpu"] = ("" if rec.get("median_cpu") is None else f"{rec['median_cpu']:.0f}")
+        g[f"{lab}_status"] = rec.get("status", "")
+        g[f"{lab}_verdict"] = ("" if rec.get("verdict") is None else str(rec["verdict"]))
     return list(per_graph.values())
 
 
@@ -282,11 +274,9 @@ def fig4_scatter(kind="cpu"):
     rows = load_ftiming()
     if not rows:
         print("F4 skipped (need ftiming_*.csv)"); return
-    pairs = [("pre41", "vs pre-4.1  (total A2+A3 gain)"),
-             ("pre42", "vs pre-4.2  (isolated A3 gain)")]
-    fig, axes = plt.subplots(1, 2, figsize=(13, 6))
+    fig, ax = plt.subplots(1, 1, figsize=(7, 6))
     cap = max(r["_timeout"] for r in rows)
-    for k, (ax, (old, title)) in enumerate(zip(axes, pairs)):
+    for old, title in (("pre41", "v1.0.0 → current  (per-graph -f time)"),):
         wg_x, wg_y, nw_x, nw_y, to_x, to_y = [], [], [], [], [], []
         for r in rows:
             ov, ost = _metric(r, old, kind)
@@ -312,12 +302,12 @@ def fig4_scatter(kind="cpu"):
         ax.axvline(cap, ls=S.WALL_LS, color=S.WALL_GRAY, lw=1, alpha=0.7)
         ax.set_xscale("log"); ax.set_yscale("log")
         ax.set_xlim(lo, hi); ax.set_ylim(lo, hi)
-        ax.set_xlabel(f"OLD ({old}) {kind}-time per decision (s, log)")
-        ax.set_ylabel(f"this work — {kind}-time per decision (s, log)")
+        ax.set_xlabel(f"v1.0.0 (2023) {kind}-time per decision (s, log)")
+        ax.set_ylabel(f"current — {kind}-time per decision (s, log)")
         ax.set_title(title)
         ax.legend(fontsize=8, loc="upper left")
         ax.grid(True, which="both", alpha=0.2)
-    fig.suptitle(f"Leaner -f encoding vs prior generations ({kind}-time; below y=x = faster)",
+    fig.suptitle(f"Leaner -f encoding: v1.0.0 vs current ({kind}-time; below y=x = faster)",
                  fontsize=12)
     p = os.path.join(OUT, f"F4_f_scatter_{kind}.png")
     fig.tight_layout(); fig.savefig(p); plt.close(fig)
@@ -328,10 +318,9 @@ def fig5_speedup_ecdf(kind="cpu"):
     rows = load_ftiming()
     if not rows:
         print("F5 skipped (need ftiming_*.raw.jsonl)"); return
-    fig, axes = plt.subplots(1, 2, figsize=(13, 5.6), sharey=True)
+    fig, ax = plt.subplots(1, 1, figsize=(7, 5.6))
     vstyle = {"Wheeler": (VERDICT["WG"], 1), "non-Wheeler": (VERDICT["nonWG"], -1)}
-    for k, (ax, old, title) in enumerate(((axes[0], "pre41", "total gain  (pre-4.1 → this work)"),
-                                          (axes[1], "pre42", "isolated A3 gain  (pre-4.2 → this work)"))):
+    for old, title in (("pre41", "-f speedup, v1.0.0 → current"),):
         for vlabel, (color, vval) in vstyle.items():
             ratios = []
             for r in rows:
@@ -351,15 +340,14 @@ def fig5_speedup_ecdf(kind="cpu"):
             ax.plot([med], [0.5], marker="o", color=color, ms=6, zorder=5)
         ax.axvline(1.0, ls="--", color=S.REF_GRAY, lw=1)
         ax.set_xscale("log")
-        ax.set_xlabel(f"speedup = OLD / this work ({kind}-time; >1 = faster)")
+        ax.set_xlabel(f"speedup = v1.0.0 / current ({kind}-time; >1 = faster)")
         ax.set_title(title)
         ax.legend(fontsize=8.5, loc="lower right")
         ax.grid(True, which="both", alpha=0.25)
-    # annotate the neutral-fallback step (non-WG near 1.0) on the right panel
-    axes[1].annotate("non-WG curve steps at 1.0:\nA3 block stays off (neutral)",
-                     xy=(1.0, 0.5), xytext=(1.25, 0.22), fontsize=8, color=VERDICT["nonWG"],
-                     arrowprops=dict(arrowstyle="->", color=VERDICT["nonWG"], lw=1))
-    axes[0].set_ylabel("fraction of graphs (ECDF)")
+    ax.annotate("non-WG curve steps near 1.0:\nA3 block stays off (neutral)",
+                xy=(1.0, 0.5), xytext=(1.25, 0.22), fontsize=8, color=VERDICT["nonWG"],
+                arrowprops=dict(arrowstyle="->", color=VERDICT["nonWG"], lw=1))
+    ax.set_ylabel("fraction of graphs (ECDF)")
     fig.suptitle(f"Per-graph -f speedup distribution by verdict ({kind}-time)", fontsize=12)
     p = os.path.join(OUT, f"F5_speedup_ecdf_{kind}.png")
     fig.tight_layout(); fig.savefig(p); plt.close(fig)
@@ -371,7 +359,7 @@ def fig6_cactus(kind="cpu"):
     if not rows:
         print("F6 skipped (need ftiming_*.csv)"); return
     fig, ax = plt.subplots(figsize=(8.5, 5.5))
-    for label in ("pre41", "pre42", "new"):
+    for label in ("pre41", "new"):
         times = []
         for r in rows:
             v, st = _metric(r, label, kind)
@@ -396,15 +384,15 @@ def fig6_cactus(kind="cpu"):
 
 # ============================================================ PERFORMANCE: setup/solve + memory
 def fig7_setup_solve():
-    rows = load_csv(os.path.join(DATA, "micro.setup_solve.csv"))
+    rows = load_csv(os.path.join(DATA, "micro_oldnew.setup_solve.csv"))
     if not rows:
-        print("F7 skipped (need micro.setup_solve.csv)"); return
+        print("F7 skipped (need micro_oldnew.setup_solve.csv)"); return
     graphs = []
     for r in rows:
         key = (r["name"], r["edges"])
         if key not in graphs:
             graphs.append(key)
-    labels = ["pre41", "pre42", "new"]
+    labels = ["pre41", "new"]
     fig, ax = plt.subplots(figsize=(12, 6))
     ng = len(graphs)
     bw = 0.8 / len(labels)
@@ -429,7 +417,7 @@ def fig7_setup_solve():
     ax.legend(handles=phase_handles, loc="upper center", fontsize=9)
     # delta annotation on the headline k=5 graph (largest edges)
     big = max(range(ng), key=lambda i: int(graphs[i][1]))
-    ax.annotate("setup ≈14×, total ≈2.3×\n(pre-4.1 → this work)",
+    ax.annotate("setup ≈14×, total ≈2×\n(v1.0.0 → current)",
                 xy=(big, 0.5), xytext=(big - 0.3, ax.get_ylim()[1] * 0.7),
                 fontsize=8.5, color="#333", ha="center")
     short = [f"{_short(n)}\n(e={e})" for (n, e) in graphs]
@@ -448,9 +436,9 @@ def fig7b_memory():
     constraints with O(E) ones and the new encoding is LIGHTER than pre-4.1 (and == pre-4.2). The ~2×
     space-for-time trade is the *block-firing* regime (low-D/E k=5 headline graphs, §4.3 table), shown
     separately. Falls back to the 2-point micro.mem.csv if the ladder is absent."""
-    ladder = load_csv(os.path.join(DATA, "micro.mem_ladder.csv"))
+    ladder = None   # two-way report: use the per-graph micro_oldnew.mem.csv bars (block-fires k=5 +
+    #                 block-off k=4) -- this directly shows v1.0.0-dense vs current-sparse peak RSS.
     fig, ax = plt.subplots(figsize=(8.6, 5.3))
-    # restrict to the single-regime k=6 ladder so size is not confounded with block on/off
     k6 = [r for r in ladder if "k_6" in r["name"]] if ladder else None
     if k6:
         for lab in ("pre41", "pre42", "new"):
@@ -477,23 +465,24 @@ def fig7b_memory():
         ax.legend(loc="lower right")
         ax.grid(True, alpha=0.25)
     else:
-        rows = load_csv(os.path.join(DATA, "micro.mem.csv"))
+        rows = load_csv(os.path.join(DATA, "micro_oldnew.mem.csv"))
         if not rows:
-            print("F7b skipped (need micro.mem_ladder.csv or micro.mem.csv)"); plt.close(fig); return
+            print("F7b skipped (need micro_oldnew.mem.csv)"); plt.close(fig); return
         graphs = []
         for r in rows:
             if r["name"] not in graphs:
                 graphs.append(r["name"])
-        x = np.arange(len(graphs)); bw = 0.26
-        for li, lab in enumerate(("pre41", "pre42", "new")):
+        x = np.arange(len(graphs)); bw = 0.38
+        for li, lab in enumerate(("pre41", "new")):
             vals = []
             for g in graphs:
                 rec = next((r for r in rows if r["name"] == g and r["binary"] == lab), None)
-                vals.append(((fnum(rec["peak_rss_kb"]) if rec else 0) or 0) / 1e6)
-            ax.bar(x + (li - 1) * bw, vals, bw, color=BIN[lab], label=S.binary_label(lab))
+                vals.append(((fnum(rec["peak_rss_kb"]) if rec else 0) or 0) / 1e3)  # KB -> MB
+            ax.bar(x + (li - 0.5) * bw, vals, bw, color=BIN[lab], label=S.binary_label(lab))
         ax.set_xticks(x); ax.set_xticklabels([_short(g) for g in graphs], fontsize=8)
-        ax.set_ylabel("peak resident set size (GB)")
-        ax.set_title("-f peak memory per generation")
+        ax.set_ylabel("peak resident set size (MB)")
+        ax.set_title("-f peak memory: v1.0.0 (dense) vs current (sparse+block)\n"
+                     "block fires on k=5 (D/E≈0.27) → ~1.8× space-for-time trade; k=4 (block off) ≈ equal")
         ax.legend()
         ax.grid(True, axis="y", alpha=0.25)
     p = os.path.join(OUT, "F7b_memory.png")
@@ -528,7 +517,7 @@ def fig_atoms():
         # block fires -- on AA it stays ~E^2 with a far smaller constant, which the fit reveals).
         sub = sorted((r for r in rows if r["type"] == typ), key=lambda r: r["edges"])
         E = np.array([r["edges"] for r in sub], float)
-        for lab in ("pre41", "pre42", "new"):
+        for lab in ("pre41", "new"):
             tot = np.array([r[f"{lab}_total"] for r in sub], float)
             m = (E > 0) & (tot > 0)
             ax.scatter(E[m], tot[m], s=10, alpha=0.40, color=BIN[lab], edgecolors="none")
@@ -580,7 +569,7 @@ TYPE_ORDER = ["De Bruijn\nDNA", "De Bruijn\nAA", "RevDet\nDNA", "RevDet\nAA"]
 
 
 def load_ftiming_bytype():
-    path = os.path.join(DATA, "ftiming_bytype.raw.jsonl")
+    path = os.path.join(DATA, "ftiming_oldnew.raw.jsonl")   # two-way: pre41=v1.0.0, new=current
     if not os.path.exists(path):
         return None
     per_graph = {}
@@ -622,11 +611,10 @@ def fig12_type_speedup():
     vstyle = [("Wheeler", "1", VERDICT["WG"]), ("non-Wheeler", "-1", VERDICT["nonWG"])]
     alphabet = {"De Bruijn\nDNA": "4-letter", "RevDet\nDNA": "4-letter",
                 "De Bruijn\nAA": "20-letter", "RevDet\nAA": "20-letter"}
-    fig, axes = plt.subplots(1, 2, figsize=(13, 5.8), sharey=True)
+    fig, ax = plt.subplots(1, 1, figsize=(7.5, 5.8))
     REG_TOL = 0.98
     regressions, breakeven = [], []
-    for k, (ax, old, title) in enumerate(((axes[0], "pre41", "(A) total gain  (pre-4.1 → this work)"),
-                                          (axes[1], "pre42", "(B) isolated A3 gain  (pre-4.2 → this work)"))):
+    for old, title in (("pre41", "Per-type -f speedup  (v1.0.0 → current)"),):
         types = [t for t in TYPE_ORDER if any(r["_type"] == t for r in rows)]
         x = np.arange(len(types)); bw = 0.38
         S.breakeven_band(ax, 1 - 0.02, 1 + 0.02)
@@ -657,7 +645,7 @@ def fig12_type_speedup():
         ax.set_title(title)
         ax.legend(fontsize=8.5, loc="upper right")
         ax.margins(y=0.18)
-    axes[0].set_ylabel("median -f wall speedup  (OLD / this work; >1 = faster)")
+    ax.set_ylabel("median -f wall speedup  (v1.0.0 / current; >1 = faster)")
     fig.suptitle("Per-graph-type -f speedup, by verdict — which sparsification pays where", fontsize=12)
     p = os.path.join(OUT, "F12_type_speedup.png")
     fig.tight_layout(); fig.savefig(p); plt.close(fig)
@@ -672,6 +660,52 @@ def fig12_type_speedup():
 
 def _type_primary_verdict(t):
     return "1" if t.startswith("De Bruijn") else "-1"
+
+
+def fig_lazy_ceiling():
+    """THE headline: default-path recognition on the symmetric worst case, v1.0.0 (vanilla z3) vs current
+    (lazy/CEGAR). (A) wall time vs n, (B) peak RSS vs n -- both log-log, complete + dnfa. v1.0.0's vanilla
+    z3 (== current's `-s smt`, encoding-identical) climbs to a timeout/OOM ceiling near n=2816 while the
+    lazy default stays flat in time and memory and runs an order of magnitude further."""
+    old = load_csv(os.path.join(DATA, "..", "..", "lazy_cegar", "results_lazy_old.csv"))
+    cur = load_csv(os.path.join(DATA, "..", "..", "lazy_cegar", "results_lazy_ceiling.csv"))
+    if not old or not cur:
+        print("Flazy skipped (need lazy_cegar/results_lazy_old.csv + results_lazy_ceiling.csv)"); return
+    # series: (label, color, ls, rows, backend)
+    OLD_C, NEW_C = BIN["pre41"], BIN["new"]
+    series = [("v1.0.0 vanilla z3 — complete", OLD_C, "-", old, "smt", "complete"),
+              ("v1.0.0 vanilla z3 — dnfa", OLD_C, "--", old, "smt", "dnfa"),
+              ("current lazy — complete", NEW_C, "-", cur, "lazy", "complete"),
+              ("current lazy — dnfa", NEW_C, "--", cur, "lazy", "dnfa")]
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.4))
+    for ax, (metric, ylab, conv, ttl) in zip(
+            axes, [("wall", "wall-clock time (s, log)", 1.0, "(A) Recognition time"),
+                   ("rss_kb", "peak resident set size (MB, log)", 1e-3, "(B) Peak memory")]):
+        for label, color, ls, rows, backend, fam in series:
+            pts = []
+            for r in rows:
+                if r.get("backend") != backend or r.get("family") != fam:
+                    continue
+                if (r.get("verdict") or "") not in ("WG",):   # decisive Wheeler only
+                    continue
+                n = fnum(r.get("n")); v = fnum(r.get(metric))
+                if n and v:
+                    pts.append((n, v * conv))
+            pts.sort()
+            if pts:
+                xs, ys = zip(*pts)
+                ax.plot(xs, ys, marker="o", ms=4, lw=2.0, color=color, ls=ls, label=label)
+        ax.set_xscale("log"); ax.set_yscale("log")
+        ax.set_xlabel("graph size  n  (nodes, log)")
+        ax.set_ylabel(ylab)
+        ax.set_title(ttl)
+        ax.grid(True, which="both", alpha=0.22)
+        ax.legend(fontsize=8, loc="upper left")
+    fig.suptitle("Default-path recognition, v1.0.0 vs current — lazy/CEGAR moves the ceiling "
+                 "2816 → ≥32768 (~600× faster, ~130× lighter)", fontsize=12)
+    p = os.path.join(OUT, "Flazy_ceiling.png")
+    fig.tight_layout(); fig.savefig(p); plt.close(fig)
+    print(f"wrote {p}")
 
 
 def fig_attribution():
@@ -957,11 +991,13 @@ def main():
         ("fig6", lambda: fig6_cactus("cpu")),
         ("fig7", fig7_setup_solve),
         ("fig7b", fig7b_memory),
-        ("figattr", fig_attribution),
-        ("figguard", fig_guard),
-        ("figceil", fig_f_ceiling_sparse),
+        # figattr / figguard / figceil DROPPED: the A2-vs-A3 *timing* attribution, the D/E guard, and the
+        # sparse-ladder ceiling all require the pre-4.2 intermediate midpoint, which the clean two-way
+        # (v1.0.0 vs current) report omits. (The A2/A3 *atom* split survives in fig_atoms panel C; the -f
+        # ceiling is carried by fig4's timeout markers and the limit_test old-f/new-f numbers in text.)
         ("fig11", fig11_repair),
         ("fig12", fig12_type_speedup),
+        ("figlazy", fig_lazy_ceiling),
         ("fig15", fig15_practicality),
     ]
     only = sys.argv[1:]

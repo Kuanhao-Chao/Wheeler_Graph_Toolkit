@@ -49,8 +49,10 @@ sys.path.insert(0, os.path.join(ROOT, "verify"))
 import brute_oracle as bo  # noqa: E402
 
 PY = sys.executable
-REC = os.path.join(ROOT, "recognizer", "bin", "recognizer_linux")
-REC_OLD = os.path.join(ROOT, "recognizer", "bin", "recognizer_linux_old")
+REC = os.path.join(ROOT, "recognizer", "bin", "recognizer_linux")           # NEW (current devel)
+# OLD = last stable release on GitHub (main @ 4c601cc7c, v1.0.0). Built as recognizer_main; override
+# with WGT_REC_OLD. (The legacy recognizer_linux_old = an intermediate pre-4.2 binary, not used here.)
+REC_OLD = os.environ.get("WGT_REC_OLD") or os.path.join(ROOT, "recognizer", "bin", "recognizer_main")
 EXP = os.path.join(ROOT, "benchmark", "exponential_recognizer", "bin", "recognizer_e")
 GEN_COMPLETE = os.path.join(ROOT, "generator", "Random_generator", "gen_complete_WG.py")
 GEN_DNFA = os.path.join(ROOT, "generator", "Random_generator", "gen_d-nfa_WG.py")
@@ -64,12 +66,21 @@ RECOGNIZE_CMD = {
     "full":     lambda p: [REC, p, "-b", "-f", "-i"],
     "full-old": lambda p: [REC_OLD, p, "-b", "-f", "-i"],
     "exp":      lambda p: [EXP, p],
+    # --- clean two-way OLD(v1.0.0) vs NEW(current) algos for the report ---
+    # OLD's default path is vanilla z3 + heuristic (pairwise A3, same encoding as NEW -s smt). NEW's
+    # default is now lazy/CEGAR. NEW -s smt is the vanilla control. -f is OLD-dense vs NEW-sparse.
+    "old-default": lambda p: [REC_OLD, p, "-b", "-i"],            # v1.0.0 vanilla z3
+    "new-lazy":    lambda p: [REC, p, "-b", "-i"],               # current default (lazy)
+    "new-smt":     lambda p: [REC, p, "-b", "-i", "-s", "smt"],  # current vanilla control
+    "old-f":       lambda p: [REC_OLD, p, "-b", "-f", "-i"],     # v1.0.0 full-range (dense)
+    "new-f":       lambda p: [REC, p, "-b", "-f", "-i"],         # current full-range (sparse)
 }
 RECOGNIZE_ALGOS = set(RECOGNIZE_CMD)
 ALL_ALGOS = list(RECOGNIZE_CMD) + ["wheelerize"]
 
 # Per-algorithm ladder cap (max n to even attempt). exp self-over-caps near n=12.
-ALGO_CAP = {"exp": 12, "smt": 8192, "perm": 8192, "full": 8192, "full-old": 8192, "wheelerize": 8192}
+ALGO_CAP = {"exp": 12, "smt": 8192, "perm": 8192, "full": 8192, "full-old": 8192, "wheelerize": 8192,
+            "old-default": 8192, "new-lazy": 65536, "new-smt": 8192, "old-f": 8192, "new-f": 8192}
 
 # Which families each algorithm runs on.
 RECOGNIZE_FAMILIES = ["complete", "dnfa"]

@@ -82,9 +82,15 @@ def parse_profile(stderr):
     return out
 
 
+NO_PROFILE = bool(os.environ.get("WGT_NO_PROFILE"))  # set for the OLD v1.0.0 binary: it lacks --profile,
+# and its GArgs parser ABORTS at the first unknown option, silently dropping every flag after it (which
+# would truncate -s smt / -f and fabricate bogus numbers). So omit --profile entirely for OLD.
+
+
 def run(backend, path, timeout):
     """Return (verdict, wall, profile_dict)."""
-    cmd = [GNU_TIME, "-v", REC, path, "-b", "-i", "--profile"] + BACKENDS[backend]
+    prof_flag = [] if NO_PROFILE else ["--profile"]
+    cmd = [GNU_TIME, "-v", REC, path, "-b", "-i"] + prof_flag + BACKENDS[backend]
     t0 = time.time()
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)

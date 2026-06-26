@@ -1,0 +1,48 @@
+###################### OLD = recognizer_main (v1.0.0) ######################
+=== OLD simple corpus (smt,perm,full,perm-e) ===
+checked         : 5736
+  truth Wheeler : 1897
+  truth non-WG  : 3839
+MISMATCHES      : 770
+  smt     : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm    : false-accept(nonWG->WG)= 770   false-reject(WG->nonWG)=   0
+  full    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm-e  : false-accept(nonWG->WG)= 770   false-reject(WG->nonWG)=   0
+RESULT: discrepancies found — see verify/repro/ and messages above.
+=== OLD dense+allow-dup+allow-self ===
+checked         : 3369
+  truth Wheeler : 743
+  truth non-WG  : 2626
+MISMATCHES      : 1147
+  smt     : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm    : false-accept(nonWG->WG)=1147   false-reject(WG->nonWG)=   0
+  full    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm-e  : false-accept(nonWG->WG)=1147   false-reject(WG->nonWG)=   0
+RESULT: discrepancies found — see verify/repro/ and messages above.
+###################### NEW = recognizer_linux (current) ######################
+=== NEW simple corpus (smt,default,perm,full,lazy,perm-e,full-lazy) ===
+checked         : 5724
+  truth Wheeler : 1885
+  truth non-WG  : 3839
+MISMATCHES      : 0
+  smt     : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  default : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  full    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  lazy    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm-e  : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  full-lazy : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+RESULT: recognizer agrees with the oracle on every decided graph. ✓
+=== NEW dense+allow-dup+allow-self ===
+checked         : 3366
+  truth Wheeler : 740
+  truth non-WG  : 2626
+MISMATCHES      : 0
+  smt     : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  default : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  full    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  lazy    : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  perm-e  : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+  full-lazy : false-accept(nonWG->WG)=   0   false-reject(WG->nonWG)=   0
+RESULT: recognizer agrees with the oracle on every decided graph. ✓

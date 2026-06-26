@@ -85,41 +85,30 @@ copy_single("F7_setup_solve.png",
 compose_row(["F9_limits_bar.png", "F11_repair_blowup.png"],
             [os.path.join(BLOG_DIR, "fig_scale_repair.png")])
 
-# ---- report composites (7) -----------------------------------------------
-compose_row(["F1_false_accepts.png", "F2_verdict_agreement.png"],
+# ---- report composites (clean two-way: v1.0.0 vs current) ----------------
+# §3.1 correctness is now a single-panel false-accept bar chart (v1.0.0 vs current).
+copy_single("F1_false_accepts.png",
             [os.path.join(REPORT_DIR, "rfig_correctness.png")])
-copy_single("F3_capability.png",
-            [os.path.join(REPORT_DIR, "rfig_capability.png")])
-# the mechanism, in atoms (new) -- already a 3-panel figure with internal (A)/(B)/(C).
+# §3.3 encoding size in atoms (already a 3-panel figure).
 copy_single("Fatoms_encoding.png",
             [os.path.join(REPORT_DIR, "rfig_atoms.png")])
+# §3.3 -f speed: scatter + ECDF + cactus (v1.0.0 vs current).
 compose_row(["F4_f_scatter_cpu.png", "F5_speedup_ecdf_cpu.png", "F6_cactus_cpu.png"],
             [os.path.join(REPORT_DIR, "rfig_f_speed.png")])
+# §3.3/§3.4 -f setup/solve split + peak memory (v1.0.0 vs current).
 compose_row(["F7_setup_solve.png", "F7b_memory.png"],
             [os.path.join(REPORT_DIR, "rfig_setup_mem.png")])
-compose_row(["F8_size_vs_time_complete.png", "F8_size_vs_time_dnfa.png", "F9_limits_bar.png"],
+# §3.5 default-path scalability + §3.9 headline lazy ceiling: both the wall+memory curves (Flazy).
+copy_single("Flazy_ceiling.png",
             [os.path.join(REPORT_DIR, "rfig_scalability.png")])
-# -f ceiling: dense families coincide (A,B) + the sparse family where this work pulls ahead (C).
-compose_row(["F10_old_vs_new_complete.png", "F10_old_vs_new_dnfa.png", "F10c_sparse_ceiling.png"],
-            [os.path.join(REPORT_DIR, "rfig_f_ceiling.png")])
-copy_single("F11_repair_blowup.png",
-            [os.path.join(REPORT_DIR, "rfig_repair.png")])
-
-# ---- report composites: performance-at-scale + MSA→WG (this study) --------
-# Q1 per-type -f speedup (F12 is already a 2-panel figure -> copy as-is).
+copy_single("Flazy_ceiling.png",
+            [os.path.join(REPORT_DIR, "rfig_lazy_ceiling.png")])
+# §3.8 per-type -f speedup (single-panel total, v1.0.0 -> current).
 copy_single("F12_type_speedup.png",
             [os.path.join(REPORT_DIR, "rfig_type_speedup.png")])
-# A2-vs-A3 attribution (which sparsification carries which type) + the D/E guard that decides it.
-copy_single("Fattr_attribution.png",
-            [os.path.join(REPORT_DIR, "rfig_attribution.png")])
-copy_single("Fguard_de.png",
-            [os.path.join(REPORT_DIR, "rfig_guard.png")])
-# Q2 1-hour serial ceiling: size-vs-time (complete, dnfa) + limits bar, with the
-# real-MSA size band overlaid on the curves (the 1-hour analog of rfig_scalability).
-compose_row(["F13_size_vs_time_1hr_complete.png", "F13_size_vs_time_1hr_dnfa.png",
-             "F14_limits_bar_1hr.png"],
-            [os.path.join(REPORT_DIR, "rfig_scalability_1hr.png")])
-# Q4 MSA→WG practicality (F15 is already a 3-panel figure -> copy as-is).
+# §3.7 repair, §3.10 MSA→WG practicality (kept as-is).
+copy_single("F11_repair_blowup.png",
+            [os.path.join(REPORT_DIR, "rfig_repair.png")])
 copy_single("F15_msa_practicality.png",
             [os.path.join(REPORT_DIR, "rfig_practicality.png")])
 

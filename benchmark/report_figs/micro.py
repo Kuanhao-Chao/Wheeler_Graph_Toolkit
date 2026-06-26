@@ -23,9 +23,11 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 
+# Clean two-way: v1.0.0 (last stable GitHub release, built as recognizer_main) vs current.
+# The `pre41` key == v1.0.0 (its -f encoding is dense O(E^2), structurally identical to the old pre-4.1
+# measurement); kept as the OLD label so the plotting code's pre41 series maps to v1.0.0.
 BINS = {
-    "pre41": "recognizer/bin/recognizer_pre41",
-    "pre42": "recognizer/bin/recognizer_linux_old",
+    "pre41": "recognizer/bin/recognizer_main",
     "new":   "recognizer/bin/recognizer_linux",
 }
 # headline graphs: k_5 DNA (where within-group A3 structure exists) + a k_4 mid baseline.

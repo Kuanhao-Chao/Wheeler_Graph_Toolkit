@@ -19,15 +19,18 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 # --------------------------------------------------------------------------- palettes
 # Binary generations: light -> dark purple == older -> newer.
+# Two-way comparison: v1.0.0 (the last stable GitHub release, 2023, dense O(E^2)) vs the current work
+# (sparse encodings + lazy/CEGAR). The `pre41` key == v1.0.0's encoding (verified identical structure),
+# so it doubles as the OLD slot; `pre42` is the dropped intermediate (kept only so stray refs don't crash).
 BIN = {
-    "pre41": "#9e9ac8",
-    "pre42": "#6a51a3",
-    "new":   "#3f007d",
+    "pre41": "#9e9ac8",   # v1.0.0 (2023) -- light
+    "pre42": "#6a51a3",   # (intermediate; unused in the two-way report)
+    "new":   "#3f007d",   # current (this work) -- dark
 }
 BIN_LABEL = {
-    "pre41": "pre-4.1  (dense A2+A3)",
-    "pre42": "pre-4.2  (sparse A2)",
-    "new":   "this work  (sparse A2+A3)",
+    "pre41": "v1.0.0 (2023, dense)",
+    "pre42": "pre-4.2 (intermediate)",
+    "new":   "current (sparse + lazy)",
 }
 
 # Verdicts: categorical, distinct from the purple ramp.
@@ -62,9 +65,15 @@ TYPE_LABEL = {
 ALGO_STYLE = {
     "smt":      ("#2166ac", "-",  "o", "default SMT"),
     "full":     (BIN["new"], "-",  "s", "full-range (this work)"),
-    "full-old": (BIN["pre42"], "--", "s", "full-range (pre-4.2)"),
+    "full-old": (BIN["pre41"], "--", "s", "full-range (v1.0.0)"),
     "perm":     ("#7f7f7f", "-.", "^", "permutation"),
     "exp":      ("#bdbdbd", ":",  "D", "exponential ref."),
+    # clean two-way (v1.0.0 vs current) algos
+    "old-default": (BIN["pre41"], "--", "o", "v1.0.0 default (vanilla z3)"),
+    "new-lazy":    (BIN["new"],   "-",  "o", "current default (lazy/CEGAR)"),
+    "new-smt":     ("#2166ac",    ":",  "o", "current vanilla z3 (-s smt)"),
+    "old-f":       (BIN["pre41"], "--", "s", "v1.0.0 full-range (dense)"),
+    "new-f":       (BIN["new"],   "-",  "s", "current full-range (sparse)"),
 }
 
 # Reference / annotation neutrals.
@@ -134,6 +143,6 @@ def breakeven_band(ax, lo=0.98, hi=1.02, color=REF_GRAY):
     ax.axhspan(lo, hi, color=color, alpha=0.12, zorder=0)
 
 
-def legend_binaries(ax, keys=("pre41", "pre42", "new"), **kw):
+def legend_binaries(ax, keys=("pre41", "new"), **kw):
     handles = [plt.Line2D([], [], color=BIN[k], lw=3, label=binary_label(k)) for k in keys]
     ax.legend(handles=handles, **kw)
