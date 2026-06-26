@@ -1,0 +1,24 @@
+H1 z3 param sweep (the plan's secondary experiment) — env-gated WGT_ARITH_SOLVER in smt.cpp.
+Question: does setting z3's arithmetic engine (notably arith.solver=1, the difference-logic /
+Floyd-Warshall engine) move the -f memory wall? It was never experimentally tried before.
+
+Setup: complete family, -f path, labels=3, e=1.5n, seed 1, recognizer_linux --profile.
+Cell = z3 solve_s / z3 max-memory zmem_mb / result.
+
+--- n=256 (-f) ---
+   arith.solver=default   solve_s=4.01    zmem_mb=377.6    result=sat   <- FASTEST
+   arith.solver=1         solve_s=22.96   zmem_mb=280.0    result=sat   (5.7x slower; ~25% less mem)
+   arith.solver=2         solve_s=17.81   zmem_mb=655.7    result=sat   (slower, more mem)
+   arith.solver=3         solve_s=8.98    zmem_mb=1630.6   result=sat   (slower, much more mem)
+   arith.solver=6         solve_s=12.80   zmem_mb=534.1    result=sat   (slower)
+--- n=512 (-f) ---
+   arith.solver=default   solve_s=34.03   zmem_mb=1700.3   result=sat
+
+VERDICT (negative): z3's DEFAULT arithmetic engine is already the fastest on these QF_IDL instances.
+Explicit arith.solver choices -- including the difference-logic engine (1), the hypothesis -- are all
+SLOWER; (1) trades ~25% memory for a 5.7x time penalty. So z3 option tuning is NOT the lever that moves
+the wall. This confirms RECOGNITION_LIMITS.md sec.4 / REPORT sec.5.3 reasoning empirically: the binding
+constraint is the O(E^2) ENCODING, not z3's engine choice -- which is exactly what the lazy/CEGAR backend
+(LAZY_CEGAR.md) attacks, and why it wins on the default path while no z3 flag does.
+
+Reproduce: WGT_ARITH_SOLVER=<1|2|3|6> recognizer_linux <graph.dot> -b -i -f --profile  (2>&1 | grep PROFILE)

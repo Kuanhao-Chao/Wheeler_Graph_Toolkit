@@ -28,7 +28,7 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f`** | encoding size in SMT atoms (validated ≡ z3 `s.assertions()`) | O(E²) (fit `∝E^2.00`, all types) | **median 13.4× fewer** (up to **307×**); sub-quadratic `∝E^1.57` where the A3 block fires | §4.0, Fig "atoms", `data/atom_counts.csv` |
 | **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **median 1.79×** (geomean 1.77×, up to 3.5×); 1.3–2.2× per type (DNA via A3, AA via A2); **100% non-regressing** | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
-| **Limit — is the ceiling movable?** | profiling + theory + a native non-materializing solver vs z3 | n/a | **No (near the practical limit)** — z3's QF_IDL theory propagation makes search trivial (55→510 conflicts, n=400→1000); a sound native solver (`-s dl`, 0 oracle disagreements / ~12k graphs) lands **3–9× below** z3 | §5.3, `RECOGNITION_LIMITS.md`, `native_dl/` |
+| **Limit — is the ceiling movable?** | profiling + theory; then lazy/CEGAR A3 generation vs z3 | n/a | **Yes, on the default path:** lazy A3 generation (`-s lazy`) moves the ceiling **2816/2176 → ≥ 32768** (`complete`/`dnfa`), **~600× faster / ~130× lighter** at n=2816, verified sound (0 oracle disagreements / 13,438 graphs). (Round-1's native *search* lost 3–9× below z3; the win was keeping z3's search and deferring the *encoding*.) | §5.4, `lazy_cegar/`; §5.3, `native_dl/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 | **Repair — minimal** | smallest lossless repair vs the trie, on real non-WG gene graphs | trie is the maximal split | **median ≈5× smaller than the trie** (up to 27.7×; median 4 node splits); `refine` == exact optimum on **99/99** graphs; **0 failures over a 353-graph corpus** (incl. 144 pytest) | §6.1–6.2, Fig “repair-comp”, `repair_exp/data/` |
 | **Repair — speed/scale** | fast `refine` vs the §6.1 greedy; size ceiling per method | greedy: trie ≤107 (47 s at trie 128) | **`refine`: trie ≤880, ~13× past exact, 0.01 s at trie 128**; bound = path-string trie blow-up (intrinsic) | §6.2, `repair_exp/data/scaling.csv` |
@@ -632,13 +632,58 @@ encoding**, is also spent: the sparser block-A3 form (§4.2) was measured to *re
 `complete` family (`smt.cpp:121`: "n=512 complete: 36.5 s → timeout"), which is why it is gated to the
 sparse `-f` / De Bruijn regime, and the default path is already compressed by the heuristic's `fixed[]`.
 
-**Verdict.** Both direct ceiling-movers — a non-materializing native search and encoding compression —
-are exhausted, and the binding constraint (propagation over an O(n²) encoding) is one z3 already handles
-near-optimally. For the symmetric worst case, **WGT is at the practical limit**; the productive gains
-remain where §4–§5 already place them — sparser `-f` encodings, and the heuristic fast-path that decides
-real biological graphs in under a second without ever invoking the solver. The native solver is retained
-as a sound, opt-in experimental backend (`-s dl`), not wired into the production dispatch (a pre-solve
-pass would only add overhead before z3 on the hard instances that define the ceiling).
+**Verdict (revised by §5.4).** Round 1 exhausted *two* of the three ceiling-movers — a non-materializing
+native *search*, and *static* encoding compression (the block-A3 form, which added aux vars and
+regressed). Its conclusion that "WGT is at the practical limit" held those two levers fixed. But it
+missed a third: **lazy / dynamic encoding generation**, which keeps z3's near-optimal search and only
+defers *which* A3 constraints get built. §5.4 shows that lever moves the default ceiling by **> 10×**. So
+the honest verdict is narrower than Round 1's: the *native-search* and *static-compression* levers are
+spent, and the `-f` regime and truly residual-dense instances remain hard — but the **default
+(production) path was not at the limit.** (Round 1's `-s dl` backend is retained as a sound, opt-in
+experiment; a separate env-gated z3 `arith.solver` sweep (`benchmark/lazy_cegar/h1_arith_sweep.txt`)
+confirms no z3 engine flag — including the difference-logic engine — beats the default, so the lever is
+the encoding, not the solver.)
+
+### 5.4 The ceiling *does* move: lazy / CEGAR A3 generation (Round 2)
+
+Round 1 diagnosed the wall correctly — the **O(E²) materialized A3 encoding**, not the search — but fixed
+it wrongly, by replacing z3's search. Round 2 keeps z3's search and attacks the encoding directly, and
+**the default ceiling moves from 2816 / 2176 nodes (`complete` / `dnfa`) to ≥ 32768** —
+`benchmark/lazy_cegar/LAZY_CEGAR.md`, backend `-s lazy`, `recognizer/src/lazy_solve.cpp`.
+
+The key observation: **A3 is a *chain* constraint** ("heads monotone non-decreasing in tail order"). It
+is O(E²) only *statically*, because the tail order is unknown a priori; given a concrete candidate order
+a violation is forbidden by O(E) *consecutive-pair* lemmas. So we generate A3 lazily (CEGAR / lazy SMT):
+assert the base (A1 brackets + all-different + sparse A2 under `-f`) with **no A3**, solve, re-check A3 in
+O(E log E), add only the consecutive-pair lemmas the model violates, and re-solve — monotone, so z3 keeps
+its learned clauses. z3 never materializes the full O(E²) formula. Every accept is gated by `WG_checker`;
+budget exhaustion falls back to `solve_smt()`, so verdicts can never regress.
+
+| family, n | vanilla `-s smt` | lazy `-s lazy` | A3 pairs built |
+|---|--:|--:|--:|
+| `complete`, 2816 | WG 538.6 s / 7488 MB | **WG 0.9 s / 56 MB** | 346 / 2,973,756 |
+| `complete`, 4096 | **TIMEOUT (600 s)** | **WG 1.5 s / 64 MB** | 491 / 6,289,665 |
+| `complete`, 32768 | — | **WG 60.5 s / 350 MB** | 3,835 / 402,722,292 (0.001 %) |
+| `dnfa`, 2816 | **TIMEOUT (600 s)** | **WG 0.9 s / 57 MB** | 505 / 2,971,584 |
+| `dnfa`, 32768 | — | **WG 56.2 s / 365 MB** | 5,926 / 402,628,608 |
+
+(`benchmark/lazy_cegar/results_lazy_ceiling.csv`.) At n = 2816 lazy is **~600× faster and ~130× lighter**
+than vanilla z3, and its ceiling is the **ladder** limit (≥ 32768), not the solver's — it never stalls.
+**Why:** the Step-2 heuristic's brackets nearly determine the order, making the O(E²) A3 encoding
+**~99.99 % redundant** (at n = 32768, only 3,835 of 402 M pairs ever bind); vanilla z3 still builds and
+propagates all of them. Round 1 lost by replacing z3's search; Round 2 wins by **keeping z3's search and
+only deferring the encoding** — same diagnosis, opposite fix.
+
+**Verified sound** — 0 disagreements with the brute-force oracle over **13,438** random/positive graphs
+(`difftest.py` random+positives 5,726, `--dense --allow-dup` 4,344, `--allow-self` 3,368) across
+`smt`/`lazy`/`full-lazy`, plus all 16 edge cases, with `check_order.py` re-validating emitted orders at
+n = 80 / 120; the `smt`/`perm`/`full`/`dl` backends are unchanged.
+
+**An honest non-result:** lazy does **not** help the `-f` regime. There the heuristic is bypassed (full
+`[1,n]` domains, no brackets), so the first models are far from sorted and lazy needs hundreds of rounds —
+it removes the memory wall but trades it for round-overhead time, timing out near n ≈ 256, *below*
+vanilla `-f`'s ~832. This sharpens rather than contradicts the limit story: **the heuristic's brackets are
+the load-bearing ingredient**, and they live on the default path — which is exactly where lazy wins.
 
 ---
 
@@ -906,6 +951,12 @@ python3 benchmark/repair_exp/scaling.py --budget 60 --out benchmark/repair_exp/d
 python3 verify/difftest.py --modes smt,perm,full,dl --random 5000 --positives 600   # 0 disagreements
 python3 verify/edgecases.py                                                          # dl included; 0 mismatches
 python3 benchmark/native_dl/bench_dl.py --timeout 30 --out benchmark/native_dl/results_dl.csv
+# S11 lazy/CEGAR backend (§5.4): soundness gate (default + -f) + the lazy-vs-z3 ceiling/memory ladder
+python3 verify/difftest.py --modes smt,lazy,full-lazy --random 5000 --positives 1000  # 0 disagreements
+python3 verify/difftest.py --modes smt,lazy,full-lazy --dense --allow-dup --random 4000  # big A3 groups
+python3 verify/edgecases.py                                                          # lazy/full-lazy incl.; 0 mismatches
+python3 benchmark/lazy_cegar/bench_lazy.py --timeout 600 --backends smt,lazy --out benchmark/lazy_cegar/results_lazy_ceiling.csv
+WGT_ARITH_SOLVER=1 recognizer/bin/recognizer_linux <g.dot> -b -i -f --profile  # H1 sweep (h1_arith_sweep.txt)
 ```
 
 **Figures** (render with the spliceai python):

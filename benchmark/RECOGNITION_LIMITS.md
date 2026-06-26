@@ -78,6 +78,23 @@ already shown to regress on the `complete` family (the block A3 form, `smt.cpp:1
 constraint is search-guided-by-propagation, which Z3 does near-optimally: **strong empirical evidence
 that, for the symmetric worst case, we are at the practical limit.**
 
+**Round-2 revision (lazy/CEGAR A3 — see `lazy_cegar/LAZY_CEGAR.md`).** Round 1's "practical limit"
+conclusion was **too strong for the default path**: it held two levers fixed (a non-materializing native
+*search*, and *static* encoding compression / block-A3) but missed a third — **lazy / dynamic encoding
+generation**. A3 is a *chain* constraint, hence O(E²) only *statically* (the tail order is unknown a
+priori); given a concrete order a violation is forbidden by O(E) consecutive-pair lemmas. Generating A3
+lazily by CEGAR — keeping Z3's near-optimal search but feeding it only the A3 pairs that actually bind
+(backend `-s lazy`) — moves the default ceiling from Z3's **2816/2176 to ≥ 32768** (`complete`/`dnfa`),
+**~600× faster / ~130× lighter** at n=2816, **verified sound** (0 oracle disagreements over 13,438
+graphs + edge cases). It works because the Step-2 heuristic's brackets make the O(E²) A3 encoding
+~99.99 % redundant (at n=32768 only ~4k of ~400M pairs bind). A separate env-gated Z3 `arith.solver`
+sweep (`lazy_cegar/h1_arith_sweep.txt`) confirms no Z3 engine flag — including the difference-logic
+engine — beats the default, so the lever was the *encoding*, not the solver. **Caveats that keep the
+broader limit intact:** the worst-case asymptotics are unchanged (still NP-complete); the `-f` regime
+(heuristic bypassed) and truly residual-dense instances stay hard — lazy times out there ~n≈256. So the
+sharpened verdict: the *default/production* path was **not** at the practical limit (lazy is strictly
+better and a candidate default backend), while the general worst case remains genuinely exponential.
+
 ## Primary sources
 Gagie–Manzini–Sirén (TCS 2017); Gibney–Thankachan (ESA 2019 / Algorithmica 2022, arXiv:1902.01960);
 Opatrný (SICOMP 1979); Alanko–D'Agostino–Policriti–Prezza (SODA 2020, arXiv:1902.01088; Wheeler
