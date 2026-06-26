@@ -28,6 +28,7 @@ data file; §9 is the reproduction manifest.
 | **Performance — `-f`** | encoding size in SMT atoms (validated ≡ z3 `s.assertions()`) | O(E²) (fit `∝E^2.00`, all types) | **median 13.4× fewer** (up to **307×**); sub-quadratic `∝E^1.57` where the A3 block fires | §4.0, Fig "atoms", `data/atom_counts.csv` |
 | **Performance — `-f` by type** | total speedup pre-4.1 → NEW, 4 biological types (900-job grid; 682 paired) | 1× (pre-4.1) | **median 1.79×** (geomean 1.77×, up to 3.5×); 1.3–2.2× per type (DNA via A3, AA via A2); **100% non-regressing** | §4.5, Fig 12, `data/ftiming_bytype.raw.jsonl` |
 | **Capability — scale** | largest graph recognized, default SMT `complete` / `dnfa` families | exp baseline CAPPED at n=10 | **2816 / 2176 in 600 s; 4608 / 3584 in 1 h** (THRESHOLD, ≈280–460× past exp) | §5, `results_1hr/summary/` |
+| **Limit — is the ceiling movable?** | profiling + theory + a native non-materializing solver vs z3 | n/a | **No (near the practical limit)** — z3's QF_IDL theory propagation makes search trivial (55→510 conflicts, n=400→1000); a sound native solver (`-s dl`, 0 oracle disagreements / ~12k graphs) lands **3–9× below** z3 | §5.3, `RECOGNITION_LIMITS.md`, `native_dl/` |
 | **Repair** | non-WG DAGs repaired to a verified WG (strings preserved) | n/a (did not exist) | **316 / 316 repaired, 0 failures** (820 DAGs) | Fig 11, `data/repair_records.json` |
 | **Repair — minimal** | smallest lossless repair vs the trie, on real non-WG gene graphs | trie is the maximal split | **median ≈5× smaller than the trie** (up to 27.7×; median 4 node splits); `refine` == exact optimum on **99/99** graphs; **0 failures over a 353-graph corpus** (incl. 144 pytest) | §6.1–6.2, Fig “repair-comp”, `repair_exp/data/` |
 | **Repair — speed/scale** | fast `refine` vs the §6.1 greedy; size ceiling per method | greedy: trie ≤107 (47 s at trie 128) | **`refine`: trie ≤880, ~13× past exact, 0.01 s at trie 128**; bound = path-string trie blow-up (intrinsic) | §6.2, `repair_exp/data/scaling.csv` |
@@ -580,6 +581,65 @@ it cannot move the ceiling either. **The honest answer to "how large in parallel
 serial size.** The numbers in this section are reported as serial figures — the operative ones — rather
 than dressed up as a parallel speedup the architecture cannot deliver.
 
+### 5.3 Can the ceiling move? Profiling, the theory limit, and a native-solver attempt
+
+The §5.1 ceiling raises the obvious question: is it *movable* — by a faster solve, a smaller encoding,
+or a different backend — or is it the genuine limit of the problem? We ran a focused research program to
+find out: instrument, consult the theory, then build the most direct attack and benchmark it. The
+honest conclusion is that **for the symmetric worst case we are at the practical limit.**
+
+**Profiling the wall (Stage 0).** A flag-gated `--profile` mode (`recognizer/src/`, behind a flag so
+`-b` timing stays clean) dumps z3's `statistics()` and the heuristic's residual. It pins the bottleneck
+precisely: on the `complete`/`dnfa` families z3 solves with **near-zero search** — only **55 → 510 SAT
+conflicts** as n grows 400 → 1000 — while its **allocations explode ~12,000×** (780 M → 9.4e12) over
+the O(E²) materialized A3 encoding. So the default ceiling is **not** a search/backtracking wall; it is
+the cost of *propagating* an O(n²) difference-logic encoding that grows with n. (The separate `-f` wall
+is the same encoding hitting a hard *memory* limit: at n≈850 z3 builds 902 k assertions / 5.6 GB and
+dies with `reason_unknown="Overflow ... vector"`.) Structured and real graphs, by contrast, are decided
+**entirely by the Step-2 heuristic** with no solver at all (`max_range = 1`).
+
+**The theory limit (Stage 1, `RECOGNITION_LIMITS.md`).** A literature + lower-bound assessment confirms
+the worst case is genuinely exponential: recognition is **NP-complete at alphabet σ = 2, even for DAGs**
+(Gibney–Thankachan), the bounded-nondeterminism dichotomy is poly for d ≤ 2 / NP-c for d ≥ 5, and there
+is **no FPT** in σ and **no known FPT** in co-lexicographic width for the general decision. The real
+headroom the survey identifies is not asymptotic — it is (a) polynomial *fast-paths* for tractable
+subclasses (tries/forests, σ = 1, reverse-deterministic — which the Step-2 heuristic already disposes of
+with no solver) and (b) encoding/solver engineering (the Phase-4 `-f` work in §4, and what follows).
+
+**The most direct attack: a native solver (`native_dl/NATIVE_DL_SOLVER.md`).** Since profiling blamed
+the *encoding's* propagation/memory — not search — the natural move is a solver that decides the
+residual **without materializing the O(E²) formula**. We built one (backend `-s dl`,
+`recognizer/src/dl_solve.cpp`): per-node interval domains, A3 propagated bidirectionally
+(entailed-strict), bound-consistent all-different, an incremental dirty-group worklist, and a trailed
+DFS with geometric randomized restarts — all in **O(V+E) memory**, with `WG_checker` re-validating every
+accepted order. It is **verified sound**: **0 disagreements with the brute-force oracle over ~12,000
+random/positive graphs plus all 16 edge cases** (and the existing backends are unchanged).
+
+But it does **not** move the ceiling — it lands **3–9× below** z3 (`native_dl/results_dl.csv`):
+
+| family | Z3 `-s smt` | native `-s dl` |
+|---|--:|--:|
+| `complete` | WG to **n = 1024 in 16 s** (true ceiling 2816 @ 600 s) | WG only to **n ≈ 256**, then **TIMEOUT at n = 320** |
+| `dnfa` | WG to **n = 768 in 16 s** | WG only to **n ≈ 320**, then **TIMEOUT at n = 384** |
+
+`dl` is competitive only on small instances and *erratically* (faster than z3 at n ≤ 192, e.g. complete
+n=128: 0.03 s vs 0.18 s; but 3.19 s vs 0.75 s at n=256), then falls off a cliff. The reason closes the
+loop with Stage 0: z3's **QF_IDL theory propagation** is what makes its search trivial (the 55–510
+conflicts above); hand-rolled bounds propagation is far weaker, so the *native* search explodes, and
+randomized restarts only postpone the cliff. Matching z3 would mean reimplementing its incremental
+difference-logic propagation — which z3 already does in optimized C++. The other lever, **shrinking the
+encoding**, is also spent: the sparser block-A3 form (§4.2) was measured to *regress* on exactly this
+`complete` family (`smt.cpp:121`: "n=512 complete: 36.5 s → timeout"), which is why it is gated to the
+sparse `-f` / De Bruijn regime, and the default path is already compressed by the heuristic's `fixed[]`.
+
+**Verdict.** Both direct ceiling-movers — a non-materializing native search and encoding compression —
+are exhausted, and the binding constraint (propagation over an O(n²) encoding) is one z3 already handles
+near-optimally. For the symmetric worst case, **WGT is at the practical limit**; the productive gains
+remain where §4–§5 already place them — sparser `-f` encodings, and the heuristic fast-path that decides
+real biological graphs in under a second without ever invoking the solver. The native solver is retained
+as a sound, opt-in experimental backend (`-s dl`), not wired into the production dispatch (a pre-solve
+pass would only add overhead before z3 on the hard instances that define the ceiling).
+
 ---
 
 ## §6 Repair — turning a non-Wheeler graph into a Wheeler graph (Fig 11)
@@ -842,6 +902,10 @@ python3 benchmark/repair_exp/run_repair_corpus.py --source random --n 250 --out 
 python3 benchmark/repair_exp/run_repair_corpus.py --source revdet --n 200 --out benchmark/repair_exp/data/corpus_revdet.csv
 python3 benchmark/repair_exp/run_repair_corpus.py --source wg     --n 80  --out benchmark/repair_exp/data/corpus_wg.csv
 python3 benchmark/repair_exp/scaling.py --budget 60 --out benchmark/repair_exp/data/scaling.csv
+# S10 recognition limit (§5.3): native-solver soundness gate + the dl-vs-z3 ceiling ladder
+python3 verify/difftest.py --modes smt,perm,full,dl --random 5000 --positives 600   # 0 disagreements
+python3 verify/edgecases.py                                                          # dl included; 0 mismatches
+python3 benchmark/native_dl/bench_dl.py --timeout 30 --out benchmark/native_dl/results_dl.csv
 ```
 
 **Figures** (render with the spliceai python):
