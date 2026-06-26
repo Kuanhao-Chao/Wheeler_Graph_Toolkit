@@ -33,3 +33,7 @@ repair/_wtmp/
 # Phase 3 benchmark re-run: regenerable results tree + scratch (reports/docs are tracked)
 benchmark/rerun/results/
 benchmark/rerun/_synthtmp/
+
+# Phase-1 yeast pangenome-index data (large/derived; regenerate via pipeline/yeast_fetch.py)
+data/multiseq_alignment/yeast/maf/
+data/multiseq_alignment/yeast/fasta/
