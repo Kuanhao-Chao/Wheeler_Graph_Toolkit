@@ -42,7 +42,8 @@ REPRO = os.path.join(HERE, "repro")
 
 # recognizer backends to test. Each is a list of extra args (always with -i).
 MODES = {
-    "smt":    ["-i"],                   # default backend = SMT
+    "smt":    ["-i", "-s", "smt"],      # vanilla z3 backend (explicit; the default is now lazy)
+    "default":["-i"],                   # no -s => the production default (Round 2: lazy, with z3 fallback)
     "perm":   ["-i", "-s", "p"],        # permutation backend
     "full":   ["-i", "-f"],            # full-range search (always SMT)
     "perm-e": ["-i", "-s", "p", "-e"],  # exhaustive permutation (the -e accept-on-exhaustion path)
