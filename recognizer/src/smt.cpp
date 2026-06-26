@@ -8,6 +8,7 @@
 #include <fstream>
 #include <ctime>
 #include <cassert>
+#include <cstdlib>
 #include <unordered_set>
 #include "z3++.h"
 
@@ -20,6 +21,25 @@ extern bool profile_mode;
 
 void digraph::solve_smt() {
     clock_t start = clock();
+
+    // H1 experiment (env-gated; default path UNCHANGED when unset). The code sets zero z3 options by
+    // default; this lets us A/B z3's arithmetic engine on the QF_IDL encoding without disturbing the
+    // committed behaviour. WGT_ARITH_SOLVER selects smt.arith.solver -- value 1 is z3's difference-
+    // logic-specialized engine, the untested hypothesis that it slashes memory on these instances vs
+    // the default simplex. auto_config must be off or z3 overrides arith.solver. WGT_RANDOM_SEED probes
+    // seed-robustness. set_param is global, applied before the context is built; wrapped so a rejected
+    // name degrades to a warning rather than aborting the run.
+    try {
+        if (const char* a = getenv("WGT_ARITH_SOLVER")) {
+            set_param("auto_config", false);
+            set_param("smt.arith.solver", atoi(a));
+        }
+        if (const char* rs = getenv("WGT_RANDOM_SEED"))
+            set_param("smt.random_seed", atoi(rs));
+    } catch (z3::exception& e) {
+        cerr << "[WGT] z3 param error (ignored): " << e.msg() << endl;
+    }
+
     context c;
 
     /* Create variables */

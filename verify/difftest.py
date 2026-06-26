@@ -47,6 +47,8 @@ MODES = {
     "full":   ["-i", "-f"],            # full-range search (always SMT)
     "perm-e": ["-i", "-s", "p", "-e"],  # exhaustive permutation (the -e accept-on-exhaustion path)
     "dl":     ["-i", "-s", "dl"],       # native difference-logic propagator (in isolation, no z3 fallback)
+    "lazy":      ["-i", "-s", "lazy"],        # lazy/CEGAR A3 backend, default path (falls back to z3 if undecided)
+    "full-lazy": ["-i", "-f", "-s", "lazy"],  # lazy/CEGAR A3 backend, full-range (-f) path
 }
 # Modes actually run this invocation (default keeps the historical 3; perm-e opt-in via --modes).
 DEFAULT_MODES = ["smt", "perm", "full"]

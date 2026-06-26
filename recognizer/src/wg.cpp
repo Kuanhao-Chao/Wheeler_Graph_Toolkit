@@ -185,9 +185,36 @@ int main(int argc, char* argv[]) {
     *** Step 3: If after permutation, the number of valid WGs is 0 => it is not a WG.
     ********************************/
     if (full_range_search) {
-        g.solve_smt();
+        if (!solver.compare("lazy")) {
+            // Lazy / CEGAR A3 backend on the full-range (-f) path -- the primary target: -f is where the
+            // O(E^2) A3 materialization hits z3's hard memory wall (n~832). 0 = undecided (round/abort
+            // budget) => fall back to vanilla solve_smt() (never worse than today's -f).
+            int r = g.solve_smt_lazy();
+            if (r == 1) {
+                if (!benchmark_mode) cout << "(v) solved by lazy" << endl;
+                g.valid_wheeler_graph();
+            } else if (r == -1) {
+                g.invalid_wheeler_graph("lazy(-f): it is not a wheeler graph", true);
+            } else {
+                g.solve_smt();
+            }
+        } else {
+            g.solve_smt();
+        }
     } else {
-        if (!solver.compare("dl")) {
+        if (!solver.compare("lazy")) {
+            // Lazy / CEGAR A3 backend on the default path (tight heuristic brackets). 0 = undecided =>
+            // fall back to vanilla solve_smt() so the verdict can never regress.
+            int r = g.solve_smt_lazy();
+            if (r == 1) {
+                if (!benchmark_mode) cout << "(v) solved by lazy" << endl;
+                g.valid_wheeler_graph();
+            } else if (r == -1) {
+                g.invalid_wheeler_graph("lazy: it is not a wheeler graph", true);
+            } else {
+                g.solve_smt();
+            }
+        } else if (!solver.compare("dl")) {
             // Native difference-logic propagator, in isolation (no z3 fallback) -- used to verify the
             // propagator's verdicts against the oracle. 0 = undecided => report and exit 0 (a non-verdict,
             // distinct from non-WG); the production path (default/-f) falls back to z3 instead.
@@ -262,7 +289,7 @@ void processOptions(GArgs& args) {
     if (s == NULL) {
         solver = "default";
     } else {
-        if (strcmp(s, "smt")==0 || strcmp(s, "p")==0 || strcmp(s, "dl")==0) solver = s;
+        if (strcmp(s, "smt")==0 || strcmp(s, "p")==0 || strcmp(s, "dl")==0 || strcmp(s, "lazy")==0) solver = s;
         else solver = "default";
     }
 

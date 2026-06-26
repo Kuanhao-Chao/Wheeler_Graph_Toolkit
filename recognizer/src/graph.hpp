@@ -195,6 +195,13 @@ class digraph {
         // Returns 1 = Wheeler (order written + WG_checker-validated), -1 = not Wheeler, 0 = undecided
         // (caller falls back to solve_smt()).
         int solve_dl();
+        // Lazy / CEGAR A3 SMT backend (lazy_solve.cpp). Keeps z3's CDCL search but never materializes
+        // the O(E^2) A3 encoding: asserts the base (brackets + distinct (+ sparse A2 under -f)) and
+        // generates A3 lemmas on demand from WG_checker counterexamples. Returns 1 = Wheeler (order
+        // written + WG_checker-validated), -1 = not Wheeler, 0 = undecided (caller falls back to
+        // solve_smt()). a3_collect_violations is its side-effect-free A3 detector (see lazy_solve.cpp).
+        int solve_smt_lazy();
+        bool a3_collect_violations(int label, vector<edge>& edges, vector<pair<int,int>>& out);
         void permutation_counter_check(int range_size);
 };
 
