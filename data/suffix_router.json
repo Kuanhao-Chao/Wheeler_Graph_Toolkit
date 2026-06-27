@@ -1,0 +1,16 @@
+{
+  "chrom": "chrI",
+  "blocks": 992,
+  "a": 4,
+  "s": 4,
+  "w": 8,
+  "gmap_distinct_wmers": 64354,
+  "queries": 50,
+  "touch_all_ms": 25.5275,
+  "wmer_prefilter_ms": 2.7755,
+  "routed_ms": 0.15731,
+  "speedup_prefilter_vs_touchall": 9.2,
+  "speedup_routed_vs_touchall": 162.3,
+  "median_survivors": 2.0,
+  "of_blocks": 992
+}

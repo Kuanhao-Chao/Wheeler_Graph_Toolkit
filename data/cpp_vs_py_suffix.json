@@ -1,0 +1,9 @@
+{
+  "block": "chrI_blk00001_s181.fa",
+  "a": 2,
+  "s": 4,
+  "reps": 200000,
+  "python_us_per_locate": 35.337,
+  "cpp_us_per_locate": 0.391,
+  "speedup_cpp_vs_python": 90.4
+}
