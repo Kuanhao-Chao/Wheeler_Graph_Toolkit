@@ -85,6 +85,9 @@ class DAWG:
         return v
 
     def count(self, P):
+        # empty pattern: 0 occurrences (consistent with locate("")==[] and SuffixIndex.count(""))
+        if not P:
+            return 0
         v = self._state_of(P)
         return len(self.endpos[v]) if v is not None else 0
 
