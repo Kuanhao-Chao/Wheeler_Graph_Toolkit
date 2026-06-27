@@ -186,9 +186,17 @@ int main(int argc, char** argv) {
     std::string dir = argv[1];
     std::string mode = argv[2];
 
+    auto tb0 = std::chrono::high_resolution_clock::now();
     WGIndex idx;
     idx.load_dir(dir);
+    auto tb1 = std::chrono::high_resolution_clock::now();
+    double build_ms = std::chrono::duration<double, std::milli>(tb1 - tb0).count();
 
+    if (mode == "--info") {
+        // nodes, edges, and the load+build wall time (ms) -- for the scaling study
+        printf("nodes=%ld edges=%zu build_ms=%.3f\n", idx.n, idx.E, build_ms);
+        return 0;
+    }
     if (mode == "--query") {
         if (argc < 4) return usage();
         std::string P = argv[3];
