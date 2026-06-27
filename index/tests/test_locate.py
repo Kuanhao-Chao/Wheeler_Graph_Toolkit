@@ -116,3 +116,82 @@ def test_locate_vs_oracle_real_block(fa, tmp_path):
         if len(u) >= 5:
             P = u[1:6]
             assert count_fn(P[::-1])[2] > 0
+
+
+# --------------------------------------------------------------------------- L3: router across shards
+def _shard_fastas(gli, fadir):
+    return [(os.path.join(fadir, sh["stem"] + ".fa"), sh["coords"]) for sh in gli.shards]
+
+
+@pytest.mark.skipif(not (YEAST_FA and HAVE_REC), reason="needs yeast FASTA + recognizer")
+def test_router_locate_vs_oracle(tmp_path):
+    from index import genome_index as gi
+    fadir = os.path.dirname(YEAST_FA[0])
+    k, a, l = 4, 2, -1
+    man = gi.build_shards(YEAST_FA[:15], k=k, l=10_000_000, a=a, work=str(tmp_path), py_bio=PY_BIO)
+    shards = man["shards"]
+    assert len(shards) >= 8
+    gli = loc.GenomeLocateIndex(shards, fadir, k=k, a=a, l=l, engine="py")
+    shard_fc = _shard_fastas(gli, fadir)
+
+    def oracle_union(P):
+        out = set()
+        for fa, coords in shard_fc:
+            out |= lor.locate_brute(fa, coords, P, a=a, l=l)
+        return out
+
+    rng = random.Random(99)
+    pats = set()
+    for fa, _c in shard_fc[:6]:
+        for u in (_ungap_cap(s, -1) for _id, s in read_fasta(fa)[:a]):
+            if len(u) >= 8:
+                j = rng.randint(0, len(u) - 6)
+                pats.add(u[j:j + 6])
+    pats |= {"".join(rng.choice("ACGT") for _ in range(rng.randint(3, 7))) for _ in range(20)}
+    pats |= {"ZZZ"}
+    saw_multi = False
+    for P in pats:
+        hits = gli.locate(P)
+        assert loc.as_tuples(hits) == oracle_union(P), (P, sorted(loc.as_tuples(hits)))
+        # router output is dedup'd and sorted
+        keys = [(h["species"], h["src"], h["gstart"], h["gend"], h["strand"]) for h in hits]
+        assert len(keys) == len(set(keys))
+        assert keys == sorted(keys, key=lambda t: (t[0], t[1], t[2], t[3]))
+        saw_multi = saw_multi or len(hits) >= 2
+    assert saw_multi
+
+
+# --------------------------------------------------------------------------- L3: real-genome cross-check
+GENOME = os.path.join(ROOT, "data", "multiseq_alignment", "yeast", "genome", "chrI.fa")
+
+
+@pytest.mark.skipif(not (YEAST_FA and HAVE_REC and os.path.exists(GENOME)),
+                    reason="needs yeast FASTA + recognizer + cached sacCer3 genome")
+def test_located_reference_coords_match_real_genome(tmp_path):
+    from index import genome_index as gi
+    from pipeline.yeast_fetch import read_genome_fasta
+    chrI = read_genome_fasta(GENOME)
+    assert len(chrI) == 230218                      # == the MAF srcSize for sacCer3.chrI
+    fadir = os.path.dirname(YEAST_FA[0])
+    k, a, l = 4, 2, -1
+    man = gi.build_shards(YEAST_FA[:25], k=k, l=10_000_000, a=a, work=str(tmp_path), py_bio=PY_BIO)
+    gli = loc.GenomeLocateIndex(man["shards"], fadir, k=k, a=a, l=l, engine="py")
+
+    # real reference k-mers of various lengths -> every located sacCer3 hit must be literally in chrI
+    rng = random.Random(7)
+    checked = 0
+    for fa, coords in _shard_fastas(gli, fadir)[:25]:
+        ref = read_fasta(fa)[0]                      # the reference row is first
+        if ref[0] != "sacCer3":
+            continue
+        u = _ungap_cap(ref[1], -1)
+        for m in (5, 8, 12):
+            if len(u) < m:
+                continue
+            P = u[rng.randint(0, len(u) - m):][:m]
+            for h in gli.locate(P):
+                if h["species"] == "sacCer3":
+                    assert h["strand"] == "+"
+                    assert chrI[h["gstart"]:h["gend"]] == P, (P, h)
+                    checked += 1
+    assert checked > 0

@@ -10,6 +10,7 @@ this construction spells the *reverse* of a sequence, a pattern P is queried as 
   ~/miniconda3/envs/myenv/bin/python index/query.py --iol <out__dir> --pattern ACGTAC [--no-reverse]
 """
 import argparse
+import json
 import os
 import sys
 import tempfile
@@ -18,6 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from index.wg_index import WGIndex          # noqa: E402
 from pipeline import msa_to_index as m2i    # noqa: E402
+from index import locate as loc             # noqa: E402
 
 
 def build_index_from_fasta(fasta, k, l, a, work):
@@ -38,6 +40,9 @@ def main():
     ap.add_argument("-a", type=int, default=2)
     ap.add_argument("--no-reverse", action="store_true",
                     help="query the pattern as given (paths spell reverse, so default reverses it)")
+    ap.add_argument("--locate", action="store_true",
+                    help="report (species, source, genomic coords, strand) of every occurrence "
+                         "(needs <fasta>.coords.json; build-from-FASTA mode only)")
     args = ap.parse_args()
 
     if args.iol:
@@ -48,10 +53,27 @@ def main():
             idx, r = build_index_from_fasta(args.fasta, args.k, args.l, args.a, work)
             src = f"{os.path.basename(args.fasta)} (k={args.k},l={args.l},a={args.a}; " \
                   f"{idx.n} nodes, {idx.E} edges, Wheeler)"
+            if args.locate:
+                return _report_locate(args, idx, src)
             return _report(idx, args, src)
     else:
         ap.error("give a FASTA block or --iol <dir>")
     _report(idx, args, src)
+
+
+def _report_locate(args, idx, src):
+    coords_path = os.path.splitext(args.fasta)[0] + ".coords.json"
+    if not os.path.exists(coords_path):
+        raise SystemExit(f"--locate needs a coords sidecar: {coords_path} (run yeast_fetch to emit it)")
+    coords = json.load(open(coords_path))
+    sample = loc.build_locate_sample(args.fasta, args.k, a=args.a, l=args.l if args.l > 0 else -1)
+    P = args.pattern.upper()
+    hits = loc.locate_shard(P, sample, coords, count_fn=idx.count)
+    print(f"index: {src}")
+    print(f"locate: {P!r} -> {len(hits)} occurrence(s)")
+    for h in sorted(hits, key=lambda h: (h["species"], h["src"], h["gstart"])):
+        print(f"  {h['species']:>10}  {h['src']}  {h['gstart']}-{h['gend']} ({h['strand']})  "
+              f"[block offset {h['ungapped_pos']}]")
 
 
 def _report(idx, args, src):

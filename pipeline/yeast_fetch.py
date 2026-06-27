@@ -21,7 +21,8 @@ import re
 import subprocess
 import sys
 
-from Bio import AlignIO
+# Biopython is imported lazily inside iter_blocks() so the pure functions (fetch_genome,
+# read_genome_fasta, the coord transform helpers) import even where Biopython is unavailable.
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 YEAST = os.path.join(ROOT, "data", "multiseq_alignment", "yeast")
@@ -33,6 +34,7 @@ _DNA = set("ACGT")
 
 def iter_blocks(handle):
     """Yield Biopython MultipleSeqAlignment objects from a MAF file handle (or StringIO)."""
+    from Bio import AlignIO       # lazy: only MAF parsing needs Biopython
     # AlignIO.parse handles the `a`/`s` block structure of MAF for us.
     yield from AlignIO.parse(handle, "maf")
 
