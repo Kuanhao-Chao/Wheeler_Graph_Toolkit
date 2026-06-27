@@ -62,16 +62,21 @@ def pangenome_footprint(pg):
 
 
 def peak_rss_build(fastas, a=4, s=4, sample="rate", w=8, timeout_s=1200):
-    """Peak RSS (kB) of building a PangenomeIndex over `fastas` in a fresh subprocess."""
+    """Peak RSS (kB) of building a PangenomeIndex over `fastas` in a fresh subprocess. The fasta list is
+    passed via a temp JSON file (NOT embedded in the command line -- a chromosome's list exceeds ARG_MAX)."""
     import json
+    import tempfile
+    lf = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+    json.dump(list(fastas), lf); lf.close()
     snippet = (
-        f"import sys; sys.path.insert(0,{ROOT!r}); "
+        f"import sys, json; sys.path.insert(0,{ROOT!r}); "
         f"from index.pangenome_index import PangenomeIndex; "
-        f"fas={list(fastas)!r}; "
+        f"fas=json.load(open({lf.name!r})); "
         f"pg=PangenomeIndex(fas, a={a}, l=-1, s={s}, sample={sample!r}, w={w}); pg.build_global(); "
         f"print('BLOCKS', len(pg.blocks))"
     )
     r = timed_run([PY, "-c", snippet], timeout_s)
+    os.remove(lf.name)
     return {"rss_kb": r["rss_kb"], "wall_s": r["wall_s"], "timed_out": r["timed_out"],
             "blocks": int(r["stdout"].split("BLOCKS")[1].split()[0]) if "BLOCKS" in r["stdout"] else None}
 
