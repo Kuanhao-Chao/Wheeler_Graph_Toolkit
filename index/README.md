@@ -82,6 +82,10 @@ Run: `~/miniconda3/envs/myenv/bin/python -m pytest index/tests/ -q` (uses an env
   recombinant superset). The recognizer certifies the suffix order IS the Wheeler order
   (`verify/suffix_wheeler_cert.py`) and that the compact-exact DAWG (`dawg.py`) is Wheeler. Verified
   exact vs oracle + the real genome. `benchmark/genome_index/{resolution_demo,pangenome_demo}.py`.
+  Speed: a sound w-mer **router** (`PangenomeIndex.build_global`/`locate_routed`) makes genome queries
+  genome-size-independent (≈167× over touch-all); the **r-index φ-locate** (`SuffixIndex.locate_phi`)
+  bounds per-occurrence work; a dependency-free **C++ port** (`cpp/wg_suffix.cpp`, ~18× the Python
+  locate) is verified `C++ == Python == oracle` (`tests/test_cpp_suffix.py`).
 
 ## Deferred (future rounds)
 

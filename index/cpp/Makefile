@@ -2,14 +2,16 @@
 # Mirrors recognizer/Makefile's toolchain (g++ -O3 -std=c++17).
 CXX    = g++
 CFLAGS = -std=c++17 -O3 -Wall
-EXE    = wg_index
 
-all: $(EXE)
+all: wg_index wg_suffix
 
-$(EXE): wg_index.cpp
-	$(CXX) $(CFLAGS) wg_index.cpp -o $(EXE)
+wg_index: wg_index.cpp
+	$(CXX) $(CFLAGS) wg_index.cpp -o wg_index
+
+wg_suffix: wg_suffix.cpp
+	$(CXX) $(CFLAGS) wg_suffix.cpp -o wg_suffix
 
 clean:
-	rm -f $(EXE)
+	rm -f wg_index wg_suffix
 
 .PHONY: all clean
