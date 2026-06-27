@@ -105,7 +105,39 @@ order the recognizer finds.* At genome scale a faithful suffix graph is ~10⁶ n
 ~10⁵ ceiling, so we build the FM-index directly per block and rely on the theorem (certified on small
 instances above). The recognizer is **central** again in §5, where merged graphs are not free Wheeler.
 
-## 4. Comparison: resolution × compactness × speed (suffix vs De Bruijn vs RevDet-tagged) — *pending (P3)*
+## 4. Comparison: resolution × compactness × speed
+
+`benchmark/genome_index/resolution_demo.py` over 71 multi-species chrI blocks (a=4, De Bruijn k=8),
+653 multi-species queries, ground-truthed by the brute oracle (`data/genome_resolution.json`). Every
+suffix query is asserted == the oracle, so the benchmark is also a correctness gate.
+
+| metric | suffix Wheeler index | De Bruijn (k-mer) | RevDet |
+|---|---|---|---|
+| **native species set correct** (index alone) | **100 %** (653/653) | **0 %** — a shared k-mer is one node, so the range carries no species | superset; column-membership only, dropped on serialize |
+| **superset false positives** (recombinants accepted) | **0 / 592** | **592 / 592** (accepts every spliced recombinant) | superset on **71/71** blocks |
+| range size == #occurrences | always (range *is* the occurrences) | 12.5 % (range size is uninformative about #occ) | — |
+| median nodes / block | 257 | **211** (~1.2× smaller) | **117** (~2.2× smaller) |
+| median locate latency | **8.4 µs** | 17 µs (occ-map locate) | — |
+
+**Findings.**
+- **Resolution:** the suffix index reports the exact species *set* and positions on **100 %** of
+  multi-species queries, natively (its range == the occurrences, the document array reads off species).
+  The De Bruijn graph names species on **0 %** — structurally, a k-mer shared by N species is one node,
+  so the backward-search range is independent of which/how many species contain P; species only come
+  from the external occ-map. This is the resolution loss the user observed, quantified.
+- **Fidelity:** De Bruijn accepted **every** recombinant control (592/592) — strings present in *no*
+  single species — i.e. its membership is a recombinant superset; the suffix index accepted **none**
+  (exact). RevDet is likewise a superset on every multi-species block.
+- **Cost:** the suffix index is only ~1.2× larger than De Bruijn (and ~2.2× larger than RevDet) but is
+  **exact + resolved**, and its locate is ~2× **faster** than the occ-map. So on yeast the resolution is
+  bought cheaply.
+- **Is RevDet ideal?** No. It is the most compact, and its node *is* a (column, char) so position and
+  species-membership are natural — but the path-language is a recombinant superset (membership only) and
+  the column is lost on serialization. It trades exactness for size, the opposite of the goal.
+
+**Recommendation:** the **tagged suffix Wheeler index** is the right construction for native
+species+position resolution — exact, multi-hit, faster locate, modest size. De Bruijn remains the choice
+when only compact *k-mer presence* is needed and resolution can live outside the index.
 
 ## 5. Compaction: run-length BWT + recognizer-certified merge — *pending (P4)*
 
