@@ -110,11 +110,7 @@ class SuffixIndex:
         run = 0
         for c in range(self.sigma):
             self.C[c] = run; run += cnt[c]
-        self._pref = [[0] * (self.n + 1) for _ in range(self.sigma)]
-        for c in range(self.sigma):
-            p = self._pref[c]
-            for i, x in enumerate(self.BWT):
-                p[i + 1] = p[i] + (1 if x == c else 0)
+        self._build_rank()
         # number of maximal equal-symbol BWT runs (the r-index size measure)
         self.r = 1 if self.n else 0
         for i in range(1, self.n):
@@ -130,6 +126,30 @@ class SuffixIndex:
         self.sa_val = {i: self.SA[i] for i in range(self.n) if self.sampled[i]}
         self.n_samples = len(self.sa_val)
         self._build_phi()
+        # SA is a build-time intermediate: no query path uses it (recover_pos uses sa_val, locate_phi
+        # uses the toehold + phi). In r-index ('runs') mode we drop it to save n ints/block at genome
+        # scale. ('rate' keeps it: the C++-parity default + cheap; ground-truth SA is build_sa(T).)
+        if self.sample_mode == "runs":
+            self.SA = None
+
+    BLOCK = 64
+
+    def _build_rank(self):
+        """Block-rank over BWT: cumulative per-symbol counts every BLOCK symbols (O(sigma*n/BLOCK)),
+        vs a dense O(sigma*n) prefix array -- the per-block RAM driver. Mirrors cpp/wg_suffix LabelRank."""
+        B, n, sg = self.BLOCK, self.n, self.sigma
+        nb = n // B + 1
+        self._brank = [[0] * (nb + 1) for _ in range(sg)]
+        run = [0] * sg
+        for i, x in enumerate(self.BWT):
+            if i % B == 0:
+                bi = i // B
+                for c in range(sg):
+                    self._brank[c][bi] = run[c]
+            run[x] += 1
+        last = (n + B - 1) // B
+        for c in range(sg):
+            self._brank[c][last] = run[c]
 
     def _build_phi(self):
         """r-index structures for bounded locate (NO full-SA walk): phi (predecessor + offset over BWT
@@ -157,7 +177,13 @@ class SuffixIndex:
         return (self._phi_vals[k] + (p - self._phi_keys[k])) % self.n
 
     def _rank(self, c, i):
-        return self._pref[c][i]
+        B = self.BLOCK
+        b = i // B
+        r = self._brank[c][b]
+        bwt = self.BWT
+        for j in range(b * B, i):
+            r += (bwt[j] == c)
+        return r
 
     def lf(self, i):
         c = self.BWT[i]

@@ -70,10 +70,10 @@ def _check_instance(seqs, s):
     idx = SuffixIndex(seqs, s=s, sample="runs")
     idx_rate = SuffixIndex(seqs, s=s, sample="rate")
     n = idx.n
-    SA = idx.SA
-
-    # SA itself is the transparent brute cyclic-rotation order
-    assert SA == build_sa_brute(idx.T), ("SA mismatch", seqs)
+    # ground-truth SA from an INDEPENDENT brute cyclic-rotation sort (runs-mode idx.SA is dropped to
+    # save memory; rate-mode keeps its SA and must equal the ground truth).
+    SA = build_sa_brute(idx.T)
+    assert idx.SA is None and idx_rate.SA == SA, ("SA: runs drops, rate keeps correct", seqs)
 
     isa = isa_of(SA)
 
@@ -188,8 +188,8 @@ def test_yeast_genomic_runs_vs_brute_oracle():
     idx_runs = SuffixIndex.from_fasta(YEAST_FA, a=a, l=l, coords=coords, s=8, sample="runs")
     idx_rate = SuffixIndex.from_fasta(YEAST_FA, a=a, l=l, coords=coords, s=8, sample="rate")
 
-    SA = idx_runs.SA
-    assert SA == build_sa_brute(idx_runs.T)
+    SA = build_sa_brute(idx_runs.T)        # ground truth (runs-mode idx_runs.SA is dropped)
+    assert idx_runs.SA is None and idx_rate.SA == SA
     n = idx_runs.n
     isa = isa_of(SA)
     for p in range(n):

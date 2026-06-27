@@ -248,16 +248,17 @@ def test_phi_equals_brute_predecessor_and_toehold():
             continue
         idx = sx.SuffixIndex(seqs, coords=None, sample="runs")
         n = idx.n
+        SA = sx.build_sa(idx.T)            # independent ground truth (runs-mode idx.SA is dropped)
         isa = [0] * n
         for i in range(n):
-            isa[idx.SA[i]] = i
-        assert all(idx.phi(p) == idx.SA[(isa[p] - 1) % n] for p in range(n))   # phi == predecessor
+            isa[SA[i]] = i
+        assert all(idx.phi(p) == SA[(isa[p] - 1) % n] for p in range(n))        # phi == predecessor
         for u in seqs:                                                          # toehold == SA[hi-1]
             for m in (1, 2, 3):
                 for a in range(len(u) - m + 1):
                     lo, hi, toe = idx._backward_toehold(u[a:a + m])
                     if hi > lo:
-                        assert toe == idx.SA[hi - 1]
+                        assert toe == SA[hi - 1]
 
 
 def test_phi_locate_bounded_vs_lf_walk():
