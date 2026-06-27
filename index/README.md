@@ -49,10 +49,27 @@ means `P` occurs in the alignment's sequences.
 - `test_pipeline.py` — a real yeast block recognizes as Wheeler with a well-formed `I/O/L`.
 - `test_wg_index.py` — `count`/node-range == the brute oracle over present + absent patterns on real
   yeast blocks and random Wheeler graphs; `from_iol` ≡ `from_graph_dot`; a biological end-to-end query.
+- `test_cpp_index.py` — the **C++ succinct index** (`cpp/wg_index.cpp`) `count`/range == the Python
+  `WGIndex` == the brute oracle on the example, real yeast blocks, and random complete/d-NFA WGs.
+- `test_genome_index.py` — the **sharded genome router** (`genome_index.py`): C++ router == Python
+  router == oracle (OR over shards) on real chrI shards (present/absent, which shards, total matches).
 
 Run: `~/miniconda3/envs/myenv/bin/python -m pytest index/tests/ -q` (uses an env with Biopython + pytest).
+
+## Scaling to a genome (C++ index + sharded architecture)
+
+- **`cpp/wg_index.cpp`** — a dependency-free **C++ succinct FM-index** (no z3/sdsl). Same GMS backward
+  search as `wg_index.py`, with compact arrays + a block-rank over `L`; ~0.03 µs/query (≈58× the Python
+  index). `make` in `cpp/`, then `wg_index <out__dir> --query P | --queries FILE | --bench`.
+- **`genome_index.py`** — a **sharded whole-genome index**: one Wheeler graph + C++ FM-index per MAF
+  block, plus a query router (a pattern occurs in the genome iff it occurs in ≥1 shard).
+- **`GENOME_INDEX.md`** — the feasibility study: a single whole-genome graph is **not** practical
+  (generator + recognizer both cap near ~10⁵ nodes; largest verified single graph = 68k nodes), so the
+  genome is indexed **sharded** (whole-chrI demo: 992/992 Wheeler shards, 432 KB, router == oracle).
+  `benchmark/genome_index/{scaling.py,chrI_demo.py}` + `data/genome_scaling.csv`, `data/genome_chrI_demo.json`.
 
 ## Deferred (future rounds)
 
 `locate` (map a hit back to sequence/position via sampling), human MSA, repairing non-Wheeler blocks
-(`repair/wheelerize.py`) before indexing, and a succinct/C++ (sdsl) port for scale.
+(`repair/wheelerize.py`) before indexing, a per-shard k-mer prefilter for the genome router, and an
+sdsl wavelet-tree drop-in for large alphabets.

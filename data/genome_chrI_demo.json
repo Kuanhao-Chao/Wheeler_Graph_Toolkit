@@ -1,0 +1,30 @@
+{
+  "chrom": "chrI",
+  "k": 4,
+  "a": 2,
+  "blocks_total": 992,
+  "shards_wheeler": 992,
+  "non_wheeler": 0,
+  "failed": 0,
+  "build_s": 284.44,
+  "total_nodes": 48678,
+  "total_edges": 115085,
+  "index_bytes": 442611,
+  "build_s_per_shard": 0.2867,
+  "present_found": 40,
+  "present_total": 40,
+  "absent_found": 40,
+  "absent_total": 42,
+  "query_s_present_batch": 2.113,
+  "query_s_absent_batch": 2.135,
+  "query_ms_per_pattern": 51.801,
+  "verify_sample": 30,
+  "verify_mismatches": 0,
+  "extrapolation": {
+    "genome_factor_vs_chrI": 53.0,
+    "est_shards": 52619,
+    "est_build_s": 15087.6,
+    "est_index_bytes": 23477626,
+    "note": "small-k De Bruijn shard size is bounded (<=4^k nodes), so per-shard cost is O(1) in genome length; whole-genome build scales ~linearly in #blocks."
+  }
+}
