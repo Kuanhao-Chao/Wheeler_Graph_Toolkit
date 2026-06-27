@@ -22,6 +22,8 @@ from index.faithful import read_fasta, _ungap_cap  # noqa: E402
 
 YEAST_FA = sorted(glob.glob(os.path.join(ROOT, "data", "multiseq_alignment", "yeast", "fasta", "chrI_*.fa")))
 GENOME = os.path.join(ROOT, "data", "multiseq_alignment", "yeast", "genome", "chrI.fa")
+REC = os.path.join(ROOT, "recognizer", "bin", "recognizer_linux")
+HAVE_REC = os.path.exists(REC)
 
 
 # --------------------------------------------------------------------------- SA/BWT/DOC vs brute ref
@@ -149,6 +151,25 @@ def test_suffix_locate_vs_oracle_real_block(fa):
 
 
 # --------------------------------------------------------------------------- real-genome cross-check
+# --------------------------------------------------------------------------- P2: recognizer certification
+@pytest.mark.skipif(not HAVE_REC, reason="recognizer needed")
+@pytest.mark.parametrize("seqs", [
+    ["AC", "AG"], ["ACG", "ACG"], ["ACGACG", "ACGTAC"],
+    ["ACGTACGTAACC", "ACGTACGTAACG", "ACGTACGAAACC"],
+])
+def test_suffix_order_is_a_wheeler_order(seqs, tmp_path):
+    sys.path.insert(0, os.path.join(ROOT, "verify"))
+    from verify import suffix_wheeler_cert as cert
+    idx = sx.SuffixIndex(seqs, coords=None, s=1)
+    res = cert.certify(idx, str(tmp_path))
+    assert res["sa_order_is_wheeler"], res                 # the SA-rank order satisfies the axioms
+    if res["brute_wheeler"] is not None:                   # n<=9: brute force agrees
+        assert res["brute_wheeler"]
+    assert res["recognizer_verdict"] == 1                  # the recognizer independently accepts
+    assert res["recognizer_order_valid"]
+    assert res["recognizer_iso_to_sa_rank"]                # ... and its order IS the suffix-array rank
+
+
 @pytest.mark.skipif(not (YEAST_FA and os.path.exists(GENOME)),
                     reason="needs yeast FASTA + cached sacCer3 genome")
 def test_located_reference_matches_real_genome():

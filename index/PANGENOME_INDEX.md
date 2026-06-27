@@ -86,7 +86,24 @@ off-alphabet/`|P|` 1..whole-row) and **SA-sample invariant**; forward convention
 **sacCer3** coordinate literally equals the query in the **real chrI genome** (len 230,218 == the MAF
 `srcSize`); the − strand transform checked on a synthetic both-strands block.
 
-## 3. Recognizer certification (suffix order == a Wheeler order) — *pending (P2)*
+## 3. Recognizer certification — the suffix order *is* the Wheeler order
+
+`verify/suffix_wheeler_cert.py` exhibits the FM-index as a graph — node `i` (the i-th smallest suffix)
+`--LF-->` node `LF(i)` labeled `BWT[i]` — and certifies it three independent ways (gated in
+`test_suffix_index.py`):
+
+1. **The SA-rank order satisfies the Wheeler axioms** — `verify/check_order` on `pos = identity`
+   (node `i` at position `i`) returns *valid* (A2 = the `C[]` label blocks, A3 = LF monotonic within a
+   label class, A1 trivial since LF is a bijection).
+2. **Brute force agrees** — `verify/brute_oracle.is_wheeler` (all n! orders) returns Wheeler for n ≤ 9.
+3. **The real recognizer independently accepts it** — `recognizer_linux -i -w` returns verdict 1, its
+   emitted order is valid, **and it is order-isomorphic to the suffix-array rank** (the recognizer,
+   searching the whole ordering space, lands on exactly the SA rank: `recognizer_iso_to_sa_rank = true`).
+
+This closes the theory↔implementation loop: *the suffix order the index uses is precisely the Wheeler
+order the recognizer finds.* At genome scale a faithful suffix graph is ~10⁶ nodes ≫ the recognizer's
+~10⁵ ceiling, so we build the FM-index directly per block and rely on the theorem (certified on small
+instances above). The recognizer is **central** again in §5, where merged graphs are not free Wheeler.
 
 ## 4. Comparison: resolution × compactness × speed (suffix vs De Bruijn vs RevDet-tagged) — *pending (P3)*
 
