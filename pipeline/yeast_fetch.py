@@ -15,6 +15,7 @@ Run with a Biopython-capable python, e.g.:
 """
 import argparse
 import io
+import json
 import os
 import re
 import subprocess
@@ -57,6 +58,28 @@ def block_records(aln):
     return out
 
 
+def block_coords(aln):
+    """Per-record genomic coordinates for one block, in the SAME record order (and with the same
+    fasta ids) as block_records, so locate can join by record index. Each entry:
+      {fasta_id, src, start, size, strand("+"/"-"), srcSize}
+    start/size are 0-based on the record's strand (UCSC MAF convention); src is the full source name
+    (e.g. 'sacKud.sacKud.Contig180'); srcSize is that source's length. Missing annotations -> None."""
+    used = set()
+    out = []
+    for rec in aln:
+        ann = getattr(rec, "annotations", {}) or {}
+        strand = ann.get("strand")
+        out.append({
+            "fasta_id": _src_to_id(rec.id, used),
+            "src": rec.id,
+            "start": ann.get("start"),
+            "size": ann.get("size"),
+            "strand": "+" if strand in (1, "+") else ("-" if strand in (-1, "-") else None),
+            "srcSize": ann.get("srcSize"),
+        })
+    return out
+
+
 def _ungapped(seq):
     return seq.replace("-", "")
 
@@ -96,6 +119,10 @@ def write_blocks(handle, out_dir, chrom="chr", min_species=2, min_cols=8, max_co
         stem = f"{chrom}_blk{kept:05d}_s{start}"
         path = os.path.join(out_dir, stem + ".fa")
         write_fasta(recs, path)
+        # coords sidecar: per-record genomic coordinates (for locate), same order as the FASTA rows
+        coords = block_coords(aln)
+        with open(os.path.join(out_dir, stem + ".coords.json"), "w") as cf:
+            json.dump(coords, cf)
         manifest.append({"path": path, "stem": stem, "n_species": len(recs),
                          "cols": len(recs[0][1]), "start": start})
         kept += 1
@@ -133,6 +160,52 @@ def download_maf(chrom, dest_dir=None):
         os.replace(raw, dest)
     print(f"[ready] {dest} ({os.path.getsize(dest)} bytes)")
     return dest
+
+
+GENOME_BASE = "https://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/bigZips"
+
+
+def fetch_genome(chrom, dest_dir=None):
+    """Download + cache the real sacCer3 chromosome FASTA (for the locate biological cross-check).
+    Pulls bigZips/chromFa.tar.gz once, extracts <chrom>.fa, caches it. Returns the cached path or
+    None on failure (so callers can skip the biological gate offline)."""
+    import tarfile
+    dest_dir = dest_dir or os.path.join(YEAST, "genome")
+    os.makedirs(dest_dir, exist_ok=True)
+    dest = os.path.join(dest_dir, f"{chrom}.fa")
+    if os.path.exists(dest) and os.path.getsize(dest) > 0:
+        return dest
+    tgz = os.path.join(dest_dir, "chromFa.tar.gz")
+    if not (os.path.exists(tgz) and os.path.getsize(tgz) > 0):
+        url = f"{GENOME_BASE}/chromFa.tar.gz"
+        print(f"[download] {url} -> {tgz}")
+        r = subprocess.run(["curl", "-fSL", "--retry", "3", "-o", tgz, url],
+                           capture_output=True, text=True, timeout=600)
+        if r.returncode != 0:
+            print(f"genome download failed ({r.returncode}): {r.stderr.strip()[:300]}")
+            return None
+    try:
+        with tarfile.open(tgz, "r:gz") as tar:
+            for member in tar.getmembers():
+                base = os.path.basename(member.name)
+                if base == f"{chrom}.fa":
+                    fo = tar.extractfile(member)
+                    with open(dest, "wb") as out:
+                        out.write(fo.read())
+                    break
+    except (tarfile.TarError, OSError) as e:
+        print(f"genome extract failed: {e}")
+        return None
+    return dest if os.path.exists(dest) else None
+
+
+def read_genome_fasta(path):
+    """Single-record chromosome FASTA -> upper-case sequence string (no gaps in genome assembly)."""
+    seq = []
+    for line in open(path):
+        if not line.startswith(">"):
+            seq.append(line.strip().upper())
+    return "".join(seq)
 
 
 def main():

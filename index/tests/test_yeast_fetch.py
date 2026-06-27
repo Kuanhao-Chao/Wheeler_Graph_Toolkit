@@ -74,3 +74,33 @@ def test_write_blocks_to_disk(tmp_path):
     assert ">sacPar\nACGT-CGTACGTA\n" in text
     assert man[0]["n_species"] == 3 and man[0]["cols"] == 13
     assert man[1]["n_species"] == 2 and man[1]["cols"] == 5
+
+
+def test_block_coords_matches_maf_annotations():
+    # block 1: sacCer3 @0/13/+, sacPar @10/12/+, sacMik @20/12/+ (srcSizes 230218/200000/190000)
+    c1 = yf.block_coords(_blocks()[0])
+    assert [c["fasta_id"] for c in c1] == ["sacCer3", "sacPar", "sacMik"]
+    assert [c["src"] for c in c1] == ["sacCer3.chrI", "sacPar.chr1", "sacMik.chr1"]
+    assert (c1[0]["start"], c1[0]["size"], c1[0]["strand"], c1[0]["srcSize"]) == (0, 13, "+", 230218)
+    assert (c1[1]["start"], c1[1]["size"], c1[1]["strand"]) == (10, 12, "+")
+    assert (c1[2]["start"], c1[2]["size"], c1[2]["strand"]) == (20, 12, "+")
+    c2 = yf.block_coords(_blocks()[1])
+    assert (c2[0]["start"], c2[0]["size"]) == (20, 5) and (c2[1]["start"], c2[1]["size"]) == (40, 4)
+
+
+def test_coords_sidecar_written_and_joins_by_record_index(tmp_path):
+    import json
+    man = yf.write_blocks(io.StringIO(FIXTURE_MAF), str(tmp_path), chrom="chrI",
+                          min_species=2, min_cols=4, max_cols=2000)
+    side = os.path.join(str(tmp_path), man[0]["stem"] + ".coords.json")
+    assert os.path.exists(side)
+    coords = json.load(open(side))
+    recs = yf.block_records(_blocks()[0])
+    # one coord entry per FASTA record, same order/ids -> joinable by record index
+    assert len(coords) == len(recs)
+    assert [c["fasta_id"] for c in coords] == [rid for rid, _ in recs]
+    # uncapped: ungapped length of each FASTA row == the MAF 'size' field
+    for c, (_rid, seq) in zip(coords, recs):
+        assert len(seq.replace("-", "")) == c["size"]
+    # reference start in the filename matches coords[0].start
+    assert man[0]["stem"].split("_s")[-1] == str(coords[0]["start"])
