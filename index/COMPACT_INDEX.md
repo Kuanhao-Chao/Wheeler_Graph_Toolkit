@@ -27,7 +27,11 @@ Measured (60 chrI blocks, a=2 sequences, l=40 columns; `data/compact_yeast_a2.cs
 So De Bruijn(k=4) is ~2.3× *smaller* than RevDet+repair, and even *raw* RevDet (46n) isn't smaller than
 De Bruijn(k=4) (39n) at small k. The repair inflates the graph ~12× on the way through the trie.
 
-<!-- a4/a7/limit numbers filled in after the sweeps complete -->
+**It gets worse with more sequences.** Repeating at a=4 (`compact_yeast_a4.csv`, 40 blocks, trie-cap
+8,000): **24/40 (60%) blow past the cap and cannot be repaired at all**, and of the 16 that do repair,
+RevDet+repair is **~4.5× larger** than De Bruijn(k=4) (median 145 vs 38.5 nodes; node ratio 0.22; RevDet
+smaller in **0/16**). At a=7 essentially every block blows up. The gap *widens* with sequence count —
+the opposite of the hoped-for "more sequences ⇒ RevDet wins."
 
 ## Why: determinism is the enemy of compactness here
 
@@ -59,11 +63,22 @@ divergent column roughly doubles the recombinant language). Drivers:
   blocks explode;
 - **#sequences (a)** and **#columns (l)** — more of either multiplies the recombination.
 
-<!-- exact trie-size-vs-identity bins + the repairable ceiling filled in after limit.py completes -->
+Measured (`limit_yeast.csv`, 180 probes, trie-cap 40,000):
 
-Practically: small/conserved yeast blocks repair instantly; divergent or many-species blocks blow the
-trie past any cap. This bounds **all** trie-based lossless repair (consistent with the repair module's own
-~880-trie-node refine ceiling).
+| driver | trie size |
+|---|---|
+| identity ≥ 0.95 (conserved) | median **65**, max 930 |
+| identity 0.85–0.95 | median 226 |
+| identity 0.70–0.85 | median **2,525** |
+| identity < 0.70 (divergent) | median 784, max **39,995** (the cap) |
+| #sequences: blow-up rate past the 40k cap | a=2 **23%**, a=3 **33%**, a=4 **44%**, a≥5 → ~all |
+
+**The repairable ceiling on yeast is ~trie ≤ 5,000** (largest repaired: trie 3,833 → 116 nodes). Yeast
+*sensu stricto* species are divergent enough (~55–70% identity in many blocks) that even 2–3 sequences
+frequently exceed it. As an extra correctness gate, `repair.minimize.exact == repair.exhaustive_fold`
+agrees on a tiny yeast-derived RevDet graph (8 → 8 nodes). The wall is the determinization step itself
+(consistent with the repair module's own ~880-trie-node `refine` ceiling), and it bounds **all**
+trie-based lossless repair.
 
 ## Brainstorm: algorithms to actually get a compact Wheeler index
 

@@ -40,7 +40,7 @@ def debruijn_counts(fasta, k, l, a, work):
     return count_dot(dot)
 
 
-def measure_block(fasta, l, a, work):
+def measure_block(fasta, l, a, work, trie_cap=200000):
     row = {"block": os.path.basename(fasta), "l": l, "a": a}
     for k in (4, 5):
         try:
@@ -51,7 +51,7 @@ def measure_block(fasta, l, a, work):
             row["db_err"] = str(ex)[:80]
     t0 = time.time()
     try:
-        rec, idx = r2i.process_block(fasta, l=l, a=a, work=work)
+        rec, idx = r2i.process_block(fasta, l=l, a=a, work=work, trie_cap=trie_cap)
         row["revdet_nodes"] = rec.get("revdet_nodes")
         row["revdet_wheeler"] = rec.get("revdet_wheeler")
         row["trie_nodes"] = rec.get("trie_nodes")
@@ -77,12 +77,13 @@ def main():
     ap.add_argument("-l", type=int, default=40)
     ap.add_argument("-a", type=int, default=2)
     ap.add_argument("--work", default="/tmp/compact_measure")
+    ap.add_argument("--trie-cap", type=int, default=200000, help="fail-fast trie cap (record blowup)")
     ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "data", "compact_yeast.csv"))
     args = ap.parse_args()
     os.makedirs(args.work, exist_ok=True)
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     fastas = sorted(glob.glob(os.path.join(args.fastadir, "*.fa")))[:args.limit]
-    rows = [measure_block(fa, args.l, args.a, args.work) for fa in fastas]
+    rows = [measure_block(fa, args.l, args.a, args.work, trie_cap=args.trie_cap) for fa in fastas]
     cols = ["block", "l", "a", "db4_nodes", "db4_edges", "db5_nodes", "db5_edges",
             "revdet_nodes", "revdet_wheeler", "trie_nodes", "rep_nodes", "rep_edges",
             "blowup", "ok", "revdet_repair_s", "node_ratio_db4_over_rep", "edge_ratio_db4_over_rep"]
