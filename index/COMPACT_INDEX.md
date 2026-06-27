@@ -116,10 +116,46 @@ Ordered by expected payoff, each with the node/edge/scale tradeoff and what to p
 6. **Edge-reduction post-pass (since edges matter too).** After any repair, dedup parallel edges and
    prefer partitions that minimize edges as a tie-break; report node+edge cost jointly.
 
-## Bottom line / recommendation
+## Update — the incremental Wheeler-NFA repair, built and measured (`repair/wnfa.py`)
 
-The clean result to report: on yeast, **small-k De Bruijn is already the more compact deterministic
-Wheeler index; RevDet+deterministic-repair loses because it destroys the nondeterminism that made RevDet
-small, via an exponential trie.** The promising path to "smaller than De Bruijn" is a **Wheeler-NFA
-repair** (idea 1) and/or **trie-free local splitting** (idea 2) — to be prototyped next, verified against
-the same brute oracle and `repair/verify_repair.py`, and measured with `benchmark/compact_index/`.
+Idea 1+2 were prototyped: a **trie-free** repair that splits a node only where no Wheeler order can
+exist (co-lex min/max-key obstruction), **keeping nondeterminism**, with the recognizer as ground truth
+and a determinization fallback. Verified (`repair/tests/test_wnfa.py`): the split preserves the
+path-string set; every output is lossless + Wheeler + the FM-index `count`/range == the brute oracle,
+including on the nondeterministic results. Three-way measurement on yeast (`compact_wnfa_a2/a4.csv`):
+
+| metric | a=2 (40 blocks) | a=4 (40 blocks) |
+|---|---|---|
+| WNFA **smaller than the deterministic repair** | **26/38** (median 71 vs 98 nodes) | **15/16** (median 77.5 vs 145) |
+| WNFA **smaller than De Bruijn (k=4)** | 0/40 (median 72.5 vs 39) | 0/38 (median 123.5 vs 49) |
+| succeeds where the deterministic trie **blew up** | 2/2 | **22/24** (trie-free scales past the wall) |
+| converged without fallback / stayed nondeterministic | 39/40 / 5 | 38/38 / 9 |
+
+**Two of the three predicted wins landed:** WNFA repair is consistently **smaller than the deterministic
+min-repair** (it splits ~as needed instead of determinizing) and **scales past the trie blow-up** (it
+repairs the divergent/many-species blocks the deterministic route cannot). **The third did not:** it
+still does **not** beat small-k De Bruijn on yeast (0 of 78 blocks). The co-lex heuristic also tends to
+split toward determinism anyway — only 5/40 (a=2) and 9/38 (a=4) outputs stayed nondeterministic — so
+most of the theoretical "nondeterminism keeps it small" benefit isn't realized by this split rule.
+Caveat: WNFA is **slow** (one recognizer call per split) — an optimization target (batch splits).
+
+## Bottom line / recommendation (after building the WNFA prototype)
+
+On yeast, **small-k De Bruijn remains the most compact Wheeler index for an MSA.** The repair route was
+pushed as far as it sensibly goes: the **Wheeler-NFA repair** (ideas 1+2, built in `repair/wnfa.py`) is
+**smaller than the deterministic min-repair and scales past the trie blow-up** — but it still does not
+undercut De Bruijn's aggressive k-mer collapsing on divergent multi-species data (0 of 78 blocks). The
+mechanistic reason holds: divergent alignments inherently demand many splits to admit *any* Wheeler
+order, and the co-lex split rule mostly drives toward determinism anyway.
+
+Recommendations:
+- **For a compact MSA index, use small-k De Bruijn** (verified ~100% Wheeler on yeast, prior round) — it
+  is the right tool; the repair route is not the way to "smaller than De Bruijn."
+- **Use the WNFA repair where De Bruijn is unavailable/unsuitable** — i.e. to make an *arbitrary*
+  construction (RevDet, trie, a user graph) Wheeler-indexable losslessly: it beats the deterministic
+  repair on size and handles graphs the determinization cannot.
+- **Remaining levers** if pursuing "smaller than De Bruijn" further: a split rule that *preserves more
+  nondeterminism* (only 5–9/78 outputs stayed nondeterministic here — the co-lex heuristic over-splits
+  toward determinism), the polynomial maximum-co-lex-order of an NFA (Cotumaccio–Prezza) to choose
+  splits more principledly, and batching splits to fix the per-split-recognizer-call slowness. These are
+  open, higher-risk research directions, not clearly worth it given De Bruijn already wins on size.
