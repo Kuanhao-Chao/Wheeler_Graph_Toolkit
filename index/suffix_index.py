@@ -16,6 +16,7 @@ the recognizer's emitted order is the suffix-array rank. At genome scale we buil
 Pure stdlib. Built from the SAME first-`a`, ungapped, cap-`l` content as the De Bruijn graph and the
 existing locate, so positions line up with the coords sidecar and the brute oracle.
 """
+import bisect
 import os
 import sys
 
@@ -128,6 +129,32 @@ class SuffixIndex:
             self.sampled = [(self.SA[i] % self.s == 0) for i in range(self.n)]
         self.sa_val = {i: self.SA[i] for i in range(self.n) if self.sampled[i]}
         self.n_samples = len(self.sa_val)
+        self._build_phi()
+
+    def _build_phi(self):
+        """r-index structures for bounded locate (NO full-SA walk): phi (predecessor + offset over BWT
+        run heads) + per-symbol run-tail SA samples for the backward-search toehold. O(r) space."""
+        n = self.n
+        # phi pairs (SA[i], SA[(i-1) mod n]) at run heads, keyed/sorted by the SA value (text position)
+        pairs = sorted((self.SA[i], self.SA[(i - 1) % n]) for i in range(n)
+                       if i == 0 or self.BWT[i] != self.BWT[i - 1])
+        self._phi_keys = [a for a, _ in pairs]
+        self._phi_vals = [b for _, b in pairs]
+        # run-tail SA samples grouped by symbol: rows (ascending) + their SA values, for the toehold
+        self._tail_rows = {}
+        self._tail_sa = {}
+        for i in range(n):
+            if i == n - 1 or self.BWT[i + 1] != self.BWT[i]:
+                c = self.BWT[i]
+                self._tail_rows.setdefault(c, []).append(i)
+                self._tail_sa.setdefault(c, []).append(self.SA[i])
+        self._sa_bottom = self.SA[n - 1] if n else 0     # SA[hi-1] of the full range (a run-tail sample)
+
+    def phi(self, p):
+        """phi(p) = SA[(ISA[p]-1) mod n] = text position of the lexicographic predecessor of suffix p,
+        via predecessor over run-head samples + linear offset (Gagie-Navarro-Prezza). O(log r)."""
+        k = bisect.bisect_right(self._phi_keys, p) - 1   # largest key <= p (k=-1 -> cyclic: last pair)
+        return (self._phi_vals[k] + (p - self._phi_keys[k])) % self.n
 
     def _rank(self, c, i):
         return self._pref[c][i]
@@ -167,25 +194,66 @@ class SuffixIndex:
         lo, hi = self.backward_search(P)
         return hi - lo
 
+    def _hit(self, pos, m):
+        """Build a hit dict for an occurrence at text position `pos` (length m)."""
+        d = self.doc[pos]
+        local = pos - self.doc_start[d]
+        h = {"record_idx": d, "ungapped_pos": local}
+        if self.coords is not None:
+            c = self.coords[d]
+            gs, ge, st = transform(c, local, m)
+            h.update({"species": c["fasta_id"], "src": c["src"],
+                      "gstart": gs, "gend": ge, "strand": st})
+        return h
+
     def locate(self, P):
         """Every occurrence of P as a hit dict; (species, src, genomic coords, strand) if coords given,
-        else (record_idx, ungapped_pos). Exact, multi-hit, any |P|."""
+        else (record_idx, ungapped_pos). Exact, multi-hit, any |P|. Uses the bounded r-index phi-walk
+        when sample='runs', else the rate-sampled LF-walk."""
         m = len(P)
         if m == 0:
             return []
+        if self.sample_mode == "runs":
+            return self.locate_phi(P)
         lo, hi = self.backward_search(P)
+        hits = [self._hit(self.recover_pos(i), m) for i in range(lo, hi)]
+        return _dedup_sort(hits, genomic=self.coords is not None)
+
+    def _backward_toehold(self, P):
+        """Backward search keeping the SA value of the bottom row (the 'toehold'), using only run-tail
+        samples (no full SA). Returns (lo, hi, toehold = SA[hi-1]) or (lo, lo, None) if empty."""
+        cs = self._encode(P)
+        if not cs:
+            return (0, 0, None)
+        lo, hi = 0, self.n
+        p = self._sa_bottom                       # SA[hi-1] of the full range
+        for c in reversed(cs):
+            nlo = self.C[c] + self._rank(c, lo)
+            nhi = self.C[c] + self._rank(c, hi)
+            if nlo >= nhi:
+                return (nlo, nlo, None)
+            if self.BWT[hi - 1] == c:             # the bottom row is itself a c -> it maps to new bottom
+                p = (p - 1) % self.n
+            else:                                 # else the new bottom comes from the last c-run tail < hi
+                rows = self._tail_rows[c]
+                k = bisect.bisect_left(rows, hi) - 1
+                p = (self._tail_sa[c][k] - 1) % self.n
+            lo, hi = nlo, nhi
+        return (lo, hi, p)
+
+    def locate_phi(self, P):
+        """r-index locate: one toehold (SA[hi-1]) from backward search, then phi to enumerate the rest --
+        O(1) predecessor work per occurrence (no unbounded LF walk). Identical result to locate()."""
+        m = len(P)
+        if m == 0:
+            return []
+        lo, hi, pos = self._backward_toehold(P)
+        if lo >= hi:
+            return []
         hits = []
-        for i in range(lo, hi):
-            p = self.recover_pos(i)
-            d = self.doc[p]
-            local = p - self.doc_start[d]
-            h = {"record_idx": d, "ungapped_pos": local}
-            if self.coords is not None:
-                c = self.coords[d]
-                gs, ge, st = transform(c, local, m)
-                h.update({"species": c["fasta_id"], "src": c["src"],
-                          "gstart": gs, "gend": ge, "strand": st})
-            hits.append(h)
+        for _ in range(hi - lo):                  # pos = SA[hi-1], SA[hi-2], ..., SA[lo]
+            hits.append(self._hit(pos, m))
+            pos = self.phi(pos)
         return _dedup_sort(hits, genomic=self.coords is not None)
 
     @classmethod

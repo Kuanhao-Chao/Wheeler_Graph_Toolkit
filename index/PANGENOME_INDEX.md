@@ -144,13 +144,22 @@ when only compact *k-mer presence* is needed and resolution can live outside the
 Two ways to shrink the exact index, both verified (`test_suffix_index.py`; measured over 30 real
 4-species chrI blocks):
 
-**Run-length BWT (r-index).** The BWT is stored as `r` maximal equal-symbol runs and the suffix array
-is sampled at the `r` run boundaries (`SuffixIndex(sample="runs")`). Locate is **identical** to the full
-index (resolution preserved exactly — same answers, verified), with SA-sample storage dropping from `n`
-to `r`. On yeast blocks median `r/n ≈ 0.65` (≈1.5× fewer SA samples); the win is modest at the short
-block scale and grows with text length / repetitiveness (where the r-index is designed to shine — a
-longer homologous concatenation runs far fewer, longer BWT runs). This is the recommended compaction:
-**it costs no resolution.**
+**Run-length BWT (r-index) + bounded φ-locate.** The BWT is stored as `r` maximal equal-symbol runs and
+the suffix array is sampled at the `r` run boundaries (`SuffixIndex(sample="runs")`). Locate is
+**identical** to the full index (resolution preserved exactly — same answers, verified), with SA-sample
+storage dropping from `n` to `r`. On yeast blocks median `r/n ≈ 0.65` (≈1.5× fewer SA samples); the win
+is modest at the short block scale and grows with text length / repetitiveness.
+
+The naïve run-boundary sample recovers a position by an **LF-walk to the nearest sample, which is
+unbounded in run length** (a homopolymer run forces a walk as long as the run). The proper **r-index
+φ-locate** (`SuffixIndex.locate_phi`) removes that: backward search keeps **one** position (the
+"toehold" `SA[hi−1]`, maintained from per-symbol run-tail SA samples — no full SA), then the **φ**
+function (predecessor over run-head samples + a linear offset, Gagie–Navarro–Prezza) enumerates the
+remaining occurrences with **O(1) predecessor work each**, independent of run length. Verified:
+`phi(p) == SA[(ISA[p]−1) mod n]` for all p; the toehold `== SA[hi−1]` on every range; and `locate_phi ==`
+the full-SA locate `==` the brute scan. On a 40-base homopolymer block the LF-walk would take ≥30 steps
+per recovered position while φ-locate stays O(1) — same answers, bounded work. This is the recommended
+compaction: **it costs no resolution and bounds the locate work.**
 
 **Recognizer-certified merge — the suffix automaton (DAWG).** The DAWG (`index/dawg.py`) is the compact
 *exact* merge of the suffix trie: it recognizes **exactly** the substrings (no recombinant superset,

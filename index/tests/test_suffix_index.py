@@ -238,6 +238,53 @@ def test_dawg_is_wheeler(seqs, tmp_path):
     assert verdict == 1                                        # the compact exact DAWG is Wheeler
 
 
+# --------------------------------------------------------------------------- Q2: r-index phi-locate
+def test_phi_equals_brute_predecessor_and_toehold():
+    rng = random.Random(5)
+    for _ in range(80):
+        seqs = ["".join(rng.choice("ACGT") for _ in range(rng.randint(0, 16)))
+                for _ in range(rng.randint(1, 5))]
+        if sum(map(len, seqs)) == 0:
+            continue
+        idx = sx.SuffixIndex(seqs, coords=None, sample="runs")
+        n = idx.n
+        isa = [0] * n
+        for i in range(n):
+            isa[idx.SA[i]] = i
+        assert all(idx.phi(p) == idx.SA[(isa[p] - 1) % n] for p in range(n))   # phi == predecessor
+        for u in seqs:                                                          # toehold == SA[hi-1]
+            for m in (1, 2, 3):
+                for a in range(len(u) - m + 1):
+                    lo, hi, toe = idx._backward_toehold(u[a:a + m])
+                    if hi > lo:
+                        assert toe == idx.SA[hi - 1]
+
+
+def test_phi_locate_bounded_vs_lf_walk():
+    # a homopolymer block makes a long BWT run; the LF-walk recover_pos is unbounded in run length,
+    # while phi-locate does one predecessor query per occurrence. Both give the SAME answer.
+    seqs = ["A" * 40 + "CGT", "A" * 40 + "CGA"]
+    runs = sx.SuffixIndex(seqs, coords=None, sample="runs")
+    full = sx.SuffixIndex(seqs, coords=None, s=1)
+
+    def lf_walk_steps(idx, i):                       # what the old run-boundary recover_pos would cost
+        steps, j = 0, i
+        while not idx.sampled[j]:
+            j = idx.lf(j); steps += 1
+        return steps
+    max_walk = max(lf_walk_steps(runs, i) for i in range(runs.n))
+    assert max_walk >= 30                            # unbounded: grows with the homopolymer run
+
+    pairs = lambda hits: {(h["record_idx"], h["ungapped_pos"]) for h in hits}
+    for P in ("A", "AA", "A" * 10, "AAACGT", "CGT", "ZZZ"):
+        assert pairs(runs.locate(P)) == pairs(full.locate(P))
+    # phi-locate touches exactly hi-lo positions, each O(log r) -- independent of run length
+    lo, hi, _ = runs._backward_toehold("A")
+    true_count = sum(u.count("A") for u in seqs)     # 40 + 41 = 81
+    assert hi - lo == true_count
+    assert len(runs.locate("A")) == true_count
+
+
 # --------------------------------------------------------------------------- P2: recognizer certification
 @pytest.mark.skipif(not HAVE_REC, reason="recognizer needed")
 @pytest.mark.parametrize("seqs", [
