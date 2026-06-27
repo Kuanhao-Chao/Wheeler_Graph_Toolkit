@@ -30,8 +30,9 @@ De Bruijn(k=4) (39n) at small k. The repair inflates the graph ~12× on the way 
 **It gets worse with more sequences.** Repeating at a=4 (`compact_yeast_a4.csv`, 40 blocks, trie-cap
 8,000): **24/40 (60%) blow past the cap and cannot be repaired at all**, and of the 16 that do repair,
 RevDet+repair is **~4.5× larger** than De Bruijn(k=4) (median 145 vs 38.5 nodes; node ratio 0.22; RevDet
-smaller in **0/16**). At a=7 essentially every block blows up. The gap *widens* with sequence count —
-the opposite of the hoped-for "more sequences ⇒ RevDet wins."
+smaller in **0/16**). At a=7 the same picture holds (`compact_yeast_a7.csv`): **26/40 (65%) blow past the
+cap**, the repairable ones are ~4.3× larger (ratio 0.23, **0/14** smaller). The gap only *widens* with
+sequence count — the opposite of the hoped-for "more sequences ⇒ RevDet wins."
 
 ## Why: determinism is the enemy of compactness here
 
