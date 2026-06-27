@@ -149,10 +149,14 @@ def test_router_locate_vs_oracle(tmp_path):
                 pats.add(u[j:j + 6])
     pats |= {"".join(rng.choice("ACGT") for _ in range(rng.randint(3, 7))) for _ in range(20)}
     pats |= {"ZZZ"}
+    gli.build_global()                         # the genome-size-independent routing index
     saw_multi = False
     for P in pats:
         hits = gli.locate(P)
-        assert loc.as_tuples(hits) == oracle_union(P), (P, sorted(loc.as_tuples(hits)))
+        truth = oracle_union(P)
+        assert loc.as_tuples(hits) == truth, (P, sorted(loc.as_tuples(hits)))
+        # the routed method must agree exactly with the per-shard-prefilter method and the oracle
+        assert loc.as_tuples(gli.locate_routed(P)) == truth, (P, "routed")
         # router output is dedup'd and sorted
         keys = [(h["species"], h["src"], h["gstart"], h["gend"], h["strand"]) for h in hits]
         assert len(keys) == len(set(keys))

@@ -181,8 +181,11 @@ the construction's fidelity/size trade changes.
    would then bind alone.
 3. **The recognizer wall is *time*, not memory**, and super-linear — recognition is NP-complete; the
    lazy/CEGAR backend is fast on these sparse, near-Wheeler graphs but still scales super-linearly.
-4. **Query, not locate.** The index answers count/membership (which Wheeler-order node range). Reporting
-   genomic *positions* (locate) needs a suffix-array sample per shard — future work.
+4. **Locate — done (see `LOCATE.md`).** Beyond count/membership, the index now reports every occurrence
+   as (species, source, genomic coordinate, strand): a forward K-mer inverted index per shard +
+   the Wheeler FM-index as a sound prefilter; verified == an independent oracle and == the real sacCer3
+   genome. A global K-mer routing index makes locate genome-size-independent. (Suffix-array `locate`
+   from the FM-index itself, without the occ map, remains future work.)
 5. **The router is verified, not yet prefiltered.** The genome-scale per-shard sketch (to avoid touching
    every shard) is designed but not implemented; the verified path queries all shards.
 6. **Scope.** Measured on chrI (sharding generalizes per-block); the whole-genome numbers are

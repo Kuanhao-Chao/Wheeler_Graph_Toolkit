@@ -127,6 +127,8 @@ class GenomeLocateIndex:
                                 "coords": coords, "count_fn": count_fn})
 
     def locate(self, P, _stats=None):
+        """Per-shard FM-prefilter locate: the Wheeler index of each shard decides membership and lets
+        shards with count==0 be skipped; survivors do a K-mer occ lookup + verify."""
         results, survivors = [], 0
         for sh in self.shards:
             hits = locate_shard(P, sh["sample"], sh["coords"], sh["count_fn"])
@@ -137,13 +139,55 @@ class GenomeLocateIndex:
         if _stats is not None:
             _stats["survivors"] = survivors
             _stats["shards"] = len(self.shards)
-        # dedup exact genomic tuple; keep richest record per tuple; sort
+        return self._dedup_sort(results)
+
+    @staticmethod
+    def _dedup_sort(results):
         seen, out = set(), []
         for h in sorted(results, key=lambda h: (h["species"], h["src"], h["gstart"], h["gend"])):
             key = (h["species"], h["src"], h["gstart"], h["gend"], h["strand"])
             if key not in seen:
                 seen.add(key); out.append(h)
         return out
+
+    def build_global(self):
+        """Build a global K-mer routing index: K-mer -> [(shard_idx, record_idx, pos)] from all the
+        per-shard occ maps. This makes locate genome-size-INDEPENDENT (one dict lookup yields the few
+        candidate sites directly, instead of probing every shard)."""
+        g = {}
+        for si, sh in enumerate(self.shards):
+            for km, lst in sh["sample"]["occ"].items():
+                bucket = g.setdefault(km, [])
+                for (i, pos) in lst:
+                    bucket.append((si, i, pos))
+        self._global = g
+        return self
+
+    def locate_routed(self, P, _stats=None):
+        """Routed locate via the global K-mer index: O(occurrences of P[:K]) candidate sites, then
+        verify + transform -- independent of the number of shards. `build_global()` first."""
+        P = P.upper(); m = len(P)
+        if m == 0:
+            return []
+        if not hasattr(self, "_global"):
+            self.build_global()
+        K = self.k - 1
+        if m >= K and K > 0:
+            cands = self._global.get(P[:K], [])
+        else:                                        # |P|<K: fall back to the per-shard scan path
+            return self.locate(P, _stats)
+        results, touched = [], set()
+        for (si, i, pos) in cands:
+            sh = self.shards[si]
+            if sh["sample"]["seqs"][i][pos:pos + m] == P:
+                c = sh["coords"][i]
+                gs, ge, stx = transform(c, pos, m)
+                results.append({"species": c["fasta_id"], "src": c["src"], "gstart": gs, "gend": ge,
+                                "strand": stx, "record_idx": i, "ungapped_pos": pos, "shard": sh["stem"]})
+                touched.add(si)
+        if _stats is not None:
+            _stats["candidate_sites"] = len(cands); _stats["touched_shards"] = len(touched)
+        return self._dedup_sort(results)
 
 
 # --------------------------------------------------------------------------- naive baseline (for the demo)

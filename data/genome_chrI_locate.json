@@ -1,0 +1,110 @@
+{
+  "chrom": "chrI",
+  "k": 8,
+  "K": 7,
+  "a": 2,
+  "blocks_total": 992,
+  "shards_wheeler": 992,
+  "non_wheeler": 0,
+  "shard_build_s": 329.7,
+  "locidx_build_s": 1.5,
+  "occ_kmer_entries": 318129,
+  "global_distinct_kmers": 16368,
+  "verify_mismatches": 0,
+  "present": {
+    "label": "present",
+    "n": 85,
+    "naive_ms": 43.8993,
+    "fm_prefilter_ms": 7.2894,
+    "routed_ms": 0.02558,
+    "speedup_fm_vs_naive": 6.0,
+    "speedup_routed_vs_naive": 1716.2,
+    "median_survivor_shards": 11,
+    "of_shards": 992
+  },
+  "absent": {
+    "label": "absent",
+    "n": 17,
+    "naive_ms": 43.472,
+    "fm_prefilter_ms": 5.3267,
+    "routed_ms": 0.00699,
+    "speedup_fm_vs_naive": 8.2,
+    "speedup_routed_vs_naive": 6217.5,
+    "median_survivor_shards": 0,
+    "of_shards": 992
+  },
+  "overall": {
+    "label": "all",
+    "n": 102,
+    "naive_ms": 43.8034,
+    "fm_prefilter_ms": 7.222,
+    "routed_ms": 0.02139,
+    "speedup_fm_vs_naive": 6.1,
+    "speedup_routed_vs_naive": 2047.8,
+    "median_survivor_shards": 7.5,
+    "of_shards": 992
+  },
+  "biological_example": {
+    "pattern": "GCAACCG",
+    "n_hits": 16,
+    "hits": [
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 4071,
+        "gend": 4078,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 114270,
+        "gend": 114277,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 127722,
+        "gend": 127729,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 167855,
+        "gend": 167862,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 203909,
+        "gend": 203916,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 203938,
+        "gend": 203945,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 221285,
+        "gend": 221292,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 222569,
+        "gend": 222576,
+        "strand": "+"
+      }
+    ],
+    "sacCer3_genome_verified": true
+  }
+}

@@ -53,6 +53,9 @@ means `P` occurs in the alignment's sequences.
   `WGIndex` == the brute oracle on the example, real yeast blocks, and random complete/d-NFA WGs.
 - `test_genome_index.py` — the **sharded genome router** (`genome_index.py`): C++ router == Python
   router == oracle (OR over shards) on real chrI shards (present/absent, which shards, total matches).
+- `test_locate.py` — **locate** (`locate.py`): query string → exact (species, source, genomic
+  coordinate, strand) occurrences == the independent oracle (both strands, multi-hit, `m<K/=K/>K`) and,
+  for the reference, == the real sacCer3 genome.
 
 Run: `~/miniconda3/envs/myenv/bin/python -m pytest index/tests/ -q` (uses an env with Biopython + pytest).
 
@@ -67,9 +70,14 @@ Run: `~/miniconda3/envs/myenv/bin/python -m pytest index/tests/ -q` (uses an env
   (generator + recognizer both cap near ~10⁵ nodes; largest verified single graph = 68k nodes), so the
   genome is indexed **sharded** (whole-chrI demo: 992/992 Wheeler shards, 432 KB, router == oracle).
   `benchmark/genome_index/{scaling.py,chrI_demo.py}` + `data/genome_scaling.csv`, `data/genome_chrI_demo.json`.
+- **`LOCATE.md` / `locate.py`** — **locate**: query string → every (species, source, genomic coordinate,
+  strand). A forward K-mer inverted index per shard + the Wheeler FM-index as a sound membership
+  prefilter; verified == an independent oracle and == the real sacCer3 genome. A global K-mer routing
+  index makes locate genome-size-independent (whole-chrI demo: naive vs FM-prefilter vs routed).
+  `index/query.py --locate`; `benchmark/genome_index/chrI_locate_demo.py` + `data/genome_chrI_locate.json`.
 
 ## Deferred (future rounds)
 
-`locate` (map a hit back to sequence/position via sampling), human MSA, repairing non-Wheeler blocks
-(`repair/wheelerize.py`) before indexing, a per-shard k-mer prefilter for the genome router, and an
+Human MSA, repairing non-Wheeler blocks (`repair/wheelerize.py`) before indexing, a minimizer/sketch to
+compress the locate routing index, suffix-array `locate` from the FM-index itself (no occ map), and an
 sdsl wavelet-tree drop-in for large alphabets.
