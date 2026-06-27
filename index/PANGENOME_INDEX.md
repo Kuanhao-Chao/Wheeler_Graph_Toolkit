@@ -191,6 +191,15 @@ hit is verified against the real chromosome. (Random short controls that happen 
 the real occurrences they are; only truly-absent / off-alphabet strings return nothing — there is no
 recombinant superset.)
 
+**Router speed (sound w-mer prefilter).** The router skips any block that cannot contain P — sound
+because if P occurs in a block then every length-`w` substring of P occurs there (built from the indexed
+`idx.T`, so never a false skip; exact per-block locate removes false survivors, so the answer is
+**unchanged**, verified == oracle). A **global `w`-mer → blocks** inverted map
+(`PangenomeIndex.build_global` / `locate_routed`, mirroring the De Bruijn locate router) makes a genome
+query touch only the candidate blocks — genome-size-independent. Whole chrI (992 blocks, `w=8`,
+`gmap`=64k w-mers): touch-all **6.2 ms/q** → per-block w-mer prefilter **2.7 ms/q (2.3×, median 2/992
+blocks survive)** → **global routed 0.037 ms/q (≈167×)**. `|P|<w` falls back (still sound).
+
 ## 7. Recommendation & what we learned
 
 - **The new algorithm:** a **tagged suffix Wheeler-graph index** — the multi-string BWT with a document
