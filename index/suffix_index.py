@@ -88,11 +88,13 @@ def build_bwt(T, SA):
 
 # --------------------------------------------------------------------------- the index
 class SuffixIndex:
-    def __init__(self, seqs, coords=None, s=8):
+    def __init__(self, seqs, coords=None, s=8, sample="rate"):
         """seqs: ungapped/upper/ACGT rows (row i = document i). coords: per-row coords dicts (optional;
-        enables genomic locate). s: SA sample rate (s=1 stores the full SA)."""
+        enables genomic locate). s: SA sample rate. sample: 'rate' (every s-th text position) or 'runs'
+        (at BWT run boundaries -> r samples, the r-index compaction; resolution unchanged)."""
         self.coords = coords
         self.s = max(1, s)
+        self.sample_mode = sample
         self.T, self.doc, self.doc_start, self.a = build_text(seqs)
         self.code = dna_code(self.a)
         self.n = len(self.T)
@@ -112,10 +114,20 @@ class SuffixIndex:
             p = self._pref[c]
             for i, x in enumerate(self.BWT):
                 p[i + 1] = p[i] + (1 if x == c else 0)
-        # document array + sampled SA (sample where text pos % s == 0; pos 0 always sampled)
+        # number of maximal equal-symbol BWT runs (the r-index size measure)
+        self.r = 1 if self.n else 0
+        for i in range(1, self.n):
+            if self.BWT[i] != self.BWT[i - 1]:
+                self.r += 1
+        # document array + sampled SA. 'rate': text pos % s == 0 (pos 0 always). 'runs': BWT run heads
+        # (r samples) -> the r-index compaction; locate is identical, SA storage drops to O(r).
         self.DOC = [self.doc[self.SA[i]] for i in range(self.n)]
-        self.sampled = [(self.SA[i] % self.s == 0) for i in range(self.n)]
+        if self.sample_mode == "runs":
+            self.sampled = [(i == 0 or self.BWT[i] != self.BWT[i - 1]) for i in range(self.n)]
+        else:
+            self.sampled = [(self.SA[i] % self.s == 0) for i in range(self.n)]
         self.sa_val = {i: self.SA[i] for i in range(self.n) if self.sampled[i]}
+        self.n_samples = len(self.sa_val)
 
     def _rank(self, c, i):
         return self._pref[c][i]
@@ -177,12 +189,12 @@ class SuffixIndex:
         return _dedup_sort(hits, genomic=self.coords is not None)
 
     @classmethod
-    def from_fasta(cls, fasta, a=None, l=-1, coords=None, s=8):
+    def from_fasta(cls, fasta, a=None, l=-1, coords=None, s=8, sample="rate"):
         recs = read_fasta(fasta)
         if a is not None:
             recs = recs[:a]
         seqs = [_ungap_cap(seq, l) for _id, seq in recs]
-        return cls(seqs, coords=coords, s=s)
+        return cls(seqs, coords=coords, s=s, sample=sample)
 
 
 def _dedup_sort(hits, genomic):

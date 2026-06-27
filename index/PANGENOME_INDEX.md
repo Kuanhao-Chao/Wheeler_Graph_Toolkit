@@ -139,6 +139,35 @@ suffix query is asserted == the oracle, so the benchmark is also a correctness g
 species+position resolution — exact, multi-hit, faster locate, modest size. De Bruijn remains the choice
 when only compact *k-mer presence* is needed and resolution can live outside the index.
 
-## 5. Compaction: run-length BWT + recognizer-certified merge — *pending (P4)*
+## 5. Compaction — run-length BWT (keeps resolution) + a recognizer-certified merge
+
+Two ways to shrink the exact index, both verified (`test_suffix_index.py`; measured over 30 real
+4-species chrI blocks):
+
+**Run-length BWT (r-index).** The BWT is stored as `r` maximal equal-symbol runs and the suffix array
+is sampled at the `r` run boundaries (`SuffixIndex(sample="runs")`). Locate is **identical** to the full
+index (resolution preserved exactly — same answers, verified), with SA-sample storage dropping from `n`
+to `r`. On yeast blocks median `r/n ≈ 0.65` (≈1.5× fewer SA samples); the win is modest at the short
+block scale and grows with text length / repetitiveness (where the r-index is designed to shine — a
+longer homologous concatenation runs far fewer, longer BWT runs). This is the recommended compaction:
+**it costs no resolution.**
+
+**Recognizer-certified merge — the suffix automaton (DAWG).** The DAWG (`index/dawg.py`) is the compact
+*exact* merge of the suffix trie: it recognizes **exactly** the substrings (no recombinant superset,
+unlike De Bruijn/RevDet), has ≤2n states, and each state's `endpos` set gives the (species, position)
+hits. Whether a given DAWG is a Wheeler graph is **not** free — so the recognizer is put central to
+certify it. Finding: the DAWG was **recognized Wheeler on 30/30 (and 40/40 earlier) blocks**, and its
+`locate` is exact (== oracle). So the merge genuinely yields a *compact, exact, resolved Wheeler graph*
+— a positive, recognizer-enabled result. **But it does not pay off on size here:** the DAWG has ~1.6×
+**more** nodes (median 442 vs the suffix-array graph's 276) and a larger `endpos` locate payload than
+the suffix-array index, because the suffix automaton sits between `n` and `2n` states while the
+suffix-array Wheeler graph is exactly `n`. So on this data the suffix-array index is already at the
+compact end of the *exact-resolution* frontier; the DAWG is an equally-exact alternative, not a smaller
+one.
+
+**Verdict:** keep the suffix-array tagged Wheeler index as the exact resolved core; compress it with the
+**run-length BWT** (resolution-free). The DAWG is a clean illustration that the recognizer can certify
+nontrivial compact-exact Wheeler graphs, but it is not smaller than the suffix-array graph for these
+inputs.
 
 ## 6. Whole-chrI demo + recommendation — *pending (P5)*

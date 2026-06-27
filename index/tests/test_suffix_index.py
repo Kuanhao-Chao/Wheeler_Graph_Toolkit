@@ -151,6 +151,61 @@ def test_suffix_locate_vs_oracle_real_block(fa):
 
 
 # --------------------------------------------------------------------------- real-genome cross-check
+# --------------------------------------------------------------------------- P4: RLBWT + DAWG (merge)
+@pytest.mark.skipif(not YEAST_FA, reason="needs yeast FASTA")
+@pytest.mark.parametrize("fa", YEAST_FA[:5])
+def test_rlbwt_locate_invariant_and_compresses(fa):
+    a = 4
+    coords = _coords_for(fa)
+    full = sx.SuffixIndex.from_fasta(fa, a=a, l=-1, coords=coords, s=1)
+    runs = sx.SuffixIndex.from_fasta(fa, a=a, l=-1, coords=coords, sample="runs")
+    assert runs.r <= runs.n and runs.n_samples == runs.r        # r-index: one SA sample per BWT run
+    seqs = [_ungap_cap(s, -1) for _id, s in read_fasta(fa)[:a]]
+    pats = {u[p:p + m] for u in seqs for m in (1, 4, 7) for p in range(len(u) - m + 1)}
+    pats |= {"ZZZ", "TTTTT"}
+    for P in pats:
+        assert sx.as_tuples(full.locate(P)) == sx.as_tuples(runs.locate(P))
+
+
+@pytest.mark.skipif(not YEAST_FA, reason="needs yeast FASTA")
+@pytest.mark.parametrize("fa", YEAST_FA[:5])
+def test_dawg_locate_exact_vs_oracle(fa):
+    from index import dawg
+    a = 4
+    coords = _coords_for(fa)
+    d = dawg.DAWG([_ungap_cap(s, -1) for _id, s in read_fasta(fa)[:a]], coords=coords)
+    rng = random.Random(hash(fa) & 0xffff)
+    seqs = [_ungap_cap(s, -1) for _id, s in read_fasta(fa)[:a]]
+    pats = set()
+    for u in seqs:
+        for m in (1, 3, 6, 9):
+            if len(u) >= m:
+                pats.add(u[rng.randint(0, len(u) - m):][:m])
+    pats |= {"".join(rng.choice("ACGT") for _ in range(rng.randint(2, 7))) for _ in range(20)}
+    pats |= {"ZZZ", ""}
+    for P in pats:                                              # DAWG = EXACT substrings, no superset
+        assert sx.as_tuples(d.locate(P)) == lor.locate_brute(fa, coords, P, a=a, l=-1)
+
+
+@pytest.mark.skipif(not HAVE_REC, reason="recognizer needed")
+@pytest.mark.parametrize("seqs", [["ACGAC", "ACGTA"], ["ACGTACGT", "ACGTACGA", "ACGTAAGT"]])
+def test_dawg_is_wheeler(seqs, tmp_path):
+    import subprocess
+    from index import dawg
+    d = dawg.DAWG(seqs)
+    dot = os.path.join(str(tmp_path), "dawg.dot")
+    with open(dot, "w") as f:
+        f.write("strict digraph  {\n")
+        for u, v, l in d.edges():
+            f.write(f"\t{u} -> {v} [label={l}];\n")
+        f.write("}\n")
+    r = subprocess.run([REC, os.path.abspath(dot), "-i", "-b", "-o", str(tmp_path) + os.sep],
+                       capture_output=True, text=True, timeout=120)
+    verdict = next((int(p[0]) for line in r.stdout.splitlines()
+                    if len((p := line.split("\t"))) >= 4 and p[0].lstrip("-").isdigit()), None)
+    assert verdict == 1                                        # the compact exact DAWG is Wheeler
+
+
 # --------------------------------------------------------------------------- P2: recognizer certification
 @pytest.mark.skipif(not HAVE_REC, reason="recognizer needed")
 @pytest.mark.parametrize("seqs", [
