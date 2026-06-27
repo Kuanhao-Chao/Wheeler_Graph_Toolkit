@@ -150,6 +150,38 @@ def test_suffix_locate_vs_oracle_real_block(fa):
     assert saw
 
 
+# --------------------------------------------------------------------------- P5: genome-wide router
+@pytest.mark.skipif(not YEAST_FA, reason="needs yeast FASTA")
+def test_pangenome_router_vs_oracle():
+    from index.pangenome_index import PangenomeIndex
+    fastas = YEAST_FA[:20]
+    pg = PangenomeIndex(fastas, a=4, l=-1, s=4)
+    coords = {fa: _coords_for(fa) for fa in fastas}
+
+    def oracle_union(P):
+        out = set()
+        for fa in fastas:
+            out |= lor.locate_brute(fa, coords[fa], P, a=4, l=-1)
+        return out
+
+    rng = random.Random(11)
+    pats = set()
+    for fa in fastas[:8]:
+        for _id, s in read_fasta(fa)[:4]:
+            u = _ungap_cap(s, -1)
+            if len(u) >= 8:
+                pats.add(u[rng.randint(0, len(u) - 6):][:6])
+    pats |= {"".join(rng.choice("ACGT") for _ in range(rng.randint(3, 7))) for _ in range(15)}
+    pats |= {"ZZZ"}
+    saw_multi_species = False
+    for P in pats:
+        hits = pg.locate(P)
+        assert sx.as_tuples(hits) == oracle_union(P), P
+        if len({h["species"] for h in hits}) >= 2:
+            saw_multi_species = True
+    assert saw_multi_species          # the index natively resolves species across the genome
+
+
 # --------------------------------------------------------------------------- real-genome cross-check
 # --------------------------------------------------------------------------- P4: RLBWT + DAWG (merge)
 @pytest.mark.skipif(not YEAST_FA, reason="needs yeast FASTA")

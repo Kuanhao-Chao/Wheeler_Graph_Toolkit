@@ -1,0 +1,93 @@
+{
+  "chrom": "chrI",
+  "a": 4,
+  "s": 4,
+  "blocks": 992,
+  "build_s": 5.4,
+  "total_suffix_nodes": 820487,
+  "total_sa_samples": 205377,
+  "build_ms_per_block": 5.49,
+  "query_ms_per_pattern": 7.7,
+  "present_multi_species": 50,
+  "present_total": 50,
+  "absent_found": 13,
+  "verify_sample": 30,
+  "verify_mismatches": 0,
+  "sacCer3_genome_checks": 124,
+  "biological_example": {
+    "pattern": "CATTACCC",
+    "n_hits": 9,
+    "species": [
+      "sacCer3",
+      "sacKud",
+      "sacMik",
+      "sacPar"
+    ],
+    "hits": [
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 126,
+        "gend": 134,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 263,
+        "gend": 271,
+        "strand": "+"
+      },
+      {
+        "species": "sacCer3",
+        "src": "sacCer3.chrI",
+        "gstart": 20560,
+        "gend": 20568,
+        "strand": "+"
+      },
+      {
+        "species": "sacKud",
+        "src": "sacKud.sacKud.Contig689",
+        "gstart": 1615,
+        "gend": 1623,
+        "strand": "-"
+      },
+      {
+        "species": "sacMik",
+        "src": "sacMik.sacMik.contig_1032",
+        "gstart": 4438,
+        "gend": 4446,
+        "strand": "+"
+      },
+      {
+        "species": "sacMik",
+        "src": "sacMik.sacMik.contig_1032",
+        "gstart": 50294,
+        "gend": 50302,
+        "strand": "+"
+      },
+      {
+        "species": "sacMik",
+        "src": "sacMik.sacMik.contig_260",
+        "gstart": 3766,
+        "gend": 3774,
+        "strand": "-"
+      },
+      {
+        "species": "sacPar",
+        "src": "sacPar.sacPar.contig_219",
+        "gstart": 86866,
+        "gend": 86874,
+        "strand": "-"
+      },
+      {
+        "species": "sacPar",
+        "src": "sacPar.sacPar.contig_777",
+        "gstart": 85,
+        "gend": 93,
+        "strand": "-"
+      }
+    ]
+  },
+  "resolution_note": "the suffix pangenome index reports the species SET + positions natively; the De Bruijn index returns a collapsed node range that names no species"
+}

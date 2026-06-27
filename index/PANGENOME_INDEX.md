@@ -170,4 +170,51 @@ one.
 nontrivial compact-exact Wheeler graphs, but it is not smaller than the suffix-array graph for these
 inputs.
 
-## 6. Whole-chrI demo + recommendation — *pending (P5)*
+## 6. Whole-chrI demo + recommendation
+
+`index/pangenome_index.py` shards the suffix index per MAF block (no recognizer at build time — the
+order is Wheeler by theorem, §3); a genome query unions the per-block locates behind a cheap per-block
+symbol prefilter. `benchmark/genome_index/pangenome_demo.py` over **all 992 chrI blocks**
+(`data/genome_pangenome.json`):
+
+| measurement | value |
+|---|---|
+| blocks / build | 992 / **5.4 s** (5.5 ms per block) |
+| total suffix nodes / SA samples | 820,487 / 205,377 |
+| query latency | **7.7 ms / pattern** (all blocks, symbol prefilter) |
+| verification (sample vs oracle union + real genome) | **0 mismatches / 30 patterns**, 124 sacCer3 genome checks |
+| biological example | `CATTACCC` → **9 occurrences across 4 species** (sacCer3, sacKud, sacMik, sacPar), each with its genomic coordinate |
+
+Every query returns the exact (species, genomic coordinate, strand) of every occurrence, multi-hit,
+**natively** — the species come from the index's own document array, not a side table — and each sacCer3
+hit is verified against the real chromosome. (Random short controls that happen to occur are reported as
+the real occurrences they are; only truly-absent / off-alphabet strings return nothing — there is no
+recombinant superset.)
+
+## 7. Recommendation & what we learned
+
+- **The new algorithm:** a **tagged suffix Wheeler-graph index** — the multi-string BWT with a document
+  array (species) and a sampled suffix array (position). Backward search returns the exact occurrence
+  interval; the tags read off (species, position). This is the construction whose Wheeler range *is* the
+  occurrences, giving **native, exact, multi-hit species+position resolution** — what the De Bruijn
+  k-mer index could not (it collapses k-mers, 0 % native species, and accepts a recombinant superset).
+- **The recognizer was genuinely useful:** it independently finds exactly the suffix-array rank as the
+  Wheeler order (certifying the construction), and it certifies that the compact-exact DAWG is Wheeler.
+- **What we tried and learned:** RevDet (the user's candidate) is compact but a membership-only
+  recombinant superset with the column lost on serialization — *not* ideal for resolution. The
+  run-length BWT compresses the index with **zero** resolution loss (the right compaction). The
+  suffix-automaton merge yields an equally-exact Wheeler graph but is *not* smaller than the
+  suffix-array graph, so the suffix-array index already sits at the compact end of the exact-resolution
+  frontier.
+- **Cost honestly stated:** the suffix index is ~1.2× larger than the small-k De Bruijn graph and is
+  O(text length) per block, so it is sharded per block (as the De Bruijn genome index is); it is the
+  right tool when you need *which species, where*, and the De Bruijn graph remains the choice for compact
+  k-mer *presence* alone.
+
+### Reproduce
+```bash
+~/miniconda3/envs/myenv/bin/python -m pytest index/tests/test_suffix_index.py -q   # all gates
+python3 verify/suffix_wheeler_cert.py ACGACG ACGTAC                                 # recognizer cert
+python3 benchmark/genome_index/resolution_demo.py -a 4 --kdb 8 --limit 80           # suffix vs De Bruijn
+python3 benchmark/genome_index/pangenome_demo.py -a 4 -s 4 --blocks 0               # whole-chrI demo
+```

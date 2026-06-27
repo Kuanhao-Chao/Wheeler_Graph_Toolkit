@@ -75,6 +75,13 @@ Run: `~/miniconda3/envs/myenv/bin/python -m pytest index/tests/ -q` (uses an env
   prefilter; verified == an independent oracle and == the real sacCer3 genome. A global K-mer routing
   index makes locate genome-size-independent (whole-chrI demo: naive vs FM-prefilter vs routed).
   `index/query.py --locate`; `benchmark/genome_index/chrI_locate_demo.py` + `data/genome_chrI_locate.json`.
+- **`PANGENOME_INDEX.md` / `suffix_index.py` / `pangenome_index.py`** — a **new index with NATIVE
+  species+position resolution**: the tagged suffix Wheeler graph (multi-string BWT + document array +
+  sampled SA). Its backward-search range **is** the occurrences, so the species set + positions are read
+  off the index itself (the De Bruijn k-mer index can't — it collapses k-mers; 0 % native species,
+  recombinant superset). The recognizer certifies the suffix order IS the Wheeler order
+  (`verify/suffix_wheeler_cert.py`) and that the compact-exact DAWG (`dawg.py`) is Wheeler. Verified
+  exact vs oracle + the real genome. `benchmark/genome_index/{resolution_demo,pangenome_demo}.py`.
 
 ## Deferred (future rounds)
 
