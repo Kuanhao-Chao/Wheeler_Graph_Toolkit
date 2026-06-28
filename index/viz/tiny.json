@@ -1,0 +1,6881 @@
+{
+ "meta": {
+  "faithful": true,
+  "source_commit": "wg-genome-index@e6a5e75b1",
+  "seqs": [
+   "ACGAC",
+   "ACGTC"
+  ],
+  "a": 2,
+  "n": 12,
+  "s": 4,
+  "sample": "rate",
+  "Lmax": 3,
+  "alphabet": [
+   {
+    "sym": "$₀",
+    "code": 0,
+    "kind": "sep",
+    "doc": 0
+   },
+   {
+    "sym": "$₁",
+    "code": 1,
+    "kind": "sep",
+    "doc": 1
+   },
+   {
+    "sym": "A",
+    "code": 2,
+    "kind": "dna",
+    "doc": null
+   },
+   {
+    "sym": "C",
+    "code": 3,
+    "kind": "dna",
+    "doc": null
+   },
+   {
+    "sym": "G",
+    "code": 4,
+    "kind": "dna",
+    "doc": null
+   },
+   {
+    "sym": "T",
+    "code": 5,
+    "kind": "dna",
+    "doc": null
+   }
+  ]
+ },
+ "arrays": {
+  "T": [
+   {
+    "i": 0,
+    "sym": "A",
+    "code": 2,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 1,
+    "sym": "C",
+    "code": 3,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 2,
+    "sym": "G",
+    "code": 4,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 3,
+    "sym": "A",
+    "code": 2,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 4,
+    "sym": "C",
+    "code": 3,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 5,
+    "sym": "$₀",
+    "code": 0,
+    "doc": 0,
+    "kind": "sep"
+   },
+   {
+    "i": 6,
+    "sym": "A",
+    "code": 2,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 7,
+    "sym": "C",
+    "code": 3,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 8,
+    "sym": "G",
+    "code": 4,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 9,
+    "sym": "T",
+    "code": 5,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 10,
+    "sym": "C",
+    "code": 3,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 11,
+    "sym": "$₁",
+    "code": 1,
+    "doc": 1,
+    "kind": "sep"
+   }
+  ],
+  "SA": [
+   5,
+   11,
+   3,
+   0,
+   6,
+   4,
+   10,
+   1,
+   7,
+   2,
+   8,
+   9
+  ],
+  "BWT": [
+   {
+    "i": 0,
+    "sym": "C",
+    "code": 3,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 1,
+    "sym": "C",
+    "code": 3,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 2,
+    "sym": "G",
+    "code": 4,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 3,
+    "sym": "$₁",
+    "code": 1,
+    "doc": 1,
+    "kind": "sep"
+   },
+   {
+    "i": 4,
+    "sym": "$₀",
+    "code": 0,
+    "doc": 0,
+    "kind": "sep"
+   },
+   {
+    "i": 5,
+    "sym": "A",
+    "code": 2,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 6,
+    "sym": "T",
+    "code": 5,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 7,
+    "sym": "A",
+    "code": 2,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 8,
+    "sym": "A",
+    "code": 2,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 9,
+    "sym": "C",
+    "code": 3,
+    "doc": 0,
+    "kind": "dna"
+   },
+   {
+    "i": 10,
+    "sym": "C",
+    "code": 3,
+    "doc": 1,
+    "kind": "dna"
+   },
+   {
+    "i": 11,
+    "sym": "G",
+    "code": 4,
+    "doc": 1,
+    "kind": "dna"
+   }
+  ],
+  "DOC": [
+   0,
+   1,
+   0,
+   0,
+   1,
+   0,
+   1,
+   0,
+   1,
+   0,
+   1,
+   1
+  ],
+  "C": [
+   0,
+   1,
+   2,
+   5,
+   9,
+   11
+  ],
+  "rotations": [
+   {
+    "row": 0,
+    "saStart": 5,
+    "rowDoc": 0,
+    "first": "$₀",
+    "last": "C",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 1,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 7,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 1,
+    "saStart": 11,
+    "rowDoc": 1,
+    "first": "$₁",
+    "last": "C",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 1,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 7,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 2,
+    "saStart": 3,
+    "rowDoc": 0,
+    "first": "A",
+    "last": "G",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 3,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 9,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 3,
+    "saStart": 0,
+    "rowDoc": 0,
+    "first": "A",
+    "last": "$₁",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 6,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     }
+    ]
+   },
+   {
+    "row": 4,
+    "saStart": 6,
+    "rowDoc": 1,
+    "first": "A",
+    "last": "$₀",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 6,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     }
+    ]
+   },
+   {
+    "row": 5,
+    "saStart": 4,
+    "rowDoc": 0,
+    "first": "C",
+    "last": "A",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 2,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 8,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 6,
+    "saStart": 10,
+    "rowDoc": 1,
+    "first": "C",
+    "last": "T",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 2,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 8,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 7,
+    "saStart": 1,
+    "rowDoc": 0,
+    "first": "C",
+    "last": "A",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 5,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 11,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 8,
+    "saStart": 7,
+    "rowDoc": 1,
+    "first": "C",
+    "last": "A",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 5,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 11,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 9,
+    "saStart": 2,
+    "rowDoc": 0,
+    "first": "G",
+    "last": "C",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 4,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 10,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 10,
+    "saStart": 8,
+    "rowDoc": 1,
+    "first": "G",
+    "last": "C",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 4,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 10,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "row": 11,
+    "saStart": 9,
+    "rowDoc": 1,
+    "first": "T",
+    "last": "G",
+    "cells": [
+     {
+      "i": 0,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 3,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 9,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   }
+  ],
+  "unsorted": [
+   {
+    "start": 0,
+    "rowDoc": 0,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 6,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     }
+    ]
+   },
+   {
+    "start": 1,
+    "rowDoc": 0,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 5,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 11,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 2,
+    "rowDoc": 0,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 4,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 10,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 3,
+    "rowDoc": 0,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 3,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 9,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 4,
+    "rowDoc": 0,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 2,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 8,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 5,
+    "rowDoc": 0,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 1,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 7,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 6,
+    "rowDoc": 1,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 6,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     }
+    ]
+   },
+   {
+    "start": 7,
+    "rowDoc": 1,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 5,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 11,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 8,
+    "rowDoc": 1,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 4,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 10,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 9,
+    "rowDoc": 1,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 3,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 9,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 10,
+    "rowDoc": 1,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 1,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 2,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 7,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 8,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   },
+   {
+    "start": 11,
+    "rowDoc": 1,
+    "cells": [
+     {
+      "i": 0,
+      "sym": "$₁",
+      "code": 1,
+      "doc": 1,
+      "kind": "sep"
+     },
+     {
+      "i": 1,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 2,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 3,
+      "sym": "G",
+      "code": 4,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 4,
+      "sym": "A",
+      "code": 2,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 5,
+      "sym": "C",
+      "code": 3,
+      "doc": 0,
+      "kind": "dna"
+     },
+     {
+      "i": 6,
+      "sym": "$₀",
+      "code": 0,
+      "doc": 0,
+      "kind": "sep"
+     },
+     {
+      "i": 7,
+      "sym": "A",
+      "code": 2,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 8,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 9,
+      "sym": "G",
+      "code": 4,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 10,
+      "sym": "T",
+      "code": 5,
+      "doc": 1,
+      "kind": "dna"
+     },
+     {
+      "i": 11,
+      "sym": "C",
+      "code": 3,
+      "doc": 1,
+      "kind": "dna"
+     }
+    ]
+   }
+  ],
+  "sampledSA": [
+   {
+    "row": 3,
+    "sa": 0
+   },
+   {
+    "row": 5,
+    "sa": 4
+   },
+   {
+    "row": 10,
+    "sa": 8
+   }
+  ]
+ },
+ "build": [
+  {
+   "id": "msa",
+   "view": "rows",
+   "title": "1 · The alignment block",
+   "caption": "Two aligned species, alignment gaps stripped: S0 = ACGAC (blue), S1 = ACGTC (orange). This is one MSA block.",
+   "rows": [
+    {
+     "doc": 0,
+     "cells": [
+      "A",
+      "C",
+      "G",
+      "A",
+      "C"
+     ]
+    },
+    {
+     "doc": 1,
+     "cells": [
+      "A",
+      "C",
+      "G",
+      "T",
+      "C"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "concat",
+   "view": "linearT",
+   "title": "2 · Concatenate with distinct separators",
+   "caption": "Join the rows into one text T, each ended by its own distinct separator ($₀ < $₁ < A < C < G < T). The separators are smaller than any DNA base, so a DNA pattern can never cross one.",
+   "highlight": [
+    5,
+    11
+   ]
+  },
+  {
+   "id": "rotate",
+   "view": "unsorted",
+   "title": "3 · Form every cyclic rotation",
+   "caption": "Write out all 12 cyclic rotations of T (here unsorted). Distinct separators make every rotation unique."
+  },
+  {
+   "id": "sort",
+   "view": "sorted",
+   "title": "4 · Sort the rotations → the BWT matrix",
+   "caption": "Sort the rotations lexicographically. This sorted order IS the Wheeler order (Gagie–Manzini–Sirén): the suffix-array rank."
+  },
+  {
+   "id": "extract",
+   "view": "arrays",
+   "title": "5 · Read off the index",
+   "caption": "The last column is the BWT. Each row also yields SA (its text position = POSITION), DOC (the species of that position = SPECIES), and a sampled subset of SA. These four arrays are the whole index.",
+   "show": [
+    "BWT",
+    "SA",
+    "DOC",
+    "sampledSA"
+   ]
+  }
+ ],
+ "query": {
+  "presets": [
+   "AC",
+   "ACG",
+   "GTC",
+   "GGG"
+  ],
+  "Lmax": 3,
+  "traces": {
+   "A": {
+    "pattern": "A",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 5,
+     "count": 3,
+     "hits": [
+      {
+       "row": 2,
+       "sa": 3,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 3
+      },
+      {
+       "row": 3,
+       "sa": 0,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 0
+      },
+      {
+       "row": 4,
+       "sa": 6,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 0
+      }
+     ]
+    }
+   },
+   "C": {
+    "pattern": "C",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 9,
+     "count": 4,
+     "hits": [
+      {
+       "row": 5,
+       "sa": 4,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 4
+      },
+      {
+       "row": 6,
+       "sa": 10,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 4
+      },
+      {
+       "row": 7,
+       "sa": 1,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 1
+      },
+      {
+       "row": 8,
+       "sa": 7,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 1
+      }
+     ]
+    }
+   },
+   "G": {
+    "pattern": "G",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 11,
+     "count": 2,
+     "hits": [
+      {
+       "row": 9,
+       "sa": 2,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 2
+      },
+      {
+       "row": 10,
+       "sa": 8,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 2
+      }
+     ]
+    }
+   },
+   "T": {
+    "pattern": "T",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 12,
+     "count": 1,
+     "hits": [
+      {
+       "row": 11,
+       "sa": 9,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 3
+      }
+     ]
+    }
+   },
+   "AA": {
+    "pattern": "AA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 2,
+      "hi": 2,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,2)=0, rank(A,5)=0 → interval [2,2) is empty. “AA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 2,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AC": {
+    "pattern": "AC",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,5) = 2+0 = 2; hi = C[A]+rank(A,9) = 2+3 = 5. Interval [2,5) now spells “AC”."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 5,
+     "count": 3,
+     "hits": [
+      {
+       "row": 2,
+       "sa": 3,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 3
+      },
+      {
+       "row": 3,
+       "sa": 0,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 0
+      },
+      {
+       "row": 4,
+       "sa": 6,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 0
+      }
+     ]
+    }
+   },
+   "AG": {
+    "pattern": "AG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,9)=3, rank(A,11)=3 → interval [5,5) is empty. “AG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AT": {
+    "pattern": "AT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,11)=3, rank(A,12)=3 → interval [5,5) is empty. “AT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CA": {
+    "pattern": "CA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,2)=2, rank(C,5)=2 → interval [7,7) is empty. “CA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CC": {
+    "pattern": "CC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,5)=2, rank(C,9)=2 → interval [7,7) is empty. “CC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CG": {
+    "pattern": "CG",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 4,
+      "lo": 7,
+      "hi": 9,
+      "rowsInBand": [
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,9) = 5+2 = 7; hi = C[C]+rank(C,11) = 5+4 = 9. Interval [7,9) now spells “CG”."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 9,
+     "count": 2,
+     "hits": [
+      {
+       "row": 7,
+       "sa": 1,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 1
+      },
+      {
+       "row": 8,
+       "sa": 7,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 1
+      }
+     ]
+    }
+   },
+   "CT": {
+    "pattern": "CT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 4,
+      "rankHi": 4,
+      "lo": 9,
+      "hi": 9,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,11)=4, rank(C,12)=4 → interval [9,9) is empty. “CT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 9,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GA": {
+    "pattern": "GA",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 9,
+      "hi": 10,
+      "rowsInBand": [
+       9
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,2) = 9+0 = 9; hi = C[G]+rank(G,5) = 9+1 = 10. Interval [9,10) now spells “GA”."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 10,
+     "count": 1,
+     "hits": [
+      {
+       "row": 9,
+       "sa": 2,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 2
+      }
+     ]
+    }
+   },
+   "GC": {
+    "pattern": "GC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,5)=1, rank(G,9)=1 → interval [10,10) is empty. “GC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GG": {
+    "pattern": "GG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,9)=1, rank(G,11)=1 → interval [10,10) is empty. “GG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GT": {
+    "pattern": "GT",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 2,
+      "lo": 10,
+      "hi": 11,
+      "rowsInBand": [
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,11) = 9+1 = 10; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [10,11) now spells “GT”."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 11,
+     "count": 1,
+     "hits": [
+      {
+       "row": 10,
+       "sa": 8,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 2
+      }
+     ]
+    }
+   },
+   "TA": {
+    "pattern": "TA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 11,
+      "hi": 11,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,2)=0, rank(T,5)=0 → interval [11,11) is empty. “TA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 11,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TC": {
+    "pattern": "TC",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,5) = 11+0 = 11; hi = C[T]+rank(T,9) = 11+1 = 12. Interval [11,12) now spells “TC”."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 12,
+     "count": 1,
+     "hits": [
+      {
+       "row": 11,
+       "sa": 9,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 3
+      }
+     ]
+    }
+   },
+   "TG": {
+    "pattern": "TG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,9)=1, rank(T,11)=1 → interval [12,12) is empty. “TG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TT": {
+    "pattern": "TT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,11)=1, rank(T,12)=1 → interval [12,12) is empty. “TT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AAA": {
+    "pattern": "AAA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 2,
+      "hi": 2,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,2)=0, rank(A,5)=0 → interval [2,2) is empty. “AA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 2,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AAC": {
+    "pattern": "AAC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,5) = 2+0 = 2; hi = C[A]+rank(A,9) = 2+3 = 5. Interval [2,5) now spells “AC”."
+     },
+     {
+      "i": 2,
+      "c": "A",
+      "matched": "AAC",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 2,
+      "hi": 2,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,2)=0, rank(A,5)=0 → interval [2,2) is empty. “AAC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 2,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AAG": {
+    "pattern": "AAG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,9)=3, rank(A,11)=3 → interval [5,5) is empty. “AG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AAT": {
+    "pattern": "AAT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,11)=3, rank(A,12)=3 → interval [5,5) is empty. “AT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ACA": {
+    "pattern": "ACA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,2)=2, rank(C,5)=2 → interval [7,7) is empty. “CA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ACC": {
+    "pattern": "ACC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,5)=2, rank(C,9)=2 → interval [7,7) is empty. “CC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ACG": {
+    "pattern": "ACG",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 4,
+      "lo": 7,
+      "hi": 9,
+      "rowsInBand": [
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,9) = 5+2 = 7; hi = C[C]+rank(C,11) = 5+4 = 9. Interval [7,9) now spells “CG”."
+     },
+     {
+      "i": 2,
+      "c": "A",
+      "matched": "ACG",
+      "loPrev": 7,
+      "hiPrev": 9,
+      "Cc": 2,
+      "rankLo": 1,
+      "rankHi": 3,
+      "lo": 3,
+      "hi": 5,
+      "rowsInBand": [
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,7) = 2+1 = 3; hi = C[A]+rank(A,9) = 2+3 = 5. Interval [3,5) now spells “ACG”."
+     }
+    ],
+    "final": {
+     "lo": 3,
+     "hi": 5,
+     "count": 2,
+     "hits": [
+      {
+       "row": 3,
+       "sa": 0,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 0
+      },
+      {
+       "row": 4,
+       "sa": 6,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 0
+      }
+     ]
+    }
+   },
+   "ACT": {
+    "pattern": "ACT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 4,
+      "rankHi": 4,
+      "lo": 9,
+      "hi": 9,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,11)=4, rank(C,12)=4 → interval [9,9) is empty. “CT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 9,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AGA": {
+    "pattern": "AGA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 9,
+      "hi": 10,
+      "rowsInBand": [
+       9
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,2) = 9+0 = 9; hi = C[G]+rank(G,5) = 9+1 = 10. Interval [9,10) now spells “GA”."
+     },
+     {
+      "i": 2,
+      "c": "A",
+      "matched": "AGA",
+      "loPrev": 9,
+      "hiPrev": 10,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,9)=3, rank(A,10)=3 → interval [5,5) is empty. “AGA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AGC": {
+    "pattern": "AGC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,5)=1, rank(G,9)=1 → interval [10,10) is empty. “GC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AGG": {
+    "pattern": "AGG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,9)=1, rank(G,11)=1 → interval [10,10) is empty. “GG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "AGT": {
+    "pattern": "AGT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 2,
+      "lo": 10,
+      "hi": 11,
+      "rowsInBand": [
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,11) = 9+1 = 10; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [10,11) now spells “GT”."
+     },
+     {
+      "i": 2,
+      "c": "A",
+      "matched": "AGT",
+      "loPrev": 10,
+      "hiPrev": 11,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,10)=3, rank(A,11)=3 → interval [5,5) is empty. “AGT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ATA": {
+    "pattern": "ATA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 11,
+      "hi": 11,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,2)=0, rank(T,5)=0 → interval [11,11) is empty. “TA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 11,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ATC": {
+    "pattern": "ATC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,5) = 11+0 = 11; hi = C[T]+rank(T,9) = 11+1 = 12. Interval [11,12) now spells “TC”."
+     },
+     {
+      "i": 2,
+      "c": "A",
+      "matched": "ATC",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,11)=3, rank(A,12)=3 → interval [5,5) is empty. “ATC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ATG": {
+    "pattern": "ATG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,9)=1, rank(T,11)=1 → interval [12,12) is empty. “TG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "ATT": {
+    "pattern": "ATT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,11)=1, rank(T,12)=1 → interval [12,12) is empty. “TT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CAA": {
+    "pattern": "CAA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 2,
+      "hi": 2,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,2)=0, rank(A,5)=0 → interval [2,2) is empty. “AA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 2,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CAC": {
+    "pattern": "CAC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,5) = 2+0 = 2; hi = C[A]+rank(A,9) = 2+3 = 5. Interval [2,5) now spells “AC”."
+     },
+     {
+      "i": 2,
+      "c": "C",
+      "matched": "CAC",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,2)=2, rank(C,5)=2 → interval [7,7) is empty. “CAC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CAG": {
+    "pattern": "CAG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,9)=3, rank(A,11)=3 → interval [5,5) is empty. “AG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CAT": {
+    "pattern": "CAT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,11)=3, rank(A,12)=3 → interval [5,5) is empty. “AT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CCA": {
+    "pattern": "CCA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,2)=2, rank(C,5)=2 → interval [7,7) is empty. “CA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CCC": {
+    "pattern": "CCC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,5)=2, rank(C,9)=2 → interval [7,7) is empty. “CC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CCG": {
+    "pattern": "CCG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 4,
+      "lo": 7,
+      "hi": 9,
+      "rowsInBand": [
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,9) = 5+2 = 7; hi = C[C]+rank(C,11) = 5+4 = 9. Interval [7,9) now spells “CG”."
+     },
+     {
+      "i": 2,
+      "c": "C",
+      "matched": "CCG",
+      "loPrev": 7,
+      "hiPrev": 9,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,7)=2, rank(C,9)=2 → interval [7,7) is empty. “CCG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CCT": {
+    "pattern": "CCT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 4,
+      "rankHi": 4,
+      "lo": 9,
+      "hi": 9,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,11)=4, rank(C,12)=4 → interval [9,9) is empty. “CT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 9,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CGA": {
+    "pattern": "CGA",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 9,
+      "hi": 10,
+      "rowsInBand": [
+       9
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,2) = 9+0 = 9; hi = C[G]+rank(G,5) = 9+1 = 10. Interval [9,10) now spells “GA”."
+     },
+     {
+      "i": 2,
+      "c": "C",
+      "matched": "CGA",
+      "loPrev": 9,
+      "hiPrev": 10,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 3,
+      "lo": 7,
+      "hi": 8,
+      "rowsInBand": [
+       7
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,9) = 5+2 = 7; hi = C[C]+rank(C,10) = 5+3 = 8. Interval [7,8) now spells “CGA”."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 8,
+     "count": 1,
+     "hits": [
+      {
+       "row": 7,
+       "sa": 1,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 1
+      }
+     ]
+    }
+   },
+   "CGC": {
+    "pattern": "CGC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,5)=1, rank(G,9)=1 → interval [10,10) is empty. “GC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CGG": {
+    "pattern": "CGG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,9)=1, rank(G,11)=1 → interval [10,10) is empty. “GG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CGT": {
+    "pattern": "CGT",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 2,
+      "lo": 10,
+      "hi": 11,
+      "rowsInBand": [
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,11) = 9+1 = 10; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [10,11) now spells “GT”."
+     },
+     {
+      "i": 2,
+      "c": "C",
+      "matched": "CGT",
+      "loPrev": 10,
+      "hiPrev": 11,
+      "Cc": 5,
+      "rankLo": 3,
+      "rankHi": 4,
+      "lo": 8,
+      "hi": 9,
+      "rowsInBand": [
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,10) = 5+3 = 8; hi = C[C]+rank(C,11) = 5+4 = 9. Interval [8,9) now spells “CGT”."
+     }
+    ],
+    "final": {
+     "lo": 8,
+     "hi": 9,
+     "count": 1,
+     "hits": [
+      {
+       "row": 8,
+       "sa": 7,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 1
+      }
+     ]
+    }
+   },
+   "CTA": {
+    "pattern": "CTA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 11,
+      "hi": 11,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,2)=0, rank(T,5)=0 → interval [11,11) is empty. “TA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 11,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CTC": {
+    "pattern": "CTC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,5) = 11+0 = 11; hi = C[T]+rank(T,9) = 11+1 = 12. Interval [11,12) now spells “TC”."
+     },
+     {
+      "i": 2,
+      "c": "C",
+      "matched": "CTC",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 4,
+      "rankHi": 4,
+      "lo": 9,
+      "hi": 9,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,11)=4, rank(C,12)=4 → interval [9,9) is empty. “CTC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 9,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CTG": {
+    "pattern": "CTG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,9)=1, rank(T,11)=1 → interval [12,12) is empty. “TG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "CTT": {
+    "pattern": "CTT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,11)=1, rank(T,12)=1 → interval [12,12) is empty. “TT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GAA": {
+    "pattern": "GAA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 2,
+      "hi": 2,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,2)=0, rank(A,5)=0 → interval [2,2) is empty. “AA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 2,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GAC": {
+    "pattern": "GAC",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,5) = 2+0 = 2; hi = C[A]+rank(A,9) = 2+3 = 5. Interval [2,5) now spells “AC”."
+     },
+     {
+      "i": 2,
+      "c": "G",
+      "matched": "GAC",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 9,
+      "hi": 10,
+      "rowsInBand": [
+       9
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,2) = 9+0 = 9; hi = C[G]+rank(G,5) = 9+1 = 10. Interval [9,10) now spells “GAC”."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 10,
+     "count": 1,
+     "hits": [
+      {
+       "row": 9,
+       "sa": 2,
+       "doc": 0,
+       "species": "S0",
+       "localPos": 2
+      }
+     ]
+    }
+   },
+   "GAG": {
+    "pattern": "GAG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,9)=3, rank(A,11)=3 → interval [5,5) is empty. “AG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GAT": {
+    "pattern": "GAT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,11)=3, rank(A,12)=3 → interval [5,5) is empty. “AT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GCA": {
+    "pattern": "GCA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,2)=2, rank(C,5)=2 → interval [7,7) is empty. “CA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GCC": {
+    "pattern": "GCC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,5)=2, rank(C,9)=2 → interval [7,7) is empty. “CC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GCG": {
+    "pattern": "GCG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 4,
+      "lo": 7,
+      "hi": 9,
+      "rowsInBand": [
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,9) = 5+2 = 7; hi = C[C]+rank(C,11) = 5+4 = 9. Interval [7,9) now spells “CG”."
+     },
+     {
+      "i": 2,
+      "c": "G",
+      "matched": "GCG",
+      "loPrev": 7,
+      "hiPrev": 9,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,7)=1, rank(G,9)=1 → interval [10,10) is empty. “GCG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GCT": {
+    "pattern": "GCT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 4,
+      "rankHi": 4,
+      "lo": 9,
+      "hi": 9,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,11)=4, rank(C,12)=4 → interval [9,9) is empty. “CT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 9,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GGA": {
+    "pattern": "GGA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 9,
+      "hi": 10,
+      "rowsInBand": [
+       9
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,2) = 9+0 = 9; hi = C[G]+rank(G,5) = 9+1 = 10. Interval [9,10) now spells “GA”."
+     },
+     {
+      "i": 2,
+      "c": "G",
+      "matched": "GGA",
+      "loPrev": 9,
+      "hiPrev": 10,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,9)=1, rank(G,10)=1 → interval [10,10) is empty. “GGA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GGC": {
+    "pattern": "GGC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,5)=1, rank(G,9)=1 → interval [10,10) is empty. “GC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GGG": {
+    "pattern": "GGG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,9)=1, rank(G,11)=1 → interval [10,10) is empty. “GG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GGT": {
+    "pattern": "GGT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 2,
+      "lo": 10,
+      "hi": 11,
+      "rowsInBand": [
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,11) = 9+1 = 10; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [10,11) now spells “GT”."
+     },
+     {
+      "i": 2,
+      "c": "G",
+      "matched": "GGT",
+      "loPrev": 10,
+      "hiPrev": 11,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,10)=1, rank(G,11)=1 → interval [10,10) is empty. “GGT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GTA": {
+    "pattern": "GTA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 11,
+      "hi": 11,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,2)=0, rank(T,5)=0 → interval [11,11) is empty. “TA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 11,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GTC": {
+    "pattern": "GTC",
+    "found": true,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,5) = 11+0 = 11; hi = C[T]+rank(T,9) = 11+1 = 12. Interval [11,12) now spells “TC”."
+     },
+     {
+      "i": 2,
+      "c": "G",
+      "matched": "GTC",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 2,
+      "lo": 10,
+      "hi": 11,
+      "rowsInBand": [
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,11) = 9+1 = 10; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [10,11) now spells “GTC”."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 11,
+     "count": 1,
+     "hits": [
+      {
+       "row": 10,
+       "sa": 8,
+       "doc": 1,
+       "species": "S1",
+       "localPos": 2
+      }
+     ]
+    }
+   },
+   "GTG": {
+    "pattern": "GTG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,9)=1, rank(T,11)=1 → interval [12,12) is empty. “TG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "GTT": {
+    "pattern": "GTT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,11)=1, rank(T,12)=1 → interval [12,12) is empty. “TT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TAA": {
+    "pattern": "TAA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 2,
+      "hi": 2,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,2)=0, rank(A,5)=0 → interval [2,2) is empty. “AA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 2,
+     "hi": 2,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TAC": {
+    "pattern": "TAC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,5) = 2+0 = 2; hi = C[A]+rank(A,9) = 2+3 = 5. Interval [2,5) now spells “AC”."
+     },
+     {
+      "i": 2,
+      "c": "T",
+      "matched": "TAC",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 11,
+      "hi": 11,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,2)=0, rank(T,5)=0 → interval [11,11) is empty. “TAC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 11,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TAG": {
+    "pattern": "TAG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,9)=3, rank(A,11)=3 → interval [5,5) is empty. “AG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TAT": {
+    "pattern": "TAT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "A",
+      "matched": "AT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 3,
+      "rankHi": 3,
+      "lo": 5,
+      "hi": 5,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend A: rank(A,11)=3, rank(A,12)=3 → interval [5,5) is empty. “AT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 5,
+     "hi": 5,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TCA": {
+    "pattern": "TCA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,2)=2, rank(C,5)=2 → interval [7,7) is empty. “CA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TCC": {
+    "pattern": "TCC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 2,
+      "lo": 7,
+      "hi": 7,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,5)=2, rank(C,9)=2 → interval [7,7) is empty. “CC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 7,
+     "hi": 7,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TCG": {
+    "pattern": "TCG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 5,
+      "rankLo": 2,
+      "rankHi": 4,
+      "lo": 7,
+      "hi": 9,
+      "rowsInBand": [
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,9) = 5+2 = 7; hi = C[C]+rank(C,11) = 5+4 = 9. Interval [7,9) now spells “CG”."
+     },
+     {
+      "i": 2,
+      "c": "T",
+      "matched": "TCG",
+      "loPrev": 7,
+      "hiPrev": 9,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,7)=1, rank(T,9)=1 → interval [12,12) is empty. “TCG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TCT": {
+    "pattern": "TCT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "C",
+      "matched": "CT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 4,
+      "rankHi": 4,
+      "lo": 9,
+      "hi": 9,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend C: rank(C,11)=4, rank(C,12)=4 → interval [9,9) is empty. “CT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 9,
+     "hi": 9,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TGA": {
+    "pattern": "TGA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 9,
+      "hi": 10,
+      "rowsInBand": [
+       9
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,2) = 9+0 = 9; hi = C[G]+rank(G,5) = 9+1 = 10. Interval [9,10) now spells “GA”."
+     },
+     {
+      "i": 2,
+      "c": "T",
+      "matched": "TGA",
+      "loPrev": 9,
+      "hiPrev": 10,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,9)=1, rank(T,10)=1 → interval [12,12) is empty. “TGA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TGC": {
+    "pattern": "TGC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,5)=1, rank(G,9)=1 → interval [10,10) is empty. “GC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TGG": {
+    "pattern": "TGG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 10,
+      "hi": 10,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend G: rank(G,9)=1, rank(G,11)=1 → interval [10,10) is empty. “GG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 10,
+     "hi": 10,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TGT": {
+    "pattern": "TGT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "G",
+      "matched": "GT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 1,
+      "rankHi": 2,
+      "lo": 10,
+      "hi": 11,
+      "rowsInBand": [
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,11) = 9+1 = 10; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [10,11) now spells “GT”."
+     },
+     {
+      "i": 2,
+      "c": "T",
+      "matched": "TGT",
+      "loPrev": 10,
+      "hiPrev": 11,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,10)=1, rank(T,11)=1 → interval [12,12) is empty. “TGT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TTA": {
+    "pattern": "TTA",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "A",
+      "matched": "A",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 2,
+      "rankLo": 0,
+      "rankHi": 3,
+      "lo": 2,
+      "hi": 5,
+      "rowsInBand": [
+       2,
+       3,
+       4
+      ],
+      "empty": false,
+      "caption": "Prepend A: lo = C[A]+rank(A,0) = 2+0 = 2; hi = C[A]+rank(A,12) = 2+3 = 5. Interval [2,5) now spells “A”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TA",
+      "loPrev": 2,
+      "hiPrev": 5,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 0,
+      "lo": 11,
+      "hi": 11,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,2)=0, rank(T,5)=0 → interval [11,11) is empty. “TA” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 11,
+     "hi": 11,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TTC": {
+    "pattern": "TTC",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "C",
+      "matched": "C",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 5,
+      "rankLo": 0,
+      "rankHi": 4,
+      "lo": 5,
+      "hi": 9,
+      "rowsInBand": [
+       5,
+       6,
+       7,
+       8
+      ],
+      "empty": false,
+      "caption": "Prepend C: lo = C[C]+rank(C,0) = 5+0 = 5; hi = C[C]+rank(C,12) = 5+4 = 9. Interval [5,9) now spells “C”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TC",
+      "loPrev": 5,
+      "hiPrev": 9,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,5) = 11+0 = 11; hi = C[T]+rank(T,9) = 11+1 = 12. Interval [11,12) now spells “TC”."
+     },
+     {
+      "i": 2,
+      "c": "T",
+      "matched": "TTC",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,11)=1, rank(T,12)=1 → interval [12,12) is empty. “TTC” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TTG": {
+    "pattern": "TTG",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "G",
+      "matched": "G",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 9,
+      "rankLo": 0,
+      "rankHi": 2,
+      "lo": 9,
+      "hi": 11,
+      "rowsInBand": [
+       9,
+       10
+      ],
+      "empty": false,
+      "caption": "Prepend G: lo = C[G]+rank(G,0) = 9+0 = 9; hi = C[G]+rank(G,12) = 9+2 = 11. Interval [9,11) now spells “G”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TG",
+      "loPrev": 9,
+      "hiPrev": 11,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,9)=1, rank(T,11)=1 → interval [12,12) is empty. “TG” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   },
+   "TTT": {
+    "pattern": "TTT",
+    "found": false,
+    "steps": [
+     {
+      "i": 0,
+      "c": "T",
+      "matched": "T",
+      "loPrev": 0,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 0,
+      "rankHi": 1,
+      "lo": 11,
+      "hi": 12,
+      "rowsInBand": [
+       11
+      ],
+      "empty": false,
+      "caption": "Prepend T: lo = C[T]+rank(T,0) = 11+0 = 11; hi = C[T]+rank(T,12) = 11+1 = 12. Interval [11,12) now spells “T”."
+     },
+     {
+      "i": 1,
+      "c": "T",
+      "matched": "TT",
+      "loPrev": 11,
+      "hiPrev": 12,
+      "Cc": 11,
+      "rankLo": 1,
+      "rankHi": 1,
+      "lo": 12,
+      "hi": 12,
+      "rowsInBand": [],
+      "empty": true,
+      "caption": "Prepend T: rank(T,11)=1, rank(T,12)=1 → interval [12,12) is empty. “TT” does not occur."
+     }
+    ],
+    "final": {
+     "lo": 12,
+     "hi": 12,
+     "count": 0,
+     "hits": []
+    }
+   }
+  }
+ },
+ "router": {
+  "blocks": 992,
+  "medianSurvivors": 2,
+  "speedup": 162,
+  "scanMs": 25.5275,
+  "routedMs": 0.15731,
+  "caption_scan": "Naive: search every one of 992 blocks for each query.",
+  "caption_route": "Routed: the global w-mer map lights only the 2 candidate block(s) that can contain the pattern — 162× faster."
+ }
+}
